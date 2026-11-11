@@ -31,10 +31,10 @@ FIXED = {
     ('medieval', 'Toltec Empire'): 'Fixed: was "Toltec Empire", capital Tula (Tula had fallen by c. 1150)',
     ('medieval', 'Merina Kingdom'): 'Fixed: was "Merina Kingdom" (the Merina kingdom formed c. 1540)',
     ('coldwar', 'China'): 'Fixed: Tibet merged in (under PRC control since 1950); was a separate realm',
+    ('medieval', 'Srivijaya Empire'): 'Fixed: capital was Palembang (centre had moved to Jambi by 1200)',
     ('ww2', 'Dominican Republic'): 'Fixed earlier today: capital was Santo Domingo (Ciudad Trujillo 1936-1961)',
 }
 QUESTION = {
-    ('medieval', 'Srivijaya Empire'): 'Minor: by 1200 its centre had moved to Jambi',
 }
 QUESTION_MODERN = {'Indonesia': 'Watch: becomes Nusantara once the move is made official'}
 
