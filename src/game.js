@@ -136,6 +136,15 @@ var RFLAGS = __IMAGES__("flags/realms");
   var src = RFLAGS[pr[0]] || FLAGS[pr[0]];
   if(src) pr[1].forEach(function(dn){ RFLAGS['wwi|'+dn] = src; });
 });
+// 1815: colonies fly the ruling power's flag (the Bourbon white flag for France)
+[['United Kingdom', ['British West Indies','British Ceylon','British Sierra Leone','British New South Wales']],
+ ['Netherlands', ['United Kingdom of the Netherlands','Dutch Guiana (Suriname)','Dutch Cura\u00e7ao','Dutch East Indies']],
+ ['Kingdom of France', ['French West Indies','French Senegal']],
+ ['Portugal', ['Portuguese Angola','Portuguese Mozambique','Portuguese Goa','Portuguese Guinea']],
+ ['Spain', ['Spanish Philippines']], ['Sweden\u2013Norway', ['Swedish Saint Barth\u00e9lemy']]].forEach(function(pr){
+  var src = RFLAGS[pr[0]] || FLAGS[pr[0]];
+  if(src) pr[1].forEach(function(dn){ RFLAGS['vienna|'+dn] = src; });
+});
 var SCATTERED = {'British Empire':1, 'French Empire':1, 'Belgian Empire':1, 'Portuguese Empire':1, 'Spanish Empire':1, 'Dutch Empire':1};
 function rflag(dn){ return RFLAGS[pack.id+'|'+dn] || RFLAGS[dn] || null; }
 var ERAS = ['the ancient world','the Middle Ages','the early modern period','the 1800s','the 20th century or later'];
