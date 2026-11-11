@@ -132,7 +132,7 @@ var RFLAGS = __IMAGES__("flags/realms");
 [['United Kingdom', ['British Nyasaland','British Bechuanaland','British Gold Coast','British Somaliland','British Sierra Leone',
   'British Gambia','British Uganda','British Swaziland','British Basutoland','British Guiana','British Honduras','British West Indies',
   'British Malta','Brunei (British protectorate)','British Hong Kong','British Fiji','British Arabia (Aden, Oman, Trucial States)']],
- ['German Empire', ['German Togoland','German Samoa']], ['Italy', ['Italian Eritrea','Italian Somaliland']],
+ ['German Empire', ['German Togoland','German Samoa','German New Guinea']], ['Italy', ['Italian Eritrea','Italian Somaliland']],
  ['France', ['French Guiana','French Somaliland','French West Indies','French Wallis and Futuna']],
  ['Spain', ['Spanish Guinea','Spanish Morocco','Spanish Sahara (R\u00edo de Oro)']], ['Portugal', ['Portuguese Guinea']],
  ['Netherlands', ['Dutch Suriname','Dutch Cura\u00e7ao']], ['Denmark', ['Danish West Indies']],
@@ -153,7 +153,7 @@ var RFLAGS = __IMAGES__("flags/realms");
 // realms that flew another realm's flag: Soviet-zone Korea used the same flag as the U.S. zone (Max's choice), Finland
 // flew the Russian flag, Xinjiang the Republic of China's, the Cape was British after 1814
 [['ww2|Korea (Soviet zone)', 'ww2|Korea (U.S. zone)'], ['wwi|Grand Duchy of Finland', 'Russian Empire'],
- ['wwi|Xinjiang', 'wwi|China (Republic of China)'], ['ww2|Xinjiang', 'China'], ['vienna|Cape Colony', 'United Kingdom']].forEach(function(pr){
+ ['wwi|Xinjiang', 'wwi|China (Republic of China)'], ['wwi|Australian Papua', 'wwi|Australia'], ['ww2|Xinjiang', 'China'], ['vienna|Cape Colony', 'United Kingdom']].forEach(function(pr){
   if(RFLAGS[pr[1]]) RFLAGS[pr[0]] = RFLAGS[pr[1]];
 });
 var TERRITORY_FLAGS = {modern:['Greenland','Puerto Rico','New Caledonia','Falkland Is.','Fr. S. Antarctic Lands']};
