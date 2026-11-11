@@ -9,7 +9,8 @@ const w=dom.window,doc=w.document,$=id=>doc.getElementById(id);
 const click=el=>el.dispatchEvent(new w.MouseEvent('click',{bubbles:true}));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const proj=d3.geoNaturalEarth1().fitExtent([[6,6],[954,494]],{type:'Sphere'});
-const SEC=JSON.parse(fs.readFileSync('sec.json','utf8')); const bySq={}; SEC.Q.forEach(q=>bySq[q.q]=q);
+// security questions and chokepoints, read from src/ (this used to read an old pipeline file, sec.json)
+const SEC={Q:JSON.parse(fs.readFileSync('../src/data/SEC.json','utf8')), CH:JSON.parse(fs.readFileSync('../src/data/CHOKES.json','utf8'))}; const bySq={}; SEC.Q.forEach(q=>bySq[q.q]=q);
 const find=n=>[...doc.querySelectorAll('#map path.country')].find(p=>p.__data__.properties.name===n);
 const mapClick=(ll)=>{ const p=proj(ll); doc.querySelector('#map').dispatchEvent(new w.MouseEvent('click',{bubbles:true,clientX:p[0],clientY:p[1]})); };
 (async()=>{

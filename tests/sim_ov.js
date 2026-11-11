@@ -1,5 +1,5 @@
 const {JSDOM}=require('jsdom'); const fs=require('fs');
-const file=process.argv[2];
+const file=process.argv[2]||'../pinpoint.html';   // optional: another build to check
 let html=fs.readFileSync(file,'utf8');
 const d3src=fs.readFileSync('node_modules/d3/dist/d3.min.js','utf8'), tjsrc=fs.readFileSync('node_modules/topojson-client/dist/topojson-client.min.js','utf8');
 html=html.replace(/<script src="[^"]*d3[^"]*"><\/script>/,()=>'<script>'+d3src.replace(/<\/script>/g,'<\\/script>')+'</script>')
