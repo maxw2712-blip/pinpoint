@@ -120,7 +120,7 @@ var RFLAGS = __IMAGES__("flags/realms");
 ['Niger','Chad','Central African Republic:Central African Rep.','Malagasy Republic (Madagascar):Madagascar','Dahomey:Benin','Togo',
  "Ivory Coast:C\u00f4te d'Ivoire",'Congo (Brazzaville):Congo','Gabon','Senegal','Guinea','Liberia','Somalia','Haiti',
  'Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Panama','Guatemala','Honduras','El Salvador','Bolivia','Paraguay',
- 'Ecuador','Uruguay','Nepal','Bhutan','Luxembourg','Mexico','Republic of China (Taiwan):Taiwan'].forEach(function(n){
+ 'Ecuador','Uruguay','Bhutan','Luxembourg','Mexico','Republic of China (Taiwan):Taiwan'].forEach(function(n){
   var a = n.split(':'); if(FLAGS[a[1] || a[0]]) RFLAGS['coldwar|'+a[0]] = FLAGS[a[1] || a[0]];
 });
 // 1914: colonies fly the ruling power's flag; independent states use their modern flag where it matches the 1914 one
