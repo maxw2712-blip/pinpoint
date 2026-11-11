@@ -28,11 +28,11 @@ FIXED = {
     ('vienna', 'Nassau'): 'Fixed: capital was Wiesbaden (from 1816)',
     ('medieval', 'Mongol Empire'): 'Fixed: was "Mongol Empire" (proclaimed 1206)',
     ('medieval', 'Sultanate of Delhi'): 'Fixed: was "Delhi Sultanate" (founded 1206; Ghurid-held in 1200)',
+    ('medieval', 'Toltec Empire'): 'Fixed: was "Toltec Empire", capital Tula (Tula had fallen by c. 1150)',
+    ('medieval', 'Merina Kingdom'): 'Fixed: was "Merina Kingdom" (the Merina kingdom formed c. 1540)',
     ('ww2', 'Dominican Republic'): 'Fixed earlier today: capital was Santo Domingo (Ciudad Trujillo 1936-1961)',
 }
 QUESTION = {
-    ('medieval', 'Toltec Empire'): 'Your call: Tula had fallen by c. 1150',
-    ('medieval', 'Merina Kingdom'): 'Your call: the Merina kingdom formed c. 1540',
     ('medieval', 'Srivijaya Empire'): 'Minor: by 1200 its centre had moved to Jambi',
     ('coldwar', 'Tibet'): 'Your call: under PRC control since 1950; merge into the PRC?',
 }
