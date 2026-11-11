@@ -109,18 +109,22 @@ var TRIVIA = __JSON__("data/TRIVIA.json");
 var RFLAGS = __IMAGES__("flags/realms");
 /* flags that differ by period are keyed "period|name", so Afghanistan or Mongolia can fly a different flag in each era */
 ['British Empire:United Kingdom','French Empire:France','Belgian Empire:Belgium','Portuguese Empire:Portugal','Spanish Empire:Spain','Dutch Empire:Netherlands'].forEach(function(pr){
-  var a = pr.split(':'), src = RFLAGS[a[1]] || FLAGS[a[1]];
-  if(src){ RFLAGS['ww2|'+a[0]] = src; RFLAGS['coldwar|'+a[0]] = src; }
+  // each period's empire flies that period's flag of the ruling country (e.g. Franco's Spain for 1945 and 1960)
+  var a = pr.split(':');
+  ['ww2','coldwar'].forEach(function(per){
+    var src = RFLAGS[per+'|'+a[1]] || RFLAGS[a[1]] || FLAGS[a[1]];
+    if(src) RFLAGS[per+'|'+a[0]] = src;
+  });
 });
 // "name:modern flag key" when the modern flag is filed under another name
-['Haiti','Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Guatemala','Honduras','El Salvador','Panama','Bolivia','Paraguay','Uruguay','Ecuador','Liberia','Iceland','Luxembourg','Andorra','Mexico','Bhutan','Yemen','Oman'].forEach(function(n){
+['Haiti','Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Guatemala','Honduras','El Salvador','Panama','Bolivia','Paraguay','Uruguay','Ecuador','Liberia','Iceland','Luxembourg','Andorra','Mexico','Yemen','Oman']   // Bhutan had no national flag until 1949.forEach(function(n){
   var a = n.split(':'); if(FLAGS[a[1] || a[0]]) RFLAGS['ww2|'+a[0]] = FLAGS[a[1] || a[0]];
 });
 // 1960: states whose flag at the end of 1960 is the one they fly today (the others have their own files in flags/realms)
 ['Niger','Chad','Central African Republic:Central African Rep.','Malagasy Republic (Madagascar):Madagascar','Dahomey:Benin','Togo',
  "Ivory Coast:C\u00f4te d'Ivoire",'Congo (Brazzaville):Congo','Gabon','Senegal','Guinea','Liberia','Somalia','Haiti',
  'Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Panama','Guatemala','Honduras','El Salvador','Bolivia','Paraguay',
- 'Ecuador','Uruguay','Bhutan','Luxembourg','Mexico','Republic of China (Taiwan):Taiwan'].forEach(function(n){
+ 'Ecuador','Uruguay','Luxembourg','Mexico','Republic of China (Taiwan):Taiwan'].forEach(function(n){
   var a = n.split(':'); if(FLAGS[a[1] || a[0]]) RFLAGS['coldwar|'+a[0]] = FLAGS[a[1] || a[0]];
 });
 // 1914: colonies fly the ruling power's flag; independent states use their modern flag where it matches the 1914 one
