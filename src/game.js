@@ -151,6 +151,7 @@ var RFLAGS = __IMAGES__("flags/realms");
  ['wwi|Xinjiang', 'wwi|China (Republic of China)'], ['ww2|Xinjiang', 'China'], ['vienna|Cape Colony', 'United Kingdom']].forEach(function(pr){
   if(RFLAGS[pr[1]]) RFLAGS[pr[0]] = RFLAGS[pr[1]];
 });
+var TERRITORY_FLAGS = {modern:['Greenland','Puerto Rico','New Caledonia','Falkland Is.','Fr. S. Antarctic Lands']};
 var SCATTERED = {'British Empire':1, 'French Empire':1, 'Belgian Empire':1, 'Portuguese Empire':1, 'Spanish Empire':1, 'Dutch Empire':1};
 function rflag(dn){ return RFLAGS[pack.id+'|'+dn] || RFLAGS[dn] || null; }
 var ERAS = ['the ancient world','the Middle Ages','the early modern period','the 1800s','the 20th century or later'];
@@ -755,6 +756,11 @@ function autoLabelAll(){
     seen[nm] = 1;
     placeLabel(peekFor(nm), nm, path.centroid(bigPart(d)), bigFeature(nm, d), {auto:true, defer:true});
   });
+  // overseas territories drawn as their own shapes are not answers (untappable, unlabelled) but show their own flag
+  (TERRITORY_FLAGS[pack.id] || []).forEach(function(n){
+    var f = pack.features.filter(function(x){ return x.properties.name===n; })[0];
+    if(f && FLAGS[n]) paintFlag(n, FLAGS[n], f);
+  });
   layoutLabels();
 }
 function setPips(){
@@ -1107,6 +1113,33 @@ function layoutLabels(){
     }
   });
 }
+/* The flag becomes the country: every piece of it (Alaska, Hawaii, islands, the scattered parts of an empire) gets its own
+   copy of the flag, sized to that piece, so the whole territory is covered. */
+function paintFlag(key, fill, feat){
+    // the flag becomes the country: every piece of it (Alaska, Hawaii, islands, overseas territories, the scattered
+    // parts of an empire) gets its own copy of the flag, sized to that piece, so the whole territory is covered
+    fills.selectAll('.pfill, .pfillEdge').filter(function(){ return this.getAttribute('data-key')===key; }).remove();
+    var feats = pack.features ? pack.features.filter(function(x){ return x.properties.name===key; }) : [];
+    if(!feats.length) feats = [feat];
+    var painted = false;
+    feats.forEach(function(f){
+      var g = f.geometry; if(!g) return;
+      var polys = g.type==='MultiPolygon' ? g.coordinates.map(function(c){ return {type:'Polygon', coordinates:c}; }) : [g];
+      polys.forEach(function(pc){
+        var pb = path.bounds(pc), pw = pb[1][0]-pb[0][0], ph = pb[1][1]-pb[0][1];
+        if(!(pw>0 && ph>0)) return;
+        var pcid = 'fc'+(++clipN);
+        var pg = fills.append('g').attr('class','pfill').attr('data-key',key).attr('clip-path','url(#'+pcid+')');
+        pg.append('clipPath').attr('id',pcid).append('path').attr('d', path(pc));
+        // "slice" keeps the flag's proportions and still covers the whole box; very long or tall pieces stretch instead
+        pg.append('image').attr('href',fill).attr('x',pb[0][0]).attr('y',pb[0][1]).attr('width',pw).attr('height',ph)
+          .attr('preserveAspectRatio', (pw/ph >= 0.8 && pw/ph <= 2.0) ? 'xMidYMid slice' : 'none');
+        painted = true;
+      });
+      fills.append('path').attr('class','pfillEdge').attr('data-key',key).attr('d', path(f));
+    });
+    if(painted && paths) paths.filter(function(d){ return d.properties.name===key; }).classed('flagged', true);
+}
 function placeLabel(info, key, xy, feat, opts){
   var auto = !!(opts && opts.auto);
   if(!auto) st.lastKey = key;
@@ -1129,31 +1162,7 @@ function placeLabel(info, key, xy, feat, opts){
     REL.forEach(function(r){ cands.push({x:fit.cands[0].x, y:fit.cands[0].y, fit:fit.cands[0].fit, rel:r}); });
   } else cands = REL.map(function(r){ return {x:xy[0], y:xy[1], fit:0, rel:r}; });
   labelRecs = labelRecs.filter(function(r){ return r.key!==key; });
-  if(info.fill && feat){
-    // the flag becomes the country: every piece of it (Alaska, Hawaii, islands, overseas territories, the scattered
-    // parts of an empire) gets its own copy of the flag, sized to that piece, so the whole territory is covered
-    fills.selectAll('.pfill, .pfillEdge').filter(function(){ return this.getAttribute('data-key')===key; }).remove();
-    var feats = pack.features ? pack.features.filter(function(x){ return x.properties.name===key; }) : [];
-    if(!feats.length) feats = [feat];
-    var painted = false;
-    feats.forEach(function(f){
-      var g = f.geometry; if(!g) return;
-      var polys = g.type==='MultiPolygon' ? g.coordinates.map(function(c){ return {type:'Polygon', coordinates:c}; }) : [g];
-      polys.forEach(function(pc){
-        var pb = path.bounds(pc), pw = pb[1][0]-pb[0][0], ph = pb[1][1]-pb[0][1];
-        if(!(pw>0 && ph>0)) return;
-        var pcid = 'fc'+(++clipN);
-        var pg = fills.append('g').attr('class','pfill').attr('data-key',key).attr('clip-path','url(#'+pcid+')');
-        pg.append('clipPath').attr('id',pcid).append('path').attr('d', path(pc));
-        // "slice" keeps the flag's proportions and still covers the whole box; very long or tall pieces stretch instead
-        pg.append('image').attr('href',info.fill).attr('x',pb[0][0]).attr('y',pb[0][1]).attr('width',pw).attr('height',ph)
-          .attr('preserveAspectRatio', (pw/ph >= 0.8 && pw/ph <= 2.0) ? 'xMidYMid slice' : 'none');
-        painted = true;
-      });
-      fills.append('path').attr('class','pfillEdge').attr('data-key',key).attr('d', path(f));
-    });
-    if(painted && paths) paths.filter(function(d){ return d.properties.name===key; }).classed('flagged', true);
-  }
+  if(info.fill && feat) paintFlag(key, info.fill, feat);
   var wrap = labels.append('g').attr('class','plabelwrap').attr('data-key',key);
   var clipRef = null;
   if(feat){
