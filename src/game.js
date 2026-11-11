@@ -123,6 +123,19 @@ var RFLAGS = __IMAGES__("flags/realms");
  'Ecuador','Uruguay','Nepal','Bhutan','Luxembourg','Mexico','Republic of China (Taiwan):Taiwan'].forEach(function(n){
   var a = n.split(':'); if(FLAGS[a[1] || a[0]]) RFLAGS['coldwar|'+a[0]] = FLAGS[a[1] || a[0]];
 });
+// 1914: colonies fly the ruling power's flag; independent states use their modern flag where it matches the 1914 one
+[['United Kingdom', ['British Nyasaland','British Bechuanaland','British Gold Coast','British Somaliland','British Sierra Leone',
+  'British Gambia','British Uganda','British Swaziland','British Basutoland','British Guiana','British Honduras','British West Indies',
+  'British Malta','Brunei (British protectorate)','British Hong Kong','British Fiji','British Arabia (Aden, Oman, Trucial States)']],
+ ['German Empire', ['German Togoland','German Samoa']], ['Italy', ['Italian Eritrea','Italian Somaliland']],
+ ['France', ['French Guiana','French Somaliland','French West Indies','French Wallis and Futuna']],
+ ['Spain', ['Spanish Guinea','Spanish Morocco','Spanish Sahara (R\u00edo de Oro)']], ['Portugal', ['Portuguese Guinea']],
+ ['Netherlands', ['Dutch Suriname','Dutch Cura\u00e7ao']], ['Denmark', ['Danish West Indies']],
+ ['Dominican Rep.', ['Dominican Republic']], ['Nicaragua', ['Nicaragua']], ['Costa Rica', ['Costa Rica']],
+ ['Honduras', ['Honduras']], ['El Salvador', ['El Salvador']]].forEach(function(pr){
+  var src = RFLAGS[pr[0]] || FLAGS[pr[0]];
+  if(src) pr[1].forEach(function(dn){ RFLAGS['wwi|'+dn] = src; });
+});
 var SCATTERED = {'British Empire':1, 'French Empire':1, 'Belgian Empire':1, 'Portuguese Empire':1, 'Spanish Empire':1, 'Dutch Empire':1};
 function rflag(dn){ return RFLAGS[pack.id+'|'+dn] || RFLAGS[dn] || null; }
 var ERAS = ['the ancient world','the Middle Ages','the early modern period','the 1800s','the 20th century or later'];
