@@ -110,10 +110,18 @@ var RFLAGS = __IMAGES__("flags/realms");
 /* flags that differ by period are keyed "period|name", so Afghanistan or Mongolia can fly a different flag in each era */
 ['British Empire:United Kingdom','French Empire:France','Belgian Empire:Belgium','Portuguese Empire:Portugal','Spanish Empire:Spain','Dutch Empire:Netherlands'].forEach(function(pr){
   var a = pr.split(':'), src = RFLAGS[a[1]] || FLAGS[a[1]];
-  if(src) RFLAGS['ww2|'+a[0]] = src;
+  if(src){ RFLAGS['ww2|'+a[0]] = src; RFLAGS['coldwar|'+a[0]] = src; }
 });
-['Haiti','Dominican Republic','Nicaragua','Costa Rica','Guatemala','Honduras','El Salvador','Panama','Bolivia','Paraguay','Uruguay','Ecuador','Liberia','Iceland','Luxembourg','Andorra','Bhutan','Yemen','Oman'].forEach(function(n){
-  if(FLAGS[n]) RFLAGS['ww2|'+n] = FLAGS[n];
+// "name:modern flag key" when the modern flag is filed under another name
+['Haiti','Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Guatemala','Honduras','El Salvador','Panama','Bolivia','Paraguay','Uruguay','Ecuador','Liberia','Iceland','Luxembourg','Andorra','Mexico','Bhutan','Yemen','Oman'].forEach(function(n){
+  var a = n.split(':'); if(FLAGS[a[1] || a[0]]) RFLAGS['ww2|'+a[0]] = FLAGS[a[1] || a[0]];
+});
+// 1960: states whose flag at the end of 1960 is the one they fly today (the others have their own files in flags/realms)
+['Niger','Chad','Central African Republic:Central African Rep.','Malagasy Republic (Madagascar):Madagascar','Dahomey:Benin','Togo',
+ "Ivory Coast:C\u00f4te d'Ivoire",'Congo (Brazzaville):Congo','Gabon','Senegal','Guinea','Liberia','Somalia','Haiti',
+ 'Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Panama','Guatemala','Honduras','El Salvador','Bolivia','Paraguay',
+ 'Ecuador','Uruguay','Nepal','Bhutan','Luxembourg','Mexico','Republic of China (Taiwan):Taiwan'].forEach(function(n){
+  var a = n.split(':'); if(FLAGS[a[1] || a[0]]) RFLAGS['coldwar|'+a[0]] = FLAGS[a[1] || a[0]];
 });
 var SCATTERED = {'British Empire':1, 'French Empire':1, 'Belgian Empire':1, 'Portuguese Empire':1, 'Spanish Empire':1, 'Dutch Empire':1};
 function rflag(dn){ return RFLAGS[pack.id+'|'+dn] || RFLAGS[dn] || null; }
@@ -1458,7 +1466,7 @@ function reveal(clicked, timedOut){
   st.log.push({q:q, pts:0});
   lift(targetPaths()).classed('reveal', true);
   st.saved = d3.zoomTransform(svg.node());
-  moveTo(((it.answers && it.answers.length>3) || (pack.id==='ww2' && SCATTERED[q.name])) ? d3.zoomIdentity : viewForFeature(it.answers ? it.answers[0] : q.name));
+  moveTo(((it.answers && it.answers.length>3) || ((pack.id==='ww2' || pack.id==='coldwar') && SCATTERED[q.name])) ? d3.zoomIdentity : viewForFeature(it.answers ? it.answers[0] : q.name));
   var last = st.i >= st.qs.length-1;
   var what = q.type==='flag' ? 'the flag of '+it.disp : it.disp;
   if(q.type==='sec') what = it.ansText;
