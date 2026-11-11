@@ -334,3 +334,15 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 .optBtn{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;font:inherit;font-size:.85rem;font-weight:600;color:var(--ink);cursor:pointer}
 .optBtn.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
 @media (max-width:620px){ #settingsPanel .sheet{height:auto;max-height:100%;overflow:auto} }
+
+/* phone: keep the Settings gear clear of the tab row, and break question names between words, not inside them */
+.prompt .name{overflow-wrap:break-word;hyphens:auto}
+@media (max-width:620px){
+  .sheet h1{margin-bottom:10px}
+  .gear{top:8px;right:8px;width:30px;height:30px}
+  /* the question gets its own full-width row under the round/score bar, so names are not squeezed into 100 px */
+  .hud.top{flex-wrap:wrap;gap:8px}
+  .stats{order:-1;margin-left:auto}
+  .prompt{flex:1 1 100%;max-width:none}
+  .prompt .name{font-size:clamp(1.4rem,6.2vw,1.9rem)}
+}

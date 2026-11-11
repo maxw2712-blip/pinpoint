@@ -154,9 +154,12 @@ var g = svg.append('g');
 var zoom = d3.zoom().scaleExtent([1,60]).translateExtent([[0,0],[W,H]]).clickDistance(6)
   .on('zoom', function(e){
     g.attr('transform', e.transform);
-    if(labels) labels.selectAll('g.plabel').attr('transform', function(d){ var s = d.fit ? (d.out ? Math.max(Math.min(1/e.transform.k, d.fit), 0.55/e.transform.k) : Math.min(1/e.transform.k, d.fit)) : 1/e.transform.k; return 'translate('+d.x+','+d.y+') scale('+s+')'; });
+    if(labels) labels.selectAll('g.plabel').attr('transform', function(d){ var k = e.transform.k, nom = d.nom || 1, s = d.fit ? (d.out ? Math.max(Math.min(nom/k, d.fit), (d.sp || 0.55)/k) : Math.min(nom/k, d.fit)) : 1/k; return 'translate('+d.x+','+d.y+') scale('+s+')'; });
   })
   .on('end', function(){ if(labelRecs.length) layoutLabels(); });
+// label sizes depend on how large the map is drawn, so lay them out again after a resize or rotation
+var resizeT = null;
+window.addEventListener('resize', function(){ clearTimeout(resizeT); resizeT = setTimeout(function(){ if(labelRecs.length) layoutLabels(); }, 150); });
 svg.call(zoom).on('dblclick.zoom', null);
 svg.on('click.pick', function(ev){ physPick(ev); });
 
@@ -726,6 +729,11 @@ function setPips(){
 function toast(msg, good, sticky){
   var t = $('toast');
   t.textContent = msg; t.className = 'show' + (good ? ' good' : '');
+  // phone: the question card is full width and its height varies (long names, flags, timer), so sit just below it
+  var pr = document.querySelector('.prompt');
+  if(window.matchMedia('(max-width:620px)').matches && !$('hudTop').hidden && !app.classList.contains('trivia') && pr){
+    t.style.top = Math.round(pr.getBoundingClientRect().bottom - app.getBoundingClientRect().top + 10)+'px';
+  } else t.style.top = '';
   clearTimeout(toast._id);
   if(!sticky) toast._id = setTimeout(function(){ t.className=''; }, 1800);
 }
@@ -942,6 +950,10 @@ var LABEL_REL = [[0,0]];
 [1.1,2.2,3.3].forEach(function(r){ [[0,-1],[0,1],[1,0],[-1,0],[0.8,-0.8],[-0.8,-0.8],[0.8,0.8],[-0.8,0.8]].forEach(function(d){ LABEL_REL.push([d[0]*r, d[1]*r]); }); });
 function layoutLabels(){
   var k = d3.zoomTransform(svg.node()).k, placed = [], pad = 3/k, floors = [0.55, 0.4, 0.28, 0.18, 0];
+  // screen pixels per map unit: about 1.5 on a 1440 px desktop, about 0.4 on a phone. Label text is 11 map units, so
+  // automatic labels are sized in screen pixels: at least 11 px when room allows, never under 8 px (9 px when spilling).
+  var sr = svg.node().getBoundingClientRect(), px = Math.min(sr.width/W, sr.height/H) || 1;
+  var nom = Math.max(1, 1/px), minS = Math.max(0.5, 8/(11*px)), spillS = Math.max(0.55, 9/(11*px));
   function overlapOf(cx, cy, hw, hh){
     var ov = 0;
     for(var j=0;j<placed.length;j++){
@@ -961,15 +973,15 @@ function layoutLabels(){
       for(i=0;i<tr.cands.length && !shown;i++){
         c = tr.cands[i];
         if(c.rel || c.toward) continue;
-        s = Math.min(1/k, c.fit);
-        if(s*k < 0.5) break;   // spots are sorted roomiest first, so the rest are smaller still
+        s = Math.min(nom/k, c.fit);
+        if(s*k < minS) break;   // spots are sorted roomiest first, so the rest are smaller still
         hw = tr.w*s/2+pad; hh = tr.h*s/2+pad;
         if(overlapOf(c.x, c.y, hw, hh)===0){ shown = {cx:c.x, cy:c.y, s:s, fit:c.fit, hw:hw, hh:hh, over:false, anc:null}; tier = tr; }
       }
     }
     // 2) blocked: the label spills over the neighbouring flags at a readable size, but never over another label
     if(!shown && rec.anchor){
-      var so = 0.55/k, A = rec.anchor;
+      var so = spillS/k, A = rec.anchor;
       for(ti=0; ti<tiers.length && !shown; ti++){
         tr = tiers[ti]; hw = tr.w*so/2+pad; hh = tr.h*so/2+pad;
         var spots = [], near = [];
@@ -990,7 +1002,7 @@ function layoutLabels(){
     if(!shown){ rec.leader.style('display','none'); rec.dot.style('display','none'); return; }
     if(rec.curTier!==tier.id){ rec.curTier = tier.id; rec.rect.attr('x', -tier.w/2).attr('width', tier.w); rec.text.text(tier.name); }
     placed.push({x0:shown.cx-shown.hw, x1:shown.cx+shown.hw, y0:shown.cy-shown.hh, y1:shown.cy+shown.hh});
-    d3.select(rec.el).datum({x:shown.cx, y:shown.cy, fit:shown.fit, out:shown.over}).attr('transform','translate('+shown.cx+','+shown.cy+') scale('+shown.s+')');
+    d3.select(rec.el).datum({x:shown.cx, y:shown.cy, fit:shown.fit, out:shown.over, nom:nom, sp:spillS}).attr('transform','translate('+shown.cx+','+shown.cy+') scale('+shown.s+')');
     rec.wrap.attr('clip-path', shown.over ? null : rec.clip);
     var far = shown.anc && Math.hypot(shown.cx-shown.anc[0], shown.cy-shown.anc[1]) > tier.h*shown.s*0.55;
     rec.leader.style('display', far ? null : 'none').attr('x1',shown.anc ? shown.anc[0] : 0).attr('y1',shown.anc ? shown.anc[1] : 0).attr('x2',shown.cx).attr('y2',shown.cy);
