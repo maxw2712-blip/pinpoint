@@ -117,7 +117,8 @@ var RFLAGS = __IMAGES__("flags/realms");
   });
 });
 // "name:modern flag key" when the modern flag is filed under another name
-['Haiti','Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Guatemala','Honduras','El Salvador','Panama','Bolivia','Paraguay','Uruguay','Ecuador','Liberia','Iceland','Luxembourg','Andorra','Mexico','Yemen','Oman']   // Bhutan had no national flag until 1949.forEach(function(n){
+// (Bhutan is left out: it had no national flag until 1949)
+['Haiti','Dominican Republic:Dominican Rep.','Nicaragua','Costa Rica','Guatemala','Honduras','El Salvador','Panama','Bolivia','Paraguay','Uruguay','Ecuador','Liberia','Iceland','Luxembourg','Andorra','Mexico','Yemen','Oman'].forEach(function(n){
   var a = n.split(':'); if(FLAGS[a[1] || a[0]]) RFLAGS['ww2|'+a[0]] = FLAGS[a[1] || a[0]];
 });
 // 1960: states whose flag at the end of 1960 is the one they fly today (the others have their own files in flags/realms)
