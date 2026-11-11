@@ -39,7 +39,7 @@ STATUS = {
     'Hohenzollern': ('Hohenzollern', 'Hohenzollern principalities', None, 'E'),
     'Mecklenburg-Schwerin': ('Mecklenburg-Schwerin', 'Mecklenburg-Schwerin', 'Schwerin', 'E'),
     'Mecklenburg-Strelitz': ('Mecklenburg-Strelitz', 'Mecklenburg-Strelitz', 'Neustrelitz', 'E'),
-    'Nassau': ('Nassau', 'Duchy of Nassau', 'Wiesbaden', 'E'),
+    'Nassau': ('Nassau', 'Duchy of Nassau', 'Weilburg', 'E'),   # Wiesbaden only from 1816
     'Waldeck': ('Waldeck', 'Waldeck', 'Arolsen', 'E'),
     'Lippe-Detmold': ('Lippe', 'Lippe-Detmold', 'Detmold', 'E'),
     'Schaumburg-Lippe': ('Schaumburg-Lippe', 'Schaumburg-Lippe', 'Bückeburg', 'E'),

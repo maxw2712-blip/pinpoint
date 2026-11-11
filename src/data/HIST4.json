@@ -76,7 +76,7 @@
     ["Hohenzollern", "Hohenzollern principalities", null, "E"],
     ["Mecklenburg-Strelitz", "Mecklenburg-Strelitz", "Neustrelitz", "E"],
     ["Hesse-Darmstadt", "Grand Duchy of Hesse", "Darmstadt", "E"],
-    ["Nassau", "Duchy of Nassau", "Wiesbaden", "E"],
+    ["Nassau", "Duchy of Nassau", "Weilburg", "E"],
     ["Waldeck", "Waldeck", "Arolsen", "E"],
     ["Lippe", "Lippe-Detmold", "Detmold", "E"],
     ["Brunswick", "Duchy of Brunswick", "Brunswick", "E"],
@@ -219,7 +219,7 @@
     ["Iceland", "Iceland", "Reykjavík", "E"],
     ["Luxembourg", "Luxembourg", "Luxembourg City", "E"],
     ["Andorra", "Andorra", "Andorra la Vella", "E"],
-    ["Bhutan", "Bhutan", "Thimphu", "S"],
+    ["Bhutan", "Bhutan", "Punakha", "S"],
     ["Yemen", "Yemen", "Sana'a", "S"],
     ["Oman", "Oman", "Muscat", "S"]
   ],
