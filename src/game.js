@@ -984,6 +984,9 @@ function layoutLabels(){
   // automatic labels are sized in screen pixels: at least 11 px when room allows, never under 8 px (9 px when spilling).
   var sr = svg.node().getBoundingClientRect(), px = Math.min(sr.width/W, sr.height/H) || 1;
   var nom = Math.max(1, 1/px), minS = Math.max(0.5, 8/(11*px)), spillS = Math.max(0.55, 9/(11*px));
+  // a spilled label may sit at most SPILL_GAP screen pixels (anchor to the label's nearest edge) from its country;
+  // with no room that close it stays hidden until you zoom in, instead of drifting over another sea or continent
+  var SPILL_GAP = 40, maxGap = SPILL_GAP/(k*px);
   function overlapOf(cx, cy, hw, hh){
     var ov = 0;
     for(var j=0;j<placed.length;j++){
@@ -1024,6 +1027,7 @@ function layoutLabels(){
         spots = spots.concat(near);
         for(i=0;i<spots.length && !shown;i++){
           if(spots[i].x-hw<0 || spots[i].x+hw>W || spots[i].y-hh<0 || spots[i].y+hh>H) continue;   // stay on the map
+          if(spots[i].anc && Math.hypot(Math.max(Math.abs(spots[i].x-A[0])-hw, 0), Math.max(Math.abs(spots[i].y-A[1])-hh, 0)) > maxGap) continue;
           if(overlapOf(spots[i].x, spots[i].y, hw, hh)===0){ shown = {cx:spots[i].x, cy:spots[i].y, s:so, fit:rec.cands[0].fit, hw:hw, hh:hh, over:true, anc:spots[i].anc}; tier = tr; }
         }
       }
