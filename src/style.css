@@ -346,3 +346,11 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
   .prompt{flex:1 1 100%;max-width:none}
   .prompt .name{font-size:clamp(1.4rem,6.2vw,1.9rem)}
 }
+
+/* Explore: realms without a flag are shaded by region (muted, so flags stay the stronger signal) */
+:root{--tint-eu:#7f9cc4; --tint-as:#d4a85e; --tint-af:#c98463; --tint-am:#7fb27c; --tint-oc:#6fb3b0}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--tint-eu:#5c7aa3; --tint-as:#a9833f; --tint-af:#a5654a; --tint-am:#5d8f5b; --tint-oc:#4f8f8c} }
+:root[data-theme="dark"]{--tint-eu:#5c7aa3; --tint-as:#a9833f; --tint-af:#a5654a; --tint-am:#5d8f5b; --tint-oc:#4f8f8c}
+.ptint{pointer-events:none;fill-opacity:.74;stroke:var(--ink);stroke-opacity:.35;stroke-width:.8px;vector-effect:non-scaling-stroke}
+.ptint.t-eu{fill:var(--tint-eu)} .ptint.t-as{fill:var(--tint-as)} .ptint.t-af{fill:var(--tint-af)}
+.ptint.t-am{fill:var(--tint-am)} .ptint.t-oc{fill:var(--tint-oc)}

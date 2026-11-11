@@ -759,7 +759,9 @@ function autoLabelAll(){
     var nm = d.properties && d.properties.name;
     if(!nm || seen[nm] || !pack.items[nm]) return;
     seen[nm] = 1;
-    placeLabel(peekFor(nm), nm, path.centroid(bigPart(d)), bigFeature(nm, d), {auto:true, defer:true});
+    var info = peekFor(nm);
+    placeLabel(info, nm, path.centroid(bigPart(d)), bigFeature(nm, d), {auto:true, defer:true});
+    if(!info.fill) tintRealm(nm);
   });
   // overseas territories drawn as their own shapes are not answers (untappable, unlabelled) but show their own flag
   (TERRITORY_FLAGS[pack.id] || []).forEach(function(n){
@@ -1116,6 +1118,16 @@ function layoutLabels(){
       rec.leader.style('display', far ? null : 'none').attr('x1',rec.anchor ? rec.anchor[0] : 0).attr('y1',rec.anchor ? rec.anchor[1] : 0).attr('x2',best.cx).attr('y2',best.cy);
       rec.dot.style('display', far ? null : 'none').attr('cx',rec.anchor ? rec.anchor[0] : 0).attr('cy',rec.anchor ? rec.anchor[1] : 0).attr('r',2.4/k);
     }
+  });
+}
+/* Explore: a realm with no flag of its own is shaded in a muted colour for its region, so the map reads as complete. */
+var REGION_TINT = {Europe:'eu', Asia:'as', Africa:'af', Americas:'am', Oceania:'oc'};
+function tintRealm(key){
+  var it = pack.items[key], cls = it && REGION_TINT[it.reg];
+  if(!cls) return;
+  fills.selectAll('.ptint').filter(function(){ return this.getAttribute('data-key')===key; }).remove();
+  pack.features.filter(function(x){ return x.properties.name===key; }).forEach(function(f){
+    fills.insert('path', ':first-child').attr('class','ptint t-'+cls).attr('data-key',key).attr('d', path(f));
   });
 }
 /* The flag becomes the country: every piece of it (Alaska, Hawaii, islands, the scattered parts of an empire) gets its own
