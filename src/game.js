@@ -1130,33 +1130,29 @@ function placeLabel(info, key, xy, feat, opts){
   } else cands = REL.map(function(r){ return {x:xy[0], y:xy[1], fit:0, rel:r}; });
   labelRecs = labelRecs.filter(function(r){ return r.key!==key; });
   if(info.fill && feat){
-    // the flag becomes the country: paint it inside the outline, sized to the main landmass
+    // the flag becomes the country: every piece of it (Alaska, Hawaii, islands, overseas territories, the scattered
+    // parts of an empire) gets its own copy of the flag, sized to that piece, so the whole territory is covered
     fills.selectAll('.pfill, .pfillEdge').filter(function(){ return this.getAttribute('data-key')===key; }).remove();
-    var pieces = (pack.past && pack.features) ? pack.features.filter(function(x){ return x.properties.name===key; }) : [];
-    if(pieces.length>1){
-      // an empire spread over many territories: every territory shows the flag
-      pieces.forEach(function(pc){
+    var feats = pack.features ? pack.features.filter(function(x){ return x.properties.name===key; }) : [];
+    if(!feats.length) feats = [feat];
+    var painted = false;
+    feats.forEach(function(f){
+      var g = f.geometry; if(!g) return;
+      var polys = g.type==='MultiPolygon' ? g.coordinates.map(function(c){ return {type:'Polygon', coordinates:c}; }) : [g];
+      polys.forEach(function(pc){
         var pb = path.bounds(pc), pw = pb[1][0]-pb[0][0], ph = pb[1][1]-pb[0][1];
         if(!(pw>0 && ph>0)) return;
         var pcid = 'fc'+(++clipN);
         var pg = fills.append('g').attr('class','pfill').attr('data-key',key).attr('clip-path','url(#'+pcid+')');
         pg.append('clipPath').attr('id',pcid).append('path').attr('d', path(pc));
+        // "slice" keeps the flag's proportions and still covers the whole box; very long or tall pieces stretch instead
         pg.append('image').attr('href',info.fill).attr('x',pb[0][0]).attr('y',pb[0][1]).attr('width',pw).attr('height',ph)
           .attr('preserveAspectRatio', (pw/ph >= 0.8 && pw/ph <= 2.0) ? 'xMidYMid slice' : 'none');
-        fills.append('path').attr('class','pfillEdge').attr('data-key',key).attr('d', path(pc));
+        painted = true;
       });
-      if(paths) paths.filter(function(d){ return d.properties.name===key; }).classed('flagged', true);
-    }
-    var bb = path.bounds(bigPart(feat));
-    if(pieces.length<=1 && bb[1][0]-bb[0][0] > 0 && bb[1][1]-bb[0][1] > 0){
-      var fcid = 'fc'+(++clipN);
-      var fg = fills.append('g').attr('class','pfill').attr('data-key',key).attr('clip-path','url(#'+fcid+')');
-      fg.append('clipPath').attr('id',fcid).append('path').attr('d', path(feat));
-      fg.append('image').attr('href',info.fill).attr('x',bb[0][0]).attr('y',bb[0][1])
-        .attr('width',bb[1][0]-bb[0][0]).attr('height',bb[1][1]-bb[0][1]).attr('preserveAspectRatio', ((bb[1][0]-bb[0][0])/(bb[1][1]-bb[0][1]) >= 0.8 && (bb[1][0]-bb[0][0])/(bb[1][1]-bb[0][1]) <= 2.0) ? 'xMidYMid slice' : 'none');
-      fills.append('path').attr('class','pfillEdge').attr('data-key',key).attr('d', path(feat));
-      if(paths) paths.filter(function(d){ return d.properties.name===key; }).classed('flagged', true);
-    }
+      fills.append('path').attr('class','pfillEdge').attr('data-key',key).attr('d', path(f));
+    });
+    if(painted && paths) paths.filter(function(d){ return d.properties.name===key; }).classed('flagged', true);
   }
   var wrap = labels.append('g').attr('class','plabelwrap').attr('data-key',key);
   var clipRef = null;
