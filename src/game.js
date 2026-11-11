@@ -145,6 +145,12 @@ var RFLAGS = __IMAGES__("flags/realms");
   var src = RFLAGS[pr[0]] || FLAGS[pr[0]];
   if(src) pr[1].forEach(function(dn){ RFLAGS['vienna|'+dn] = src; });
 });
+// realms that flew another realm's flag: Soviet-zone Korea used the same flag as the U.S. zone (Max's choice), Finland
+// flew the Russian flag, Xinjiang the Republic of China's, the Cape was British after 1814
+[['ww2|Korea (Soviet zone)', 'ww2|Korea (U.S. zone)'], ['wwi|Grand Duchy of Finland', 'Russian Empire'],
+ ['wwi|Xinjiang', 'wwi|China (Republic of China)'], ['ww2|Xinjiang', 'China'], ['vienna|Cape Colony', 'United Kingdom']].forEach(function(pr){
+  if(RFLAGS[pr[1]]) RFLAGS[pr[0]] = RFLAGS[pr[1]];
+});
 var SCATTERED = {'British Empire':1, 'French Empire':1, 'Belgian Empire':1, 'Portuguese Empire':1, 'Spanish Empire':1, 'Dutch Empire':1};
 function rflag(dn){ return RFLAGS[pack.id+'|'+dn] || RFLAGS[dn] || null; }
 var ERAS = ['the ancient world','the Middle Ages','the early modern period','the 1800s','the 20th century or later'];
