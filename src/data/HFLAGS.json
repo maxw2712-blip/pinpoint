@@ -1,0 +1,64 @@
+[
+  {
+    "id": "h:Soviet Union",
+    "disp": "Soviet Union (1922–1991)",
+    "tier": "hard",
+    "reg": "Europe",
+    "answers": [
+      "Russia",
+      "Ukraine",
+      "Belarus",
+      "Moldova",
+      "Estonia",
+      "Latvia",
+      "Lithuania",
+      "Georgia",
+      "Armenia",
+      "Azerbaijan",
+      "Kazakhstan",
+      "Uzbekistan",
+      "Turkmenistan",
+      "Tajikistan",
+      "Kyrgyzstan"
+    ]
+  },
+  {
+    "id": "h:Yugoslavia",
+    "disp": "Yugoslavia (1945–1992)",
+    "tier": "hard",
+    "reg": "Europe",
+    "answers": ["Serbia", "Croatia", "Slovenia", "Bosnia and Herz.", "Montenegro", "Macedonia", "Kosovo"]
+  },
+  {"id": "h:Czechoslovakia", "disp": "Czechoslovakia (1918–1992)", "tier": "hard", "reg": "Europe", "answers": ["Czechia", "Slovakia"]},
+  {"id": "h:East Germany", "disp": "East Germany (1949–1990)", "tier": "hard", "reg": "Europe", "answers": ["Germany"]},
+  {"id": "h:Ottoman Empire", "disp": "Ottoman Empire (until 1922)", "tier": "hard", "reg": "Asia", "answers": ["Turkey"]},
+  {"id": "h:Zaire", "disp": "Zaire (1971–1997)", "tier": "impossible", "reg": "Africa", "answers": ["Dem. Rep. Congo"]},
+  {"id": "h:South Vietnam", "disp": "South Vietnam (1955–1975)", "tier": "impossible", "reg": "Asia", "answers": ["Vietnam"]},
+  {"id": "h:Rhodesia", "disp": "Rhodesia (1965–1979)", "tier": "impossible", "reg": "Africa", "answers": ["Zimbabwe"]},
+  {"id": "h:Biafra", "disp": "Biafra (1967–1970)", "tier": "impossible", "reg": "Africa", "answers": ["Nigeria"]},
+  {
+    "id": "h:Republic of Texas",
+    "disp": "Republic of Texas (1836–1846)",
+    "tier": "impossible",
+    "reg": "Americas",
+    "answers": ["United States of America"]
+  },
+  {
+    "id": "h:Kingdom of Hawaii",
+    "disp": "Kingdom of Hawaii (1795–1893)",
+    "tier": "impossible",
+    "reg": "Oceania",
+    "answers": ["United States of America"]
+  },
+  {"id": "h:Union of Burma", "disp": "Union of Burma (1948–1974)", "tier": "impossible", "reg": "Asia", "answers": ["Myanmar"]},
+  {"id": "h:Upper Volta", "disp": "Upper Volta (1958–1984)", "tier": "impossible", "reg": "Africa", "answers": ["Burkina Faso"]},
+  {
+    "id": "h:South Africa (1928–1994 flag)",
+    "disp": "Union of South Africa (1910–1961)",
+    "tier": "impossible",
+    "reg": "Africa",
+    "answers": ["South Africa"]
+  },
+  {"id": "h:Russian Empire", "disp": "Russian Empire (1721–1917)", "tier": "impossible", "reg": "Europe", "answers": ["Russia"]},
+  {"id": "h:German Empire", "disp": "German Empire (1871–1918)", "tier": "impossible", "reg": "Europe", "answers": ["Germany"]}
+]

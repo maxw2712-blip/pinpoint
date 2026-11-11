@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pinpoint: a geography game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* @include style.css */
+</style>
+</head>
+<body>
+<div id="app">
+  <svg id="map" role="img" aria-label="Map"></svg>
+
+  <div class="hud top" id="hudTop" hidden>
+    <div class="card prompt" aria-live="polite">
+      <span class="kind" id="kind"></span>
+      <span class="name" id="qname"></span>
+      <img class="flag" id="flagImg" alt="The flag to identify" hidden>
+      <div class="timer" id="timer" hidden><i id="timerFill"></i></div>
+    </div>
+    <div class="card stats">
+      <div><b id="round">1 of 10</b><span>Round</span></div>
+      <div><b id="score">0</b><span>Score</span></div>
+      <button type="button" class="homeBtn" id="home" aria-label="Back to the menu">Home</button>
+      <button type="button" class="homeBtn gearBtn" id="settingsBtn2" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    </div>
+  </div>
+
+  <div class="card peek" id="peek" hidden aria-live="polite">
+    <div class="pflags" id="peekFlags"></div>
+    <div class="pthumb" id="peekThumb" hidden></div>
+    <div><b id="peekName"></b><span id="peekSub"></span></div>
+  </div>
+
+  <div class="card exploreBar" id="exploreBar" hidden>
+    <span>Explore</span>
+    <select id="exploreMode" aria-label="Choose a period or map">
+      <option value="modern">Modern world</option>
+      <option value="bronze">Bronze Age (1500 BCE)</option>
+      <option value="classical">Classical (500 BCE)</option>
+      <option value="ancient">Ancient (100 CE)</option>
+      <option value="early">Early medieval (800 CE)</option>
+      <option value="medieval">Medieval (1200 CE)</option>
+      <option value="discovery">Age of Discovery (1500)</option>
+      <option value="vienna">Congress of Vienna (1815)</option>
+      <option value="wwi">World War I (1914)</option>
+      <option value="ww2">World War II (1945)</option>
+      <option value="coldwar">Cold War (1960)</option>
+      <option value="geo">Geography (physical map)</option>
+      <option value="planets">Planets</option>
+    </select>
+    <button type="button" class="homeBtn" id="exploreWorld" hidden>Switch world</button>
+    <button type="button" class="homeBtn" id="exploreReport" hidden>Report</button>
+    <button type="button" class="homeBtn" id="exploreHome">Home</button>
+  </div>
+
+  <div class="zoom" id="zoomBtns" hidden>
+    <button id="zin" aria-label="Zoom in">+</button>
+    <button id="zout" aria-label="Zoom out">&minus;</button>
+    <button id="zhome" aria-label="Reset view" title="Reset view">&#8962;</button>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <div class="hud bottom" id="hudBottom" hidden>
+    <div class="card">
+      <div class="pips" id="pips" role="img" aria-label="3 tries left"><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
+      <div class="hint" id="hint">Click the answer on the map. Scroll or pinch to zoom.</div>
+      <button class="btn" id="reportBtn" hidden>Report</button>
+      <button class="btn" id="act">Skip</button>
+    </div>
+  </div>
+
+  <div id="trivia">
+    <div class="card tcard">
+      <p class="tera" id="tEra"></p>
+      <h2 class="tquestion" id="tQuestion"></h2>
+      <div class="topts" id="tOpts"></div>
+      <p class="tfact" id="tFact" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <section class="overlay" id="setup" aria-labelledby="t1">
+    <div class="card sheet">
+      <h1 id="t1">Pinpoint</h1>
+      <button type="button" class="gear" id="settingsBtn" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <p class="lede" id="lede">Click the right place on the map, and the fewer tries you need, the more points you score. Games run ten rounds.</p>
+      <div class="tabs" role="tablist" aria-label="Game type">
+        <button type="button" role="tab" class="tab on" id="tabMap" aria-selected="true"><span class="tl">Nation States</span><span class="ts">Nations</span></button>
+        <button type="button" role="tab" class="tab" id="tabGeo" aria-selected="false"><span class="tl">Geography</span><span class="ts">Geo</span></button>
+        <button type="button" role="tab" class="tab" id="tabFlags" aria-selected="false"><span class="tl">Flags</span><span class="ts">Flags</span></button>
+        <button type="button" role="tab" class="tab" id="tabPlanets" aria-selected="false"><span class="tl">Planets</span><span class="ts">Planets</span></button>
+        <button type="button" role="tab" class="tab" id="tabHist" aria-selected="false"><span class="tl">History</span><span class="ts">History</span></button>
+        <button type="button" role="tab" class="tab" id="tabSecurity" aria-selected="false"><span class="tl">Security</span><span class="ts">Security</span></button>
+        <button type="button" role="tab" class="tab" id="tabExplore" aria-selected="false"><span class="tl">Explore</span><span class="ts">Explore</span></button>
+      </div>
+      <p class="modeNote" id="histNote" hidden></p>
+      <fieldset id="modeSet">
+        <legend>Mode</legend>
+        <div class="seg" data-key="mode">
+          <button type="button" data-v="modern" aria-pressed="true">Modern world</button>
+          <button type="button" data-v="bronze" aria-pressed="false">Bronze Age (1500 BCE)</button>
+          <button type="button" data-v="classical" aria-pressed="false">Classical (500 BCE)</button>
+          <button type="button" data-v="ancient" aria-pressed="false">Ancient (100 CE)</button>
+          <button type="button" data-v="early" aria-pressed="false">Early medieval (800 CE)</button>
+          <button type="button" data-v="medieval" aria-pressed="false">Medieval (1200 CE)</button>
+          <button type="button" data-v="discovery" aria-pressed="false">Age of Discovery (1500)</button>
+          <button type="button" data-v="vienna" aria-pressed="false">Congress of Vienna (1815)</button>
+          <button type="button" data-v="wwi" aria-pressed="false">World War I (1914)</button>
+          <button type="button" data-v="ww2" aria-pressed="false">World War II (1945)</button>
+          <button type="button" data-v="coldwar" aria-pressed="false">Cold War (1960)</button>
+        </div>
+        <p class="modeNote" id="modeNote"></p>
+      </fieldset>
+      <fieldset>
+        <legend id="lvlLegend">Difficulty</legend>
+        <input type="range" id="level" min="0" max="3" step="1" value="1" aria-labelledby="lvlLegend" aria-describedby="lvlDesc">
+        <div class="ticks" id="ticks">
+          <button type="button" data-i="0">Easy</button>
+          <button type="button" data-i="1">Medium</button>
+          <button type="button" data-i="2">Hard</button>
+          <button type="button" data-i="3">Impossible</button>
+        </div>
+        <p class="lvlDesc" id="lvlDesc"></p>
+      </fieldset>
+      <div class="actions"><button type="button" class="btn primary" id="start">Start game</button></div>
+      <p class="best" id="best"></p>
+      <details class="credit"><summary>Credits and sources</summary><p>Modern borders: Natural Earth via world-atlas. Historical borders: historical-basemaps by Ágoston Nagy and Andre Ourednik (GPL-3.0), simplified. Physical features and shaded-relief terrain: Natural Earth. Planet maps: threex.planets textures (NASA mission data); feature positions follow IAU names and are approximate. Historical borders are approximate.</p></details>
+    </div>
+  </section>
+
+  <section class="overlay" id="end" aria-labelledby="t2" hidden>
+    <div class="card sheet">
+      <h2 id="t2">Game over</h2>
+      <div class="final"><span id="finalScore">0</span> <small id="finalMax">/ 30</small></div>
+      <p id="verdict"></p>
+      <ul id="log"></ul>
+      <div class="actions">
+        <button type="button" class="btn primary" id="again">Play again</button>
+        <button type="button" class="btn" id="practice" hidden>Practice misses</button>
+        <button type="button" class="btn" id="change">Change settings</button>
+      </div>
+      <p class="best" id="best2"></p>
+    </div>
+  </section>
+
+  <section class="overlay" id="reportPanel" aria-labelledby="rpTitle" hidden>
+    <div class="card sheet">
+      <h2 id="rpTitle">Report a problem</h2>
+      <pre class="rpctx" id="rpContext"></pre>
+      <button type="button" class="btn" id="rpPoint">Point at the place on the map</button>
+      <p class="rpTarget" id="rpTarget"></p>
+      <fieldset>
+        <legend>What is wrong?</legend>
+        <select id="rpType">
+          <option>Wrong answer or capital</option>
+          <option>Wrong name or spelling</option>
+          <option>Wrong flag or image</option>
+          <option>Wrong position or border on the map</option>
+          <option>Wrong date or period</option>
+          <option>Too easy for this level</option>
+          <option>Too hard for this level</option>
+          <option>Layout or display bug</option>
+          <option>Something else</option>
+        </select>
+      </fieldset>
+      <fieldset>
+        <legend>Note (optional)</legend>
+        <textarea id="rpNote" rows="3" placeholder="What should it say instead?"></textarea>
+      </fieldset>
+      <div class="actions"><button type="button" class="btn primary" id="rpSave">Save report</button><button type="button" class="btn" id="rpCancel">Cancel</button></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="reportsView" aria-labelledby="rvTitle" hidden>
+    <div class="card sheet">
+      <h2 id="rvTitle">Saved reports</h2>
+      <p class="modeNote">Copy these and paste them to Claude. They are saved in this browser until you clear them.</p>
+      <textarea id="rvText" rows="10" readonly></textarea>
+      <div class="actions"><button type="button" class="btn primary" id="rvCopy">Copy all</button><button type="button" class="btn" id="rvClear">Clear all</button><button type="button" class="btn" id="rvClose">Close</button></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="settingsPanel" aria-labelledby="stTitle" hidden>
+    <div class="card sheet">
+      <h2 id="stTitle">Settings</h2>
+      <label class="stRow"><input type="checkbox" id="optAuto"> <span><b>Move to the next question automatically</b><small>After a miss or when time runs out, the answer stays up for a few seconds, then the next question starts. Correct answers already move on by themselves.</small></span></label>
+      <fieldset id="optDelayBox">
+        <legend>Pause before the next question</legend>
+        <div class="optRow" id="optDelay"><button type="button" class="optBtn" data-v="3">3 seconds</button><button type="button" class="optBtn" data-v="5">5 seconds</button><button type="button" class="optBtn" data-v="8">8 seconds</button></div>
+      </fieldset>
+      <div class="devrow"><label><input type="checkbox" id="devToggle"> <span>Dev mode: report problems while you play</span></label><button type="button" class="homeBtn" id="devReports" hidden>Reports (0)</button></div>
+      <div class="actions"><button type="button" class="btn primary" id="stDone">Done</button></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script>
+// @include game.js
+</script>
+</body>
+</html>

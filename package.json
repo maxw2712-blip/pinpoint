@@ -1,0 +1,11 @@
+{
+  "name": "pinpoint",
+  "private": true,
+  "description": "Pinpoint: a geography and history map game (built from src/ into one HTML file)",
+  "scripts": {
+    "build": "python3 build.py",
+    "check": "python3 build.py --check",
+    "extract": "python3 scripts/extract_data.py",
+    "test": "cd tests && npm install --silent && for f in sim_*.js; do echo \"== $f\"; node $f 2>&1 | tail -3; done"
+  }
+}
