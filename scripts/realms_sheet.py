@@ -3,7 +3,7 @@
 game shows, for Max to check and mark up. Needs openpyxl (python3 -m pip install --user openpyxl).
 Usage: python3 scripts/realms_sheet.py [--old docs/old.xlsx]   (--old: copy any filled-in "Your correction" cells across)
 """
-import json, os, re, sys
+import datetime, json, os, re, sys
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
@@ -26,11 +26,11 @@ FIXED = {
     ('ww2', 'Bhutan'): 'Fixed: capital was Thimphu (capital only from the 1950s)',
     ('early', 'Gurjara Pratihara'): 'Fixed: capital was Kannauj (taken c. 815)',
     ('vienna', 'Nassau'): 'Fixed: capital was Wiesbaden (from 1816)',
+    ('medieval', 'Mongol Empire'): 'Fixed: was "Mongol Empire" (proclaimed 1206)',
+    ('medieval', 'Sultanate of Delhi'): 'Fixed: was "Delhi Sultanate" (founded 1206; Ghurid-held in 1200)',
     ('ww2', 'Dominican Republic'): 'Fixed earlier today: capital was Santo Domingo (Ciudad Trujillo 1936-1961)',
 }
 QUESTION = {
-    ('medieval', 'Mongol Empire'): 'Your call: empire proclaimed 1206; shape also covers Manchuria. Rename to "Mongol tribes (Temüjin)"?',
-    ('medieval', 'Sultanate of Delhi'): 'Your call: founded 1206; in 1200 the Ganges plain was Ghurid-held. Rename to "Ghurid India"?',
     ('medieval', 'Toltec Empire'): 'Your call: Tula had fallen by c. 1150',
     ('medieval', 'Merina Kingdom'): 'Your call: the Merina kingdom formed c. 1540',
     ('medieval', 'Srivijaya Empire'): 'Minor: by 1200 its centre had moved to Jambi',
@@ -75,12 +75,19 @@ def old_corrections(path):
 def main():
     old = old_corrections(sys.argv[sys.argv.index('--old') + 1]) if '--old' in sys.argv else {}
     H, fame, fame_m, raw = load()
-    prev = set()   # (period, map name) rows that were in the first version of this sheet (603 rows)
+    prev = set()          # (period, map name) rows already in the existing sheet
+    prev_added = {}       # their "Added ..." notes, kept across regenerations
     if os.path.exists(OUT):
         wb0 = load_workbook(OUT)
         if 'Realms by period' in wb0.sheetnames:
-            for r in wb0['Realms by period'].iter_rows(min_row=2, values_only=True):
-                if r[0]: prev.add((r[0], r[5]))
+            ws0 = wb0['Realms by period']; hdr = [c.value for c in ws0[1]]
+            ck = next((i for i, h in enumerate(hdr) if h and str(h).startswith('Check')), None)
+            for r in ws0.iter_rows(min_row=2, values_only=True):
+                if not r[0]: continue
+                prev.add((r[0], r[5]))
+                note = (r[ck] or '') if ck is not None else ''
+                m = re.search(r'Added[^;]*', note)
+                if m: prev_added[(r[0], r[5])] = m.group(0)
 
     A10 = Font(name='Arial', size=10); B10 = Font(name='Arial', size=10, bold=True)
     HDR = Font(name='Arial', size=10, bold=True, color='FFFFFF'); HFILL = PatternFill('solid', fgColor='1F3A4D')
@@ -135,9 +142,10 @@ def main():
     for pid, plabel in PERIODS:
         for mn, dn, cap, reg in H[pid]:
             note = FIXED.get((pid, mn)) or QUESTION.get((pid, mn)) or ''
-            if prev and (plabel, mn) not in prev:
-                added = 'Added: 1945 colony grouping' if pid == 'ww2' else f'Added {CHECK_DATE}: colony pass'
-                note = f'{note}; {added}' if note else added
+            added = prev_added.get((plabel, mn))
+            if not added and prev and (plabel, mn) not in prev:
+                added = f'Added {datetime.date.today().isoformat()}'
+            if added: note = f'{note}; {added}' if note else added
             rows.append([plabel, dn, cap, REGION[reg], recog(mn, fame.get(pid, {})), mn, note,
                          old.get(('Realms by period', plabel, dn), '')])
     sheet('Realms by period', ['Period', 'Realm (as shown)', 'Capital in game', 'Region', 'Recognizability', 'Map data name',
