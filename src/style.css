@@ -469,3 +469,7 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 #app.era-night .feat.sea{fill:#0b2240;fill-opacity:.45;stroke:#9fc0dd;stroke-opacity:.25}
 #app.era-night .feat.lake{fill:#123a5c}
 .optNote{display:block;margin-top:6px;font-size:.8rem;color:var(--muted)}
+/* night: the interface goes dark too (menu, game cards, buttons, settings, end screen), with light text */
+#app.era-night{--ink:#e6f1ff; --panel:#0f1d2e; --muted:#a3bad0; --line:#2a4763; --on-gold:#0d2a3a;
+  --water:#2a6a8a; --river:#5aa9e6; color:var(--ink); color-scheme:dark}
+#app.era-night .card{box-shadow:0 8px 28px rgba(0,0,0,.45)}

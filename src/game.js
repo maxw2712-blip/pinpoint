@@ -1769,7 +1769,7 @@ function drawRecap(){
   svgEl.selectAll('*').remove();
   if(pack.kind==='trivia' || pack.kind==='planet' || !st.log.length){ wrap.hidden = true; return; }
   wrap.hidden = false;
-  var dark = document.documentElement.getAttribute('data-theme')==='dark' ||
+  var dark = app.classList.contains('era-night') || document.documentElement.getAttribute('data-theme')==='dark' ||
              (document.documentElement.getAttribute('data-theme')!=='light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
   var C = dark ? {hit:'#3fc27a', part:'#ffa33a', miss:'#ff6a4d', base:'#36566a', edge:'#0f2b3d', sea:'#0f2b3d', ink:'#e8f2f5'} : RECAP;
   svgEl.append('path').attr('d', path({type:'Sphere'})).attr('fill', C.sea);
