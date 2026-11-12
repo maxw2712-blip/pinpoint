@@ -2038,12 +2038,16 @@ $('devReports').addEventListener('click', function(){
 $('rvClose').addEventListener('click', function(){ $('reportsView').hidden = true; });
 $('rvClear').addEventListener('click', function(){ devSave([]); $('rvText').value = 'No reports saved yet.'; refreshDev(); });
 $('rvCopy').addEventListener('click', function(){
-  var ta = $('rvText'), done = function(){ toast('Copied. Paste it to Claude.', true); };
+  var ta = $('rvText'), done = function(){ toast('Copied. Paste it to Claude.', true); },
+      manual = function(){ ta.focus(); ta.select(); toast('Copy blocked here: the text is selected, copy it by hand.'); };
   ta.focus(); ta.select();
-  try{
-    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value).then(done, function(){ try{ document.execCommand('copy'); done(); }catch(e){} }); }
-    else { document.execCommand('copy'); done(); }
-  }catch(e){}
+  // copy while the tap still counts as a user action (works inside embedded pages such as a claude.ai artifact),
+  // then fall back to the clipboard API, and finally to a selected text the user copies by hand
+  var ok = false;
+  try{ ok = document.execCommand('copy'); }catch(e){}
+  if(ok){ done(); return; }
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value).then(done, manual); }
+  else manual();
 });
 refreshDev();
 // @dev-end

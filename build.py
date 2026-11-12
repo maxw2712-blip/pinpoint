@@ -123,6 +123,8 @@ def build(dev=False):
     for marker, body in (('/* @include style.css */', css), ('// @include game.js', js)):
         if page.count(marker) != 1: raise SystemExit(f'build: index.html must contain "{marker}" exactly once')
         page = page.replace(marker, body)
+    if dev:   # the private copy is titled differently, so it is never mistaken for the public game
+        page = re.sub(r'<title>[^<]*</title>', '<title>Pinpoint dev</title>', page, count=1)
     if not dev:
         left = [t for t in DEV_TRACES if t in page]
         if left: raise SystemExit(f'build: dev-mode traces left in the public build: {left}')
