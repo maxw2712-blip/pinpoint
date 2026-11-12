@@ -156,6 +156,9 @@ var RFLAGS = __IMAGES__("flags/realms");
  ['wwi|Xinjiang', 'wwi|China (Republic of China)'], ['wwi|Australian Papua', 'wwi|Australia'], ['ww2|Xinjiang', 'China'], ['vienna|Cape Colony', 'United Kingdom']].forEach(function(pr){
   if(RFLAGS[pr[1]]) RFLAGS[pr[0]] = RFLAGS[pr[1]];
 });
+var PARCHMENT_ERAS = ['bronze','classical','ancient','early','medieval'];
+var PAPER = __IMAGE__("img/paper.webp");
+document.documentElement.style.setProperty('--paper', 'url("'+PAPER+'")');
 var TERRITORY_FLAGS = {modern:['Greenland','Puerto Rico','New Caledonia','Falkland Is.','Fr. S. Antarctic Lands']};
 var SCATTERED = {'British Empire':1, 'French Empire':1, 'Belgian Empire':1, 'Portuguese Empire':1, 'Spanish Empire':1, 'Dutch Empire':1};
 function rflag(dn){ return RFLAGS[pack.id+'|'+dn] || RFLAGS[dn] || null; }
@@ -424,6 +427,8 @@ function drawPack(){
   leads = g.append('g');
   labels = g.append('g');
   app.classList.toggle('physical', pack.kind!=='political');
+  // period theme: ancient to medieval maps look like aged parchment; 1500 onwards and the modern map stay clean
+  app.classList.toggle('era-parchment', PARCHMENT_ERAS.indexOf(pack.id)>=0);
   app.classList.toggle('space', pack.kind==='planet');
   app.classList.toggle('trivia', pack.kind==='trivia');
 }

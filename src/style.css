@@ -359,3 +359,32 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 .ptint{pointer-events:none;fill-opacity:.74;stroke:var(--ink);stroke-opacity:.35;stroke-width:.8px;vector-effect:non-scaling-stroke}
 .ptint.t-eu{fill:var(--tint-eu)} .ptint.t-as{fill:var(--tint-as)} .ptint.t-af{fill:var(--tint-af)}
 .ptint.t-am{fill:var(--tint-am)} .ptint.t-oc{fill:var(--tint-oc)}
+
+/* ---------- Period theme: aged parchment for the ancient to medieval maps ---------- */
+#paper{position:absolute;inset:0;pointer-events:none;display:none;background-image:var(--paper);background-size:256px 256px;mix-blend-mode:multiply;opacity:.3}
+#app.era-parchment{
+  --bg:#efe3c4; --sea:#e4d3ab; --ink:#3a2715; --edge:#e4d3ab;
+  --parch-box:#f8efd6; --parch-cap:#7a5a38; --parch-line:#5b3d20;
+  --tint-eu:#8e9fb2; --tint-as:#c9a15c; --tint-af:#b6745a; --tint-am:#8f9f68; --tint-oc:#7c9f97;
+  background:var(--bg);
+}
+#app.era-parchment #paper{display:block}
+#app.era-parchment .relief{filter:sepia(.78) saturate(.6) hue-rotate(-6deg) brightness(1.04) contrast(.9)}
+#app.era-parchment .graticule{stroke:var(--parch-line);stroke-opacity:.12}
+#app.era-parchment .country{stroke:var(--parch-line);stroke-opacity:.55}
+#app.era-parchment .pfill{filter:sepia(.35) saturate(.8)}
+#app.era-parchment .plabel rect.pbox{fill:var(--parch-box)}
+#app.era-parchment .plabel text{font-family:"EB Garamond",Garamond,Georgia,serif;font-weight:600;font-size:12.5px;fill:var(--ink)}
+#app.era-parchment .plabel text tspan.pcap{font-weight:500;font-size:11px;fill:var(--parch-cap);font-style:italic}
+#app.era-parchment .ptint{fill-opacity:.6}
+/* night parchment: the same era feel, dimmed for dark mode */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) #app.era-parchment{--bg:#241c11; --sea:#2f2516; --ink:#f0e4c6; --edge:#2f2516; --parch-box:#34291a; --parch-cap:#cbb48a; --parch-line:#e2cfa4;
+    --tint-eu:#5e6f82; --tint-as:#93733d; --tint-af:#875340; --tint-am:#66744a; --tint-oc:#57756e}
+  :root:not([data-theme="light"]) #app.era-parchment .relief{filter:sepia(.8) saturate(.55) brightness(.5) contrast(.95)}
+  :root:not([data-theme="light"]) #app.era-parchment #paper{opacity:.28}
+}
+:root[data-theme="dark"] #app.era-parchment{--bg:#241c11; --sea:#2f2516; --ink:#f0e4c6; --edge:#2f2516; --parch-box:#34291a; --parch-cap:#cbb48a; --parch-line:#e2cfa4;
+  --tint-eu:#5e6f82; --tint-as:#93733d; --tint-af:#875340; --tint-am:#66744a; --tint-oc:#57756e}
+:root[data-theme="dark"] #app.era-parchment .relief{filter:sepia(.8) saturate(.55) brightness(.5) contrast(.95)}
+:root[data-theme="dark"] #app.era-parchment #paper{opacity:.28}
