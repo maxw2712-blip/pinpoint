@@ -206,10 +206,11 @@ var globe = (function(){
 
 var LIGHTS = __IMAGE__("img/lights.webp");
 function isNight(){
-  if(!pack || pack.kind==='planet' || pack.kind==='trivia') return false;
+  if(!pack || pack.kind==='planet') return false;
   var mode = (typeof CFG!=='undefined' && CFG.night) || 'auto';
   if(mode==='off') return false;
   if(mode==='all') return true;
+  if(pack.kind==='trivia') return false;
   return !!(pack.isSecurity || pack.id==='coldwar');
 }
 /* the night layers: a soft glow under the borders (the coastline on physical maps) and the city lights above the
@@ -981,7 +982,7 @@ function triviaReveal(timedOut){
 }
 function showQuestion(){
   var q = st.qs[st.i], it = pack.items[q.name], lvl = effLevel();
-  if(pack.kind==='trivia'){ showTrivia(); return; }
+  if(pack.kind==='trivia'){ if(isNight()) setDusk(duskFor(st.i)); showTrivia(); return; }
   if(pack.kind==='planet') setBody(it.body);
   st.tries=0; st.locked=false; st.revealed=false;
   if(isNight()) setDusk(duskFor(st.i));
