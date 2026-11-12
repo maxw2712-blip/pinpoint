@@ -409,3 +409,22 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
   .country.hit.goldPulse,.feat.hit.goldPulse,.shakeMap,.shakeCard{animation:none}
   #app svg.xfade{display:none}
 }
+
+/* ---------- Period theme: night, for the security tab and the Cold War map ---------- */
+/* --dusk goes from 0 (dusk, first question) to 1 (deep night, last question; Explore is always deep night) */
+.lights,.glowlines{display:none}
+#app.era-night{--bg:#03070f; --sea:#071427; --dusk:1;
+  --tint-eu:#3c5778; --tint-as:#6e5a32; --tint-af:#6b4434; --tint-am:#42603f; --tint-oc:#365e5a;
+  background:#03070f}
+#app.era-night .relief{filter:saturate(.35) brightness(.7);opacity:calc(.6 - .42*var(--dusk));transition:opacity 1.4s ease}
+#app.era-night .lights{display:block;pointer-events:none;mix-blend-mode:screen;opacity:calc(.22 + .78*var(--dusk));transition:opacity 1.4s ease}
+#app.era-night .glowlines{display:block;fill:none;stroke:#57bdff;stroke-opacity:.16;stroke-width:4.5px;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}
+#app.era-night .graticule{stroke:#57bdff;stroke-opacity:.07}
+#app.era-night .country{fill:#2b5a80;fill-opacity:.16;stroke:#8fd6ff;stroke-opacity:.72;stroke-width:.7px}
+#app.era-night .country.bg{stroke-opacity:.3}
+#app.era-night .pfill{filter:brightness(.62) saturate(.85)}
+#app.era-night .plabel rect.pbox{fill:#0b1a2c}
+#app.era-night .plabel text{fill:#e6f1ff}
+#app.era-night .plabel text tspan.pcap{fill:#9fc0dd}
+#app.era-night .pleader{stroke:#9fc0dd}
+@media (prefers-reduced-motion: reduce){ #app.era-night .relief,#app.era-night .lights{transition:none} }

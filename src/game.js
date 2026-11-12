@@ -157,6 +157,11 @@ var RFLAGS = __IMAGES__("flags/realms");
   if(RFLAGS[pr[1]]) RFLAGS[pr[0]] = RFLAGS[pr[1]];
 });
 var PARCHMENT_ERAS = ['bronze','classical','ancient','early','medieval'];
+var LIGHTS = __IMAGE__("img/lights.webp");
+function isNight(){ return !!pack && (pack.isSecurity || pack.id==='coldwar'); }
+/* in a night-theme game the map darkens after every question and the city lights come up */
+function duskFor(i){ var n = (st.qs && st.qs.length) || 10; return Math.max(0, Math.min(1, i/Math.max(1, n-1))); }
+function setDusk(v){ app.style.setProperty('--dusk', String(v)); }
 var PAPER = __IMAGE__("img/paper.webp");
 document.documentElement.style.setProperty('--paper', 'url("'+PAPER+'")');
 var TERRITORY_FLAGS = {modern:['Greenland','Puerto Rico','New Caledonia','Falkland Is.','Fr. S. Antarctic Lands']};
@@ -396,6 +401,10 @@ function drawPack(){
   g.append('image').attr('class','relief').attr('href', pack.kind==='planet' ? PIMG[curBody] : RELIEF).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
     .attr('preserveAspectRatio','none').attr('clip-path','url(#sphereClip)');
   g.append('path').attr('class','graticule').attr('d', path(d3.geoGraticule10()));
+  if(isNight()){
+    // night theme: a soft glow under every border (the city lights go on top of the flags, below)
+    g.append('path').attr('class','glowlines').attr('d', pack.features.map(function(f){ return path(f) || ''; }).join(''));
+  }
   if(pack.kind==='political'){
     paths = g.selectAll('path.country').data(pack.features).join('path')
       .attr('class', function(d){ return 'country'+(d.properties.name ? '' : ' bg'); })
@@ -424,11 +433,19 @@ function drawPack(){
   }
   marks = g.append('g');
   fills = g.append('g');
+  if(isNight()){
+    // city lights above countries and flags (screen-blended, so they only brighten), below labels; never takes clicks
+    g.append('image').attr('class','lights').attr('href', LIGHTS).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
+      .attr('preserveAspectRatio','none').attr('clip-path','url(#sphereClip)');
+  }
   leads = g.append('g');
   labels = g.append('g');
   app.classList.toggle('physical', pack.kind!=='political');
   // period theme: ancient to medieval maps look like aged parchment; 1500 onwards and the modern map stay clean
   app.classList.toggle('era-parchment', PARCHMENT_ERAS.indexOf(pack.id)>=0);
+  // night theme for the security tab and the Cold War map; --dusk runs from 0 (dusk) to 1 (deep night)
+  app.classList.toggle('era-night', isNight());
+  setDusk(st.phase==='play' ? duskFor(st.i) : 1);
   app.classList.toggle('space', pack.kind==='planet');
   app.classList.toggle('trivia', pack.kind==='trivia');
 }
@@ -591,7 +608,8 @@ function crossFade(draw){
   // freeze the old period theme (parchment or clean) on the snapshot before the new theme class lands
   var pairs = [['.relief',['filter']], ['.sphere',['fill']], ['.graticule',['stroke','stroke-opacity']], ['.country',['stroke','stroke-opacity','fill','fill-opacity']],
                ['.plabel text',['font-family','font-size','font-weight','fill']], ['.plabel text tspan.pcap',['font-family','font-size','font-weight','font-style','fill']],
-               ['.plabel rect.pbox',['fill']], ['.ptint',['fill','fill-opacity']], ['.pfill',['filter']]];
+               ['.plabel rect.pbox',['fill']], ['.ptint',['fill','fill-opacity']], ['.pfill',['filter']],
+               ['.lights',['display','opacity']], ['.glowlines',['display','stroke','stroke-opacity','stroke-width']], ['.relief',['opacity']]];
   pairs.forEach(function(p){
     var a = old.querySelectorAll(p[0]), b = snap.querySelectorAll(p[0]);
     for(var i=0; i<a.length && i<b.length; i++){
@@ -903,6 +921,7 @@ function showQuestion(){
   if(pack.kind==='trivia'){ showTrivia(); return; }
   if(pack.kind==='planet') setBody(it.body);
   st.tries=0; st.locked=false; st.revealed=false;
+  if(isNight()) setDusk(duskFor(st.i));
   var flagImg = $('flagImg');
   app.classList.toggle('flagq', q.type==='flag');
   $('qname').classList.toggle('long', q.type==='sec');
