@@ -428,3 +428,19 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 #app.era-night .plabel text tspan.pcap{fill:#9fc0dd}
 #app.era-night .pleader{stroke:#9fc0dd}
 @media (prefers-reduced-motion: reduce){ #app.era-night .relief,#app.era-night .lights{transition:none} }
+
+/* ---------- End screen: recap map and share ---------- */
+.recap{margin:0 0 12px}
+#recapMap{display:block;width:100%;aspect-ratio:2/1;border-radius:12px;border:1px solid var(--line);background:var(--sea)}
+.recapKey{margin:6px 0 0;font-size:.82rem;color:var(--muted);display:flex;gap:6px;align-items:center}
+.recapKey span{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:6px}
+.recapKey span:first-child{margin-left:0}
+.recapKey .kHit{background:#2e9e5b} .recapKey .kMiss{background:#d9482b}
+.shareNote{margin:6px 0 0;font-size:.85rem;color:var(--muted);min-height:1em}
+.final{font-variant-numeric:tabular-nums}
+@media (max-width:620px){ .recap{margin:0 0 6px} #recapMap{aspect-ratio:2.4/1} .recapKey{display:none} }
+/* phone: the end card grows with its content (recap map + question list) instead of the fixed menu-card height */
+@media (max-width:620px){
+  #end .sheet{height:auto;max-height:100%;overflow:auto}
+  #end #log{flex-shrink:0;max-height:30vh}
+}

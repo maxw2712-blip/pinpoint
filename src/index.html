@@ -139,13 +139,19 @@
       <h2 id="t2">Game over</h2>
       <div class="final"><span id="finalScore">0</span> <small id="finalMax">/ 30</small></div>
       <p id="verdict"></p>
+      <div class="recap" id="recapWrap" hidden>
+        <svg id="recapMap" role="img" aria-label="Map of your answers: hits in green, misses in red"></svg>
+        <p class="recapKey"><span class="kHit"></span>Hit <span class="kMiss"></span>Miss</p>
+      </div>
       <ul id="log"></ul>
       <div class="actions">
         <button type="button" class="btn primary" id="again">Play again</button>
         <button type="button" class="btn" id="practice" hidden>Practice misses</button>
         <button type="button" class="btn" id="change">Change settings</button>
+        <button type="button" class="btn" id="shareBtn">Share result</button>
       </div>
       <p class="best" id="best2"></p>
+      <p class="shareNote" id="shareNote" aria-live="polite"></p>
     </div>
   </section>
 
