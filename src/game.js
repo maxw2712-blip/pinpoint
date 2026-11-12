@@ -160,10 +160,8 @@ var PARCHMENT_ERAS = ['bronze','classical','ancient','early','medieval'];
 /* ---------- Menu header: a small globe turning slowly (paused whenever the menu is hidden; still with reduced motion) ---------- */
 var globe = (function(){
   var cv = document.getElementById('globe'); if(!cv || !cv.getContext) return null;
-  var ctx = null;
-  try{ ctx = cv.getContext('2d'); }catch(e){}
-  if(!ctx) return null;   // no canvas support (or a test environment): the header simply has no globe
-  var land = null, grat = d3.geoGraticule10(), proj0 = d3.geoOrthographic().clipAngle(90), gp = d3.geoPath(proj0, ctx);
+  // the canvas context is only asked for once the globe has a size on screen (never in a layout-less test environment)
+  var ctx = null, land = null, grat = d3.geoGraticule10(), proj0 = d3.geoOrthographic().clipAngle(90), gp = null;
   var lam = -15, last = 0, running = false, colors = null, colorsAt = 0, size = 0;
   function readColors(){
     var cs = getComputedStyle(cv);
@@ -173,6 +171,7 @@ var globe = (function(){
   function fit(){
     var r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio||1), px = Math.round(r.width);
     if(!px) return false;
+    if(!ctx){ try{ ctx = cv.getContext('2d'); }catch(e){} if(!ctx) return false; gp = d3.geoPath(proj0, ctx); }
     if(px!==size){ size = px; cv.width = cv.height = Math.round(px*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); proj0.translate([px/2, px/2]).scale(px/2-1); }
     return true;
   }
