@@ -315,17 +315,6 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 /* unclaimed land can't be tapped */
 #app .country.bg{pointer-events:none!important;cursor:default}
 
-.devrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;font-size:.8rem;color:var(--muted)}
-.devrow label{display:flex;align-items:center;gap:6px;cursor:pointer}
-#reportPanel,#reportsView{z-index:8}
-.rpctx{margin:10px 0;padding:10px 12px;background:color-mix(in srgb,var(--ink) 6%,transparent);border-radius:10px;font:500 .8rem/1.4 var(--body);white-space:pre-wrap;word-break:break-word;max-height:30vh;overflow:auto}
-.rpTarget{margin:8px 0 12px;font-size:.88rem;color:var(--muted);min-height:1.2em}
-#reportPanel select,#reportPanel textarea,#reportsView textarea{width:100%;font:inherit;font-size:.95rem;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px}
-#reportsView textarea{font-size:.8rem;resize:vertical}
-@media (max-width:620px){
-  #reportPanel .sheet,#reportsView .sheet{height:auto;max-height:100%;overflow:auto}
-  .devrow{font-size:.72rem;margin-top:4px}
-}
 
 .pleader{stroke:var(--ink);stroke-opacity:.85;stroke-width:1.2px;vector-effect:non-scaling-stroke}
 .pdot{fill:var(--ink)}
@@ -529,7 +518,6 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
       <option value="planets">Planets</option>
     </select>
     <button type="button" class="homeBtn" id="exploreWorld" hidden>Switch world</button>
-    <button type="button" class="homeBtn" id="exploreReport" hidden>Report</button>
     <button type="button" class="homeBtn" id="exploreHome">Home</button>
   </div>
 
@@ -545,7 +533,6 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
     <div class="card">
       <div class="pips" id="pips" role="img" aria-label="3 tries left"><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
       <div class="hint" id="hint">Click the answer on the map. Scroll or pinch to zoom.</div>
-      <button class="btn" id="reportBtn" hidden>Report</button>
       <button class="btn" id="act">Skip</button>
     </div>
   </div>
@@ -629,42 +616,6 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
     </div>
   </section>
 
-  <section class="overlay" id="reportPanel" aria-labelledby="rpTitle" hidden>
-    <div class="card sheet">
-      <h2 id="rpTitle">Report a problem</h2>
-      <pre class="rpctx" id="rpContext"></pre>
-      <button type="button" class="btn" id="rpPoint">Point at the place on the map</button>
-      <p class="rpTarget" id="rpTarget"></p>
-      <fieldset>
-        <legend>What is wrong?</legend>
-        <select id="rpType">
-          <option>Wrong answer or capital</option>
-          <option>Wrong name or spelling</option>
-          <option>Wrong flag or image</option>
-          <option>Wrong position or border on the map</option>
-          <option>Wrong date or period</option>
-          <option>Too easy for this level</option>
-          <option>Too hard for this level</option>
-          <option>Layout or display bug</option>
-          <option>Something else</option>
-        </select>
-      </fieldset>
-      <fieldset>
-        <legend>Note (optional)</legend>
-        <textarea id="rpNote" rows="3" placeholder="What should it say instead?"></textarea>
-      </fieldset>
-      <div class="actions"><button type="button" class="btn primary" id="rpSave">Save report</button><button type="button" class="btn" id="rpCancel">Cancel</button></div>
-    </div>
-  </section>
-
-  <section class="overlay" id="reportsView" aria-labelledby="rvTitle" hidden>
-    <div class="card sheet">
-      <h2 id="rvTitle">Saved reports</h2>
-      <p class="modeNote">Copy these and paste them to Claude. They are saved in this browser until you clear them.</p>
-      <textarea id="rvText" rows="10" readonly></textarea>
-      <div class="actions"><button type="button" class="btn primary" id="rvCopy">Copy all</button><button type="button" class="btn" id="rvClear">Clear all</button><button type="button" class="btn" id="rvClose">Close</button></div>
-    </div>
-  </section>
 
   <section class="overlay" id="settingsPanel" aria-labelledby="stTitle" hidden>
     <div class="card sheet">
@@ -679,7 +630,6 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
         <div class="optRow" id="optNight"><button type="button" class="optBtn" data-v="auto">Security &amp; Cold War</button><button type="button" class="optBtn" data-v="all">All maps</button><button type="button" class="optBtn" data-v="off">Off</button></div>
         <small class="optNote">Dark ocean, glowing borders and city lights; in a game it gets darker with every question. Planets keep their own look.</small>
       </fieldset>
-      <div class="devrow"><label><input type="checkbox" id="devToggle"> <span>Dev mode: report problems while you play</span></label><button type="button" class="homeBtn" id="devReports" hidden>Reports (0)</button></div>
       <div class="actions"><button type="button" class="btn primary" id="stDone">Done</button></div>
     </div>
   </section>
@@ -1378,7 +1328,7 @@ function crossFade(draw){
 }
 $('exploreWorld').addEventListener('click', function(){ var order = Object.keys(BODIES); setBody(order[(order.indexOf(curBody)+1)%order.length]); });
 function toSetup(){
-  stopTimer(); clearTimers(); hideToast(); clearLabels(); st.devPick = false; $('reportPanel').hidden = true; $('reportsView').hidden = true; devPausedMs = null;
+  stopTimer(); clearTimers(); hideToast(); clearLabels(); st.devPick = false; DEV_PANELS.forEach(function(id){ var e = $(id); if(e) e.hidden = true; }); devPausedMs = null;
   $('flagImg').hidden = true; app.classList.remove('flagq');
   $('end').hidden = true; $('setup').hidden = false;
   app.classList.remove('playing'); app.classList.remove('tint'); app.classList.remove('noterrain'); app.classList.remove('exploring'); st.phase='setup';
@@ -2610,49 +2560,13 @@ $('zhome').addEventListener('click', function(){
 
 document.addEventListener('keydown', function(e){
   if(/INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || '')) return;
-  if(!$('reportPanel').hidden || !$('reportsView').hidden || !$('settingsPanel').hidden) return;
+  if(DEV_PANELS.concat(['settingsPanel']).some(function(id){ var e = $(id); return e && !e.hidden; })) return;
   if(pack && pack.kind==='trivia' && st.phase==='play' && !st.locked && e.key>='1' && e.key<='4') triviaPick(parseInt(e.key,10)-1);
 });
 
-/* ---------- Dev mode: report a problem while playing ---------- */
-var DEV = false, devMem = [], devDraft = null, devPausedMs = null;
-try{ DEV = localStorage.getItem('pinpoint:dev')==='1'; }catch(e){}
-function devLoad(){ try{ return JSON.parse(localStorage.getItem('pinpoint:reports') || '[]'); }catch(e){ return devMem; } }
-function devSave(list){ devMem = list; try{ localStorage.setItem('pinpoint:reports', JSON.stringify(list)); }catch(e){} }
-function refreshDev(){
-  $('devToggle').checked = DEV;
-  $('reportBtn').hidden = !DEV; $('exploreReport').hidden = !DEV; $('devReports').hidden = !DEV;
-  $('devReports').textContent = 'Reports ('+devLoad().length+')';
-}
-var TAB_NAMES = {map:'Nation States', geo:'Geography', flags:'Flags', planets:'Planets', history:'History', security:'Security'};
-function devTargetInfo(key){
-  if(!key) return null;
-  var it = pack.items[key] || {}, d = {key:key, name:it.disp || key};
-  if(it.cap) d.capital = it.cap;
-  if(it.reg) d.region = it.reg;
-  if(it.noun) d.type = it.noun;
-  if(pack.kind==='political'){
-    if(pack.id==='modern' || pack.isFlags || pack.isSecurity) d.flag = FLAGS[key] ? 'its own flag' : 'no flag';
-    else d.flag = rflag(it.disp || key) ? 'its own banner' : 'flags of the modern countries on that land';
-  }
-  return d;
-}
-function devQuestion(){
-  var q = st.qs[st.i];
-  if(!q || st.phase==='setup' || st.phase==='end') return '(no question on screen)';
-  var it = pack.items[q.name] || {};
-  if(q.type==='trivia'){ var T = TRIVIA[q.idx]; return 'Trivia: "'+T.q+'"\n  correct answer in game: '+T.a+'\n  other options: '+T.w.join(' / ')+'\n  fact shown: '+T.f; }
-  if(q.type==='sec') return 'Security: "'+it.disp+'"\n  answer in game: '+it.ansText+'\n  fact shown: '+(it.fact || '');
-  if(q.type==='flag') return 'Flag question: flag of '+it.disp+(it.hist ? ' (a lost country)' : '');
-  if(q.type==='capital') return 'Capital question: '+it.cap+' -> '+it.disp;
-  if(q.type==='border') return 'Border puzzle: '+pack.items[q.a].disp+' and '+pack.items[q.b].disp+' -> '+it.disp;
-  return 'Find'+(it.noun ? ' the '+it.noun : '')+': '+(it.disp || q.name);
-}
-function devWhere(){
-  var m = document.querySelector('.seg[data-key="mode"] button[data-v="'+st.mode+'"]');
-  var mode = (st.tab==='map' && m) ? ' > '+m.textContent : '';
-  return TAB_NAMES[st.tab]+mode+' > '+LEVELS[st.level].label;
-}
+/* Pause the question timer while a panel is open (Settings, and the dev report panel in the private build). */
+var devPausedMs = null;
+var DEV_PANELS = [];   // overlay panels that exist only in the private build (registered inside the dev block)
 function devPause(){
   if(devPausedMs===null && st.timing){ devPausedMs = Math.max(0, st.tEnd-Date.now()); stopTimer(); }
 }
@@ -2662,74 +2576,7 @@ function devResume(){
     if(ms>0 && !st.locked && st.phase==='play') startTimer(LEVELS[st.level].time, ms);
   }
 }
-function devTargetText(){
-  var d = devDraft && devDraft.target;
-  if(!d) return 'Nothing pointed at yet. Use the button above to tap the place on the map.';
-  return 'Pointed at: '+d.name+(d.capital ? ' (capital in game: '+d.capital+')' : '')+(d.flag ? ', flag: '+d.flag : '');
-}
-function openReport(){
-  if(!DEV) return;
-  devPause();
-  devDraft = devDraft || {target:null};
-  if(!devDraft.target && st.lastKey) devDraft.target = devTargetInfo(st.lastKey);
-  $('rpContext').textContent = 'Where: '+devWhere()+'\nQuestion: '+devQuestion();
-  $('rpTarget').textContent = devTargetText();
-  $('rpPoint').hidden = pack.kind==='trivia';
-  $('reportPanel').hidden = false;
-}
-function devPointed(key){
-  st.devPick = false; hideToast();
-  devDraft = devDraft || {target:null};
-  devDraft.target = devTargetInfo(key) || {key:key, name:key};
-  openReport();
-}
-function devCloseReport(){
-  $('reportPanel').hidden = true; devDraft = null; st.devPick = false; hideToast();
-  $('rpNote').value = ''; devResume();
-}
-function fmtReport(r, i){
-  var tg = r.target;
-  return 'Report '+(i+1)+' ('+r.time+')\n'
-    +'Where: '+r.where+'\n'
-    +'Question: '+r.question+'\n'
-    +'Pointed at: '+(tg ? tg.name+' [map name: '+tg.key+']'+(tg.capital ? ' [capital in game: '+tg.capital+']' : '')+(tg.region ? ' [region: '+tg.region+']' : '')+(tg.flag ? ' [flag: '+tg.flag+']' : '') : '(nothing)')+'\n'
-    +'Problem: '+r.problem+'\n'
-    +'Note: '+(r.note || '(none)');
-}
-$('devToggle').addEventListener('change', function(){
-  DEV = this.checked; try{ localStorage.setItem('pinpoint:dev', DEV ? '1' : '0'); }catch(e){}
-  refreshDev();
-});
-$('reportBtn').addEventListener('click', openReport);
-$('exploreReport').addEventListener('click', openReport);
-$('rpPoint').addEventListener('click', function(){
-  st.devPick = true; $('reportPanel').hidden = true;
-  toast('Tap the place with the problem', false, true);
-});
-$('rpCancel').addEventListener('click', devCloseReport);
-$('rpSave').addEventListener('click', function(){
-  var list = devLoad();
-  list.push({time:new Date().toLocaleString(), where:devWhere(), question:devQuestion(), target:devDraft && devDraft.target, problem:$('rpType').value, note:$('rpNote').value.trim()});
-  devSave(list);
-  devCloseReport(); refreshDev();
-  toast('Report saved ('+list.length+' so far)', true);
-});
-$('devReports').addEventListener('click', function(){
-  var list = devLoad();
-  $('rvText').value = list.length ? list.map(fmtReport).join('\n\n') : 'No reports saved yet.';
-  $('reportsView').hidden = false;
-});
-$('rvClose').addEventListener('click', function(){ $('reportsView').hidden = true; });
-$('rvClear').addEventListener('click', function(){ devSave([]); $('rvText').value = 'No reports saved yet.'; refreshDev(); });
-$('rvCopy').addEventListener('click', function(){
-  var ta = $('rvText'), done = function(){ toast('Copied. Paste it to Claude.', true); };
-  ta.focus(); ta.select();
-  try{
-    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(ta.value).then(done, function(){ try{ document.execCommand('copy'); done(); }catch(e){} }); }
-    else { document.execCommand('copy'); done(); }
-  }catch(e){}
-});
-refreshDev();
+
 
 /* ---------- Settings ---------- */
 var CFG = {auto:false, delay:5, night:'auto'};

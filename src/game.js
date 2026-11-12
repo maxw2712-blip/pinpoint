@@ -688,7 +688,7 @@ function crossFade(draw){
 }
 $('exploreWorld').addEventListener('click', function(){ var order = Object.keys(BODIES); setBody(order[(order.indexOf(curBody)+1)%order.length]); });
 function toSetup(){
-  stopTimer(); clearTimers(); hideToast(); clearLabels(); st.devPick = false; $('reportPanel').hidden = true; $('reportsView').hidden = true; devPausedMs = null;
+  stopTimer(); clearTimers(); hideToast(); clearLabels(); st.devPick = false; DEV_PANELS.forEach(function(id){ var e = $(id); if(e) e.hidden = true; }); devPausedMs = null;
   $('flagImg').hidden = true; app.classList.remove('flagq');
   $('end').hidden = true; $('setup').hidden = false;
   app.classList.remove('playing'); app.classList.remove('tint'); app.classList.remove('noterrain'); app.classList.remove('exploring'); st.phase='setup';
@@ -1920,12 +1920,27 @@ $('zhome').addEventListener('click', function(){
 
 document.addEventListener('keydown', function(e){
   if(/INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || '')) return;
-  if(!$('reportPanel').hidden || !$('reportsView').hidden || !$('settingsPanel').hidden) return;
+  if(DEV_PANELS.concat(['settingsPanel']).some(function(id){ var e = $(id); return e && !e.hidden; })) return;
   if(pack && pack.kind==='trivia' && st.phase==='play' && !st.locked && e.key>='1' && e.key<='4') triviaPick(parseInt(e.key,10)-1);
 });
 
-/* ---------- Dev mode: report a problem while playing ---------- */
-var DEV = false, devMem = [], devDraft = null, devPausedMs = null;
+/* Pause the question timer while a panel is open (Settings, and the dev report panel in the private build). */
+var devPausedMs = null;
+var DEV_PANELS = [];   // overlay panels that exist only in the private build (registered inside the dev block)
+function devPause(){
+  if(devPausedMs===null && st.timing){ devPausedMs = Math.max(0, st.tEnd-Date.now()); stopTimer(); }
+}
+function devResume(){
+  if(devPausedMs!==null){
+    var ms = devPausedMs; devPausedMs = null;
+    if(ms>0 && !st.locked && st.phase==='play') startTimer(LEVELS[st.level].time, ms);
+  }
+}
+
+// @dev-start
+/* ---------- Dev mode: report a problem while playing (private build only: python3 build.py --dev) ---------- */
+var DEV = false, devMem = [], devDraft = null;
+DEV_PANELS.push('reportPanel', 'reportsView');
 try{ DEV = localStorage.getItem('pinpoint:dev')==='1'; }catch(e){}
 function devLoad(){ try{ return JSON.parse(localStorage.getItem('pinpoint:reports') || '[]'); }catch(e){ return devMem; } }
 function devSave(list){ devMem = list; try{ localStorage.setItem('pinpoint:reports', JSON.stringify(list)); }catch(e){} }
@@ -1962,15 +1977,6 @@ function devWhere(){
   var m = document.querySelector('.seg[data-key="mode"] button[data-v="'+st.mode+'"]');
   var mode = (st.tab==='map' && m) ? ' > '+m.textContent : '';
   return TAB_NAMES[st.tab]+mode+' > '+LEVELS[st.level].label;
-}
-function devPause(){
-  if(devPausedMs===null && st.timing){ devPausedMs = Math.max(0, st.tEnd-Date.now()); stopTimer(); }
-}
-function devResume(){
-  if(devPausedMs!==null){
-    var ms = devPausedMs; devPausedMs = null;
-    if(ms>0 && !st.locked && st.phase==='play') startTimer(LEVELS[st.level].time, ms);
-  }
 }
 function devTargetText(){
   var d = devDraft && devDraft.target;
@@ -2040,6 +2046,7 @@ $('rvCopy').addEventListener('click', function(){
   }catch(e){}
 });
 refreshDev();
+// @dev-end
 
 /* ---------- Settings ---------- */
 var CFG = {auto:false, delay:5, night:'auto'};

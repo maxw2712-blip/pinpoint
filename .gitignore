@@ -3,3 +3,4 @@ node_modules/
 __pycache__/
 CLAUDE.md
 docs/earlier_conversation_transcript.txt
+pinpoint-dev.html

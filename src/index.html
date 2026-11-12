@@ -55,7 +55,9 @@
       <option value="planets">Planets</option>
     </select>
     <button type="button" class="homeBtn" id="exploreWorld" hidden>Switch world</button>
+    <!-- @dev-start -->
     <button type="button" class="homeBtn" id="exploreReport" hidden>Report</button>
+    <!-- @dev-end -->
     <button type="button" class="homeBtn" id="exploreHome">Home</button>
   </div>
 
@@ -71,7 +73,9 @@
     <div class="card">
       <div class="pips" id="pips" role="img" aria-label="3 tries left"><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
       <div class="hint" id="hint">Click the answer on the map. Scroll or pinch to zoom.</div>
+      <!-- @dev-start -->
       <button class="btn" id="reportBtn" hidden>Report</button>
+      <!-- @dev-end -->
       <button class="btn" id="act">Skip</button>
     </div>
   </div>
@@ -155,6 +159,7 @@
     </div>
   </section>
 
+  <!-- @dev-start -->
   <section class="overlay" id="reportPanel" aria-labelledby="rpTitle" hidden>
     <div class="card sheet">
       <h2 id="rpTitle">Report a problem</h2>
@@ -191,6 +196,7 @@
       <div class="actions"><button type="button" class="btn primary" id="rvCopy">Copy all</button><button type="button" class="btn" id="rvClear">Clear all</button><button type="button" class="btn" id="rvClose">Close</button></div>
     </div>
   </section>
+  <!-- @dev-end -->
 
   <section class="overlay" id="settingsPanel" aria-labelledby="stTitle" hidden>
     <div class="card sheet">
@@ -205,7 +211,9 @@
         <div class="optRow" id="optNight"><button type="button" class="optBtn" data-v="auto">Security &amp; Cold War</button><button type="button" class="optBtn" data-v="all">All maps</button><button type="button" class="optBtn" data-v="off">Off</button></div>
         <small class="optNote">Dark ocean, glowing borders and city lights; in a game it gets darker with every question. Planets keep their own look.</small>
       </fieldset>
+      <!-- @dev-start -->
       <div class="devrow"><label><input type="checkbox" id="devToggle"> <span>Dev mode: report problems while you play</span></label><button type="button" class="homeBtn" id="devReports" hidden>Reports (0)</button></div>
+      <!-- @dev-end -->
       <div class="actions"><button type="button" class="btn primary" id="stDone">Done</button></div>
     </div>
   </section>

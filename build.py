@@ -17,8 +17,14 @@ dependencies stay d3 and topojson-client from jsdelivr):
   src/flags/realms/     historical realm flags; period-specific ones are "ww2|Afghanistan.webp"
   src/img/              shaded relief and planet textures
 
-Usage:  python3 build.py [--out pinpoint.html] [--check]
+Usage:  python3 build.py [--dev] [--out FILE] [--check]
+  (default) the PUBLIC build, pinpoint.html: everything between @dev-start and @dev-end markers is left out (dev mode:
+            the Report buttons, report panels, the Settings toggle and their code), so players can't find it. The build
+            fails if any dev-mode trace is left in it.
+  --dev     the PRIVATE build, pinpoint-dev.html, with dev mode included. It is git-ignored: keep it local, never publish it.
   --check   build to memory and fail if the result differs from the existing output (for CI or a pre-commit hook)
+Markers: <!-- @dev-start --> ... <!-- @dev-end --> in index.html, /* @dev-start */ ... /* @dev-end */ in style.css,
+         // @dev-start ... // @dev-end (each on its own line) in game.js.
 """
 import base64, json, os, re, sys
 
@@ -94,26 +100,46 @@ def expand(m):
     return inline_images(rel)
 
 
-def build():
-    page = open(os.path.join(SRC, 'index.html'), encoding='utf-8').read()
-    css = open(os.path.join(SRC, 'style.css'), encoding='utf-8').read().rstrip('\n')
-    js = PLACEHOLDER.sub(expand, open(os.path.join(SRC, 'game.js'), encoding='utf-8').read()).rstrip('\n')
+DEV_BLOCKS = {
+    'html': re.compile(r'[ \t]*<!-- @dev-start -->.*?<!-- @dev-end -->[ \t]*\n?', re.S),
+    'css': re.compile(r'/\* @dev-start \*/.*?/\* @dev-end \*/\n?', re.S),
+    'js': re.compile(r'[ \t]*// @dev-start\n.*?// @dev-end[ \t]*\n?', re.S),
+}
+DEV_TRACES = ['devToggle', 'reportPanel', 'reportsView', 'reportBtn', 'exploreReport', 'pinpoint:dev', 'pinpoint:reports',
+              'openReport', 'Report a problem']
+
+
+def strip_dev(text, kind, dev):
+    if dev: return text
+    out = DEV_BLOCKS[kind].sub('', text)
+    if '@dev-start' in out or '@dev-end' in out: raise SystemExit(f'build: unbalanced @dev markers in the {kind} source')
+    return out
+
+
+def build(dev=False):
+    page = strip_dev(open(os.path.join(SRC, 'index.html'), encoding='utf-8').read(), 'html', dev)
+    css = strip_dev(open(os.path.join(SRC, 'style.css'), encoding='utf-8').read(), 'css', dev).rstrip('\n')
+    js = PLACEHOLDER.sub(expand, strip_dev(open(os.path.join(SRC, 'game.js'), encoding='utf-8').read(), 'js', dev)).rstrip('\n')
     for marker, body in (('/* @include style.css */', css), ('// @include game.js', js)):
         if page.count(marker) != 1: raise SystemExit(f'build: index.html must contain "{marker}" exactly once')
         page = page.replace(marker, body)
+    if not dev:
+        left = [t for t in DEV_TRACES if t in page]
+        if left: raise SystemExit(f'build: dev-mode traces left in the public build: {left}')
     return page
 
 
 def main():
     args = sys.argv[1:]
-    out = os.path.join(ROOT, args[args.index('--out') + 1] if '--out' in args else 'pinpoint.html')
-    html = build()
+    dev = '--dev' in args
+    out = os.path.join(ROOT, args[args.index('--out') + 1] if '--out' in args else ('pinpoint-dev.html' if dev else 'pinpoint.html'))
+    html = build(dev)
     if '--check' in args:
         same = os.path.exists(out) and open(out, encoding='utf-8').read() == html
         print('up to date' if same else f'{os.path.relpath(out, ROOT)} is stale: run python3 build.py')
         sys.exit(0 if same else 1)
     with open(out, 'w', encoding='utf-8') as f: f.write(html)
-    print(f'wrote {os.path.relpath(out, ROOT)} ({len(html.encode()) / 1e6:.2f} MB)')
+    print(f'wrote {os.path.relpath(out, ROOT)} ({len(html.encode()) / 1e6:.2f} MB, {"PRIVATE build with dev mode" if dev else "public build, no dev mode"})')
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@
     "build": "python3 build.py",
     "check": "python3 build.py --check",
     "extract": "python3 scripts/extract_data.py",
-    "test": "cd tests && npm install --silent && for f in sim_*.js; do echo \"== $f\"; node $f 2>&1 | tail -3; done"
+    "test": "python3 build.py && python3 build.py --dev && cd tests && npm install --silent && for f in sim_*.js; do echo \"== $f\"; node $f 2>&1 | tail -3; done",
+    "build:dev": "python3 build.py --dev"
   }
 }

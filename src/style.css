@@ -305,6 +305,7 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 /* unclaimed land can't be tapped */
 #app .country.bg{pointer-events:none!important;cursor:default}
 
+/* @dev-start */
 .devrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;font-size:.8rem;color:var(--muted)}
 .devrow label{display:flex;align-items:center;gap:6px;cursor:pointer}
 #reportPanel,#reportsView{z-index:8}
@@ -316,6 +317,7 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
   #reportPanel .sheet,#reportsView .sheet{height:auto;max-height:100%;overflow:auto}
   .devrow{font-size:.72rem;margin-top:4px}
 }
+/* @dev-end */
 
 .pleader{stroke:var(--ink);stroke-opacity:.85;stroke-width:1.2px;vector-effect:non-scaling-stroke}
 .pdot{fill:var(--ink)}
