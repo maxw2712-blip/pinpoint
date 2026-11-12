@@ -157,6 +157,51 @@ var RFLAGS = __IMAGES__("flags/realms");
   if(RFLAGS[pr[1]]) RFLAGS[pr[0]] = RFLAGS[pr[1]];
 });
 var PARCHMENT_ERAS = ['bronze','classical','ancient','early','medieval'];
+/* ---------- Menu header: a small globe turning slowly (paused whenever the menu is hidden; still with reduced motion) ---------- */
+var globe = (function(){
+  var cv = document.getElementById('globe'); if(!cv || !cv.getContext) return null;
+  var ctx = cv.getContext('2d'), land = null, grat = d3.geoGraticule10(), proj0 = d3.geoOrthographic().clipAngle(90), gp = d3.geoPath(proj0, ctx);
+  var lam = -15, last = 0, running = false, colors = null, colorsAt = 0, size = 0;
+  function readColors(){
+    var cs = getComputedStyle(cv);
+    colors = {sea:cs.getPropertyValue('--globe-sea').trim()||'#7fb8cf', sea2:cs.getPropertyValue('--globe-sea2').trim()||'#4f8fae',
+              land:cs.getPropertyValue('--globe-land').trim()||'#e9f1e4', line:cs.getPropertyValue('--globe-line').trim()||'#0d2a3a'};
+  }
+  function fit(){
+    var r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio||1), px = Math.round(r.width);
+    if(!px) return false;
+    if(px!==size){ size = px; cv.width = cv.height = Math.round(px*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); proj0.translate([px/2, px/2]).scale(px/2-1); }
+    return true;
+  }
+  function draw(){
+    if(!fit()) return;
+    if(!land){ var t = PACKS.modern; land = topojson.merge(t, t.objects.countries.geometries); }
+    if(!colors || performance.now()-colorsAt > 1000){ readColors(); colorsAt = performance.now(); }
+    proj0.rotate([lam, -18, 0]);
+    var r = size/2; ctx.clearRect(0, 0, size, size);
+    var g = ctx.createRadialGradient(r*0.7, r*0.6, r*0.1, r, r, r);   // a soft highlight, so it reads as a sphere
+    g.addColorStop(0, colors.sea); g.addColorStop(1, colors.sea2);
+    ctx.beginPath(); gp({type:'Sphere'}); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); gp(grat); ctx.strokeStyle = colors.line; ctx.globalAlpha = .12; ctx.lineWidth = .6; ctx.stroke(); ctx.globalAlpha = 1;
+    ctx.beginPath(); gp(land); ctx.fillStyle = colors.land; ctx.fill();
+    ctx.beginPath(); gp({type:'Sphere'}); ctx.strokeStyle = colors.line; ctx.globalAlpha = .55; ctx.lineWidth = 1.2; ctx.stroke(); ctx.globalAlpha = 1;
+  }
+  function tick(t){
+    var setup = document.getElementById('setup');
+    if(!setup || setup.hidden || document.hidden){ running = false; return; }
+    if(t-last > 50){ lam += (last ? (t-last) : 0)*0.006; last = t; draw(); }   // about 6 degrees a second, at most 20 frames a second
+    requestAnimationFrame(tick);
+  }
+  function start(){
+    if(reduce){ draw(); return; }
+    if(running) return; running = true; last = 0; requestAnimationFrame(tick);
+  }
+  new MutationObserver(start).observe(document.getElementById('setup'), {attributes:true, attributeFilter:['hidden']});
+  document.addEventListener('visibilitychange', start);
+  window.addEventListener('resize', function(){ size = 0; if(reduce) draw(); });
+  return {start:start};
+})();
+
 var LIGHTS = __IMAGE__("img/lights.webp");
 function isNight(){ return !!pack && (pack.isSecurity || pack.id==='coldwar'); }
 /* in a night-theme game the map darkens after every question and the city lights come up */
@@ -2023,4 +2068,5 @@ function autoNext(){
 }
 
 setMode('modern');
+if(globe) globe.start();
 })();

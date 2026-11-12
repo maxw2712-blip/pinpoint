@@ -87,17 +87,17 @@
 
   <section class="overlay" id="setup" aria-labelledby="t1">
     <div class="card sheet">
-      <h1 id="t1">Pinpoint</h1>
+      <div class="brand"><canvas id="globe" aria-hidden="true"></canvas><h1 id="t1">Pinpoint</h1></div>
       <button type="button" class="gear" id="settingsBtn" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       <p class="lede" id="lede">Click the right place on the map, and the fewer tries you need, the more points you score. Games run ten rounds.</p>
       <div class="tabs" role="tablist" aria-label="Game type">
-        <button type="button" role="tab" class="tab on" id="tabMap" aria-selected="true"><span class="tl">Nation States</span><span class="ts">Nations</span></button>
-        <button type="button" role="tab" class="tab" id="tabGeo" aria-selected="false"><span class="tl">Geography</span><span class="ts">Geo</span></button>
-        <button type="button" role="tab" class="tab" id="tabFlags" aria-selected="false"><span class="tl">Flags</span><span class="ts">Flags</span></button>
-        <button type="button" role="tab" class="tab" id="tabPlanets" aria-selected="false"><span class="tl">Planets</span><span class="ts">Planets</span></button>
-        <button type="button" role="tab" class="tab" id="tabHist" aria-selected="false"><span class="tl">History</span><span class="ts">History</span></button>
-        <button type="button" role="tab" class="tab" id="tabSecurity" aria-selected="false"><span class="tl">Security</span><span class="ts">Security</span></button>
-        <button type="button" role="tab" class="tab" id="tabExplore" aria-selected="false"><span class="tl">Explore</span><span class="ts">Explore</span></button>
+        <button type="button" role="tab" class="tab on" id="tabMap" aria-selected="true"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.7-6.5-11.2a6.5 6.5 0 1 1 13 0C18.5 15.3 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg><span class="tl">Nation States</span><span class="ts">Nations</span></button>
+        <button type="button" role="tab" class="tab" id="tabGeo" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 19.5 9 8.5l4.2 6.6 2.4-3.6 5.9 8z"/><path d="m7.4 11.2 1.6 1.4 1.5-1.2"/></svg><span class="tl">Geography</span><span class="ts">Geo</span></button>
+        <button type="button" role="tab" class="tab" id="tabFlags" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3.5"/><path d="M5 4.5h12.5l-2.6 4.2 2.6 4.3H5"/></svg><span class="tl">Flags</span><span class="ts">Flags</span></button>
+        <button type="button" role="tab" class="tab" id="tabPlanets" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.2"/><ellipse cx="12" cy="12" rx="10.2" ry="3.4" transform="rotate(-22 12 12)"/></svg><span class="tl">Planets</span><span class="ts">Planets</span></button>
+        <button type="button" role="tab" class="tab" id="tabHist" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M4.5 8h15L12 3.5z"/><path d="M7 8v12.5M12 8v12.5M17 8v12.5"/></svg><span class="tl">History</span><span class="ts">History</span></button>
+        <button type="button" role="tab" class="tab" id="tabSecurity" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19.5 6v5.8c0 4.4-3.2 8.1-7.5 9.2-4.3-1.1-7.5-4.8-7.5-9.2V6z"/><path d="m9 12 2.2 2.2L15.2 10"/></svg><span class="tl">Security</span><span class="ts">Security</span></button>
+        <button type="button" role="tab" class="tab" id="tabExplore" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2 5.2-5.2 2 2-5.2z"/></svg><span class="tl">Explore</span><span class="ts">Explore</span></button>
       </div>
       <p class="modeNote" id="histNote" hidden></p>
       <fieldset id="modeSet">

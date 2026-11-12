@@ -444,3 +444,21 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
   #end .sheet{height:auto;max-height:100%;overflow:auto}
   #end #log{flex-shrink:0;max-height:30vh}
 }
+
+/* ---------- Menu header globe and tab icons ---------- */
+.brand{display:flex;align-items:center;gap:12px}
+#globe{width:54px;height:54px;flex:none;display:block;
+  --globe-sea:#8cc4d8; --globe-sea2:#3f86a6; --globe-land:#f1f6ec; --globe-line:#0d2a3a;
+  filter:drop-shadow(0 3px 8px rgba(8,30,44,.25))}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) #globe{filter:drop-shadow(0 0 6px rgba(95,182,222,.35))} }
+:root[data-theme="dark"] #globe{filter:drop-shadow(0 0 6px rgba(95,182,222,.35))}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) #globe{--globe-sea:#5fb6de; --globe-sea2:#2a7aa6; --globe-land:#f0f7f1; --globe-line:#e8f2f5} }
+:root[data-theme="dark"] #globe{--globe-sea:#5fb6de; --globe-sea2:#2a7aa6; --globe-land:#f0f7f1; --globe-line:#e8f2f5}
+@media (max-width:620px){ .brand{gap:8px} #globe{width:30px;height:30px} }
+/* tabs: a small line icon above each label, at every size */
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px}
+.tab .ti{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;opacity:.75;transition:opacity .15s,transform .15s}
+.tab.on .ti{opacity:1;stroke:var(--ink)}
+.tab:hover .ti{opacity:1;transform:translateY(-1px)}
+@media (max-width:620px){ .tab .ti{width:16px;height:16px} .tab{gap:2px} }
+@media (prefers-reduced-motion: reduce){ .tab .ti{transition:none} .tab:hover .ti{transform:none} }
