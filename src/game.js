@@ -1700,7 +1700,7 @@ function recapTargets(e){
   if(!out.feats.length && pack.byName && pack.byName[e.q.name]) out.feats.push(pack.byName[e.q.name]);
   return out;
 }
-var RECAP = {hit:'#2e9e5b', miss:'#d9482b', base:'#c7d3d8', edge:'#ffffff', sea:'#e8f0f3', ink:'#0d2a3a'};
+var RECAP = {hit:'#2e9e5b', part:'#e8890c', miss:'#d9482b', base:'#c7d3d8', edge:'#ffffff', sea:'#e8f0f3', ink:'#0d2a3a'};
 /* The recap is drawn with plain attributes (no CSS classes), so the same SVG can be turned into the share image. */
 function drawRecap(){
   var wrap = $('recapWrap'), svgEl = d3.select('#recapMap');
@@ -1709,14 +1709,15 @@ function drawRecap(){
   wrap.hidden = false;
   var dark = document.documentElement.getAttribute('data-theme')==='dark' ||
              (document.documentElement.getAttribute('data-theme')!=='light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
-  var C = dark ? {hit:'#3fc27a', miss:'#ff6a4d', base:'#36566a', edge:'#0f2b3d', sea:'#0f2b3d', ink:'#e8f2f5'} : RECAP;
+  var C = dark ? {hit:'#3fc27a', part:'#ffa33a', miss:'#ff6a4d', base:'#36566a', edge:'#0f2b3d', sea:'#0f2b3d', ink:'#e8f2f5'} : RECAP;
   svgEl.append('path').attr('d', path({type:'Sphere'})).attr('fill', C.sea);
   var base = pack.kind==='political' ? pack.features : (pack.landF ? [pack.landF] : []);
   svgEl.append('g').selectAll('path').data(base).join('path').attr('d', path).attr('fill', C.base).attr('stroke', C.edge).attr('stroke-width', 0.4);
   var marks = svgEl.append('g'), dots = svgEl.append('g'), bb = null;
   function grow(b){ if(!b || !isFinite(b[0][0])) return; bb = bb ? [[Math.min(bb[0][0],b[0][0]),Math.min(bb[0][1],b[0][1])],[Math.max(bb[1][0],b[1][0]),Math.max(bb[1][1],b[1][1])]] : b; }
   st.log.forEach(function(e){
-    var col = e.pts>0 ? C.hit : C.miss, t = recapTargets(e);
+    // green = first try, orange = found after one or two misses, red = missed
+    var full = LEVELS[st.level].pts[0], col = e.pts>=full ? C.hit : e.pts>0 ? C.part : C.miss, t = recapTargets(e);
     t.feats.forEach(function(f){
       var line = f.geometry && /LineString/.test(f.geometry.type);
       marks.append('path').attr('d', path(f)).attr('fill', line ? 'none' : col).attr('fill-opacity', line ? null : 0.85)
@@ -1749,7 +1750,7 @@ function setupLabel(){
 }
 function shareText(){
   var max = st.qs.length*3;
-  var squares = st.log.map(function(e){ return e.pts>=3 ? '🟩' : e.pts>0 ? '🟨' : '🟥'; }).join('');
+  var squares = st.log.map(function(e){ return e.pts>=3 ? '🟩' : e.pts>0 ? '🟧' : '🟥'; }).join('');
   return 'Pinpoint · '+setupLabel()+'\n'+st.score+'/'+max+'  '+squares+'\nhttps://maxw2712-blip.github.io/pinpoint/';
 }
 /* The summary card: 1200x630 PNG with the setup, score, one square per question and the recap map. */
@@ -1765,7 +1766,7 @@ function shareImage(){
     var sw = c.measureText(String(st.score)).width;
     c.fillStyle = '#9bb6c2'; c.font = '700 44px "Bricolage Grotesque", system-ui, sans-serif'; c.fillText('/ '+max, 56+sw+18, 300);
     st.log.forEach(function(e, i){
-      c.fillStyle = e.pts>=3 ? '#3fc27a' : e.pts>0 ? '#f0b400' : '#ff6a4d';
+      c.fillStyle = e.pts>=3 ? '#3fc27a' : e.pts>0 ? '#ffa33a' : '#ff6a4d';
       var x = 56+(i%5)*58, y = 350+Math.floor(i/5)*58;
       c.beginPath(); if(c.roundRect) c.roundRect(x, y, 46, 46, 8); else c.rect(x, y, 46, 46); c.fill();
     });
