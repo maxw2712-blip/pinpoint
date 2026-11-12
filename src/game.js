@@ -578,9 +578,33 @@ $('practice').addEventListener('click', startPractice);
 $('exploreHome').addEventListener('click', function(){ toSetup(); });
 $('exploreMode').addEventListener('change', function(){
   st.exploreMode = this.value;
-  setMode(this.value);
-  startExplore();
+  var v = this.value;
+  crossFade(function(){ setMode(v); startExplore(); });
 });
+/* Cross-fade the map: a snapshot of the old map (with its theme frozen inline) sits on top and fades out while the new
+   map is drawn underneath. */
+function crossFade(draw){
+  var old = $('map');
+  if(reduce || !old){ draw(); return; }
+  var snap = old.cloneNode(true);
+  snap.removeAttribute('id'); snap.setAttribute('aria-hidden','true'); snap.classList.add('xfade');
+  // freeze the old period theme (parchment or clean) on the snapshot before the new theme class lands
+  var pairs = [['.relief',['filter']], ['.sphere',['fill']], ['.graticule',['stroke','stroke-opacity']], ['.country',['stroke','stroke-opacity','fill','fill-opacity']],
+               ['.plabel text',['font-family','font-size','font-weight','fill']], ['.plabel text tspan.pcap',['font-family','font-size','font-weight','font-style','fill']],
+               ['.plabel rect.pbox',['fill']], ['.ptint',['fill','fill-opacity']], ['.pfill',['filter']]];
+  pairs.forEach(function(p){
+    var a = old.querySelectorAll(p[0]), b = snap.querySelectorAll(p[0]);
+    for(var i=0; i<a.length && i<b.length; i++){
+      var cs = getComputedStyle(a[i]);
+      p[1].forEach(function(prop){ b[i].style.setProperty(prop, cs.getPropertyValue(prop)); });
+    }
+  });
+  snap.style.background = getComputedStyle(old).backgroundColor;
+  old.parentNode.insertBefore(snap, old.nextSibling);
+  draw();
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ snap.classList.add('xfadeOut'); }); });
+  setTimeout(function(){ if(snap.parentNode) snap.parentNode.removeChild(snap); }, 700);
+}
 $('exploreWorld').addEventListener('click', function(){ var order = Object.keys(BODIES); setBody(order[(order.indexOf(curBody)+1)%order.length]); });
 function toSetup(){
   stopTimer(); clearTimers(); hideToast(); clearLabels(); st.devPick = false; $('reportPanel').hidden = true; $('reportsView').hidden = true; devPausedMs = null;
@@ -1005,6 +1029,29 @@ function labelFit(f, w, h){
 var labelRecs = [];
 var LABEL_REL = [[0,0]];
 [1.1,2.2,3.3].forEach(function(r){ [[0,-1],[0,1],[1,0],[-1,0],[0.8,-0.8],[-0.8,-0.8],[0.8,0.8],[-0.8,0.8]].forEach(function(d){ LABEL_REL.push([d[0]*r, d[1]*r]); }); });
+/* Labels fade in and out instead of popping. A hidden label is switched off completely (display:none) once its fade
+   has finished, so hidden labels cost nothing to draw. New labels start faded out; all fade-ins of one layout pass start
+   together on the next frame. With reduced motion everything is instant. */
+var fadeIns = [];
+function showWrap(w, on){
+  var n = w.node ? w.node() : w;
+  if(!n) return;
+  clearTimeout(n._hideT);
+  if(on){
+    if(n.style.display==='none') n.style.display = '';
+    if(n.classList.contains('lbl-off')){ if(reduce) n.classList.remove('lbl-off'); else fadeIns.push(n); }
+  } else {
+    if(n.style.display==='none') return;
+    if(reduce || n.classList.contains('lbl-off')){ n.classList.add('lbl-off'); n.style.display = 'none'; return; }
+    n.classList.add('lbl-off');
+    n._hideT = setTimeout(function(){ n.style.display = 'none'; }, 240);
+  }
+}
+function flushFadeIns(){
+  if(!fadeIns.length) return;
+  var list = fadeIns; fadeIns = [];
+  requestAnimationFrame(function(){ list.forEach(function(n){ n.classList.remove('lbl-off'); }); });
+}
 function layoutLabels(){
   var k = d3.zoomTransform(svg.node()).k, placed = [], pad = 3/k, floors = [0.55, 0.4, 0.28, 0.18, 0];
   // screen pixels per map unit: about 1.5 on a 1440 px desktop, about 0.4 on a phone. Label text is 11 map units, so
@@ -1059,7 +1106,7 @@ function layoutLabels(){
         }
       }
     }
-    rec.wrap.style('display', shown ? null : 'none');
+    showWrap(rec.wrap, !!shown);
     if(!shown){ rec.leader.style('display','none'); rec.dot.style('display','none'); return; }
     if(rec.curTier!==tier.id){ rec.curTier = tier.id; rec.rect.attr('x', -tier.w/2).attr('width', tier.w); setLabelText(rec.text, tier.name, rec.base); }
     placed.push({x0:shown.cx-shown.hw, x1:shown.cx+shown.hw, y0:shown.cy-shown.hh, y1:shown.cy+shown.hh});
@@ -1073,7 +1120,7 @@ function layoutLabels(){
   var order = labelRecs.slice().sort(function(a,b){ return (a.auto?1:0)-(b.auto?1:0) || (a.auto ? (b.area||0)-(a.area||0) : 0); });
   order.forEach(function(rec){
     if(rec.auto){ layoutAuto(rec); return; }
-    if(rec.wrap) rec.wrap.style('display', null);
+    if(rec.wrap) showWrap(rec.wrap, true);
     var best = null, i, c, s, cx, cy, hw, hh, ov, cand;
     // rule: a label stays inside its own country, and only leaves it if it is blocking or blocked by another label
     var inside = rec.cands.filter(function(c){ return !c.rel && !c.toward; }), outside = rec.cands.filter(function(c){ return !!c.rel; }), toward = rec.cands.filter(function(c){ return !!c.toward; });
@@ -1127,6 +1174,7 @@ function layoutLabels(){
       rec.dot.style('display', far ? null : 'none').attr('cx',rec.anchor ? rec.anchor[0] : 0).attr('cy',rec.anchor ? rec.anchor[1] : 0).attr('r',2.4/k);
     }
   });
+  flushFadeIns();
 }
 /* Explore: a realm with no flag of its own is shaded in a muted colour for its region, so the map reads as complete. */
 var REGION_TINT = {Europe:'eu', Asia:'as', Africa:'af', Americas:'am', Oceania:'oc'};
@@ -1204,7 +1252,7 @@ function placeLabel(info, key, xy, feat, opts){
   } else cands = REL.map(function(r){ return {x:xy[0], y:xy[1], fit:0, rel:r}; });
   labelRecs = labelRecs.filter(function(r){ return r.key!==key; });
   if(info.fill && feat) paintFlag(key, info.fill, feat);
-  var wrap = labels.append('g').attr('class','plabelwrap').attr('data-key',key);
+  var wrap = labels.append('g').attr('class','plabelwrap lbl-off').attr('data-key',key);
   var clipRef = null;
   if(feat){
     var cid = 'lc'+(++clipN);
@@ -1471,13 +1519,23 @@ function correct(){
   stopTimer();
   st.locked = true; st.score += pts;
   st.log.push({q:q, pts:pts});
-  lift(targetPaths()).classed('hit', true);
+  var hitSel = lift(targetPaths()).classed('hit', true);
   $('score').textContent = st.score;
   $('act').disabled = true;
   var qi = pack.items[q.name];
   toast('Correct, +'+pts+(qi.hist ? '. That was the flag of '+qi.disp+'.' : ''), true);
   if(qi.fact) $('hint').textContent = qi.fact;
-  later(advance, qi.fact ? 2800 : 1100);
+  // motion: zoom to the country and give it a gold pulse (the next question restores the view)
+  var zoomed = false;
+  if(!reduce){
+    var target = qi.answers ? null : q.name;
+    if(target && pack.byName[target] && !((pack.id==='ww2' || pack.id==='coldwar') && SCATTERED[q.name])){
+      st.saved = d3.zoomTransform(svg.node()); moveTo(viewForFeature(target)); zoomed = true;
+    }
+    hitSel.classed('goldPulse', false); void (hitSel.node() && hitSel.node().getBBox);
+    hitSel.classed('goldPulse', true);
+  }
+  later(advance, qi.fact ? 2800 : (zoomed ? 1700 : 1100));
 }
 
 function nearby(name){
@@ -1499,6 +1557,18 @@ function continentOf(name){
   contCache[name] = out; return out;
 }
 
+/* A small shake for a wrong answer: the tapped shape (amplitude fixed in screen pixels at any zoom), or the question card
+   when there is no shape (a missed river, sea or point). Skipped with reduced motion. */
+function shake(el){
+  if(reduce) return;
+  var n = el || document.querySelector('#hudTop .prompt');
+  if(!n) return;
+  if(el) n.style.setProperty('--shk', (3/d3.zoomTransform(svg.node()).k)+'px');
+  n.classList.remove(el ? 'shakeMap' : 'shakeCard');
+  void n.getBoundingClientRect();
+  n.classList.add(el ? 'shakeMap' : 'shakeCard');
+  setTimeout(function(){ n.classList.remove('shakeMap', 'shakeCard'); }, 450);
+}
 function wrong(label, el){
   var q = st.qs[st.i], lvl = effLevel(), it = pack.items[q.name];
   st.tries++; setPips();
@@ -1506,6 +1576,7 @@ function wrong(label, el){
     var sel = d3.select(el).classed('miss', true);
     later(function(){ sel.classed('miss', false); }, 650);
   }
+  shake(el);
   if(st.tries>=lvl.tries){ reveal(label); return; }
   var left = lvl.tries - st.tries;
   toast('That\u2019s '+label+'. '+left+(left===1?' try':' tries')+' left.');
@@ -1572,7 +1643,7 @@ function reveal(clicked, timedOut){
 
 function advance(){
   clearTimers(); hideToast();
-  paths.classed('hit miss reveal', false);
+  paths.classed('hit miss reveal goldPulse', false);
   marks.selectAll('*').remove();
   st.i++;
   if(st.i >= st.qs.length){ endGame(); return; }

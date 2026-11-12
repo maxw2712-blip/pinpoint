@@ -388,3 +388,24 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
   --tint-eu:#5e6f82; --tint-as:#93733d; --tint-af:#875340; --tint-am:#66744a; --tint-oc:#57756e}
 :root[data-theme="dark"] #app.era-parchment .relief{filter:sepia(.8) saturate(.55) brightness(.5) contrast(.95)}
 :root[data-theme="dark"] #app.era-parchment #paper{opacity:.28}
+
+/* ---------- Motion ---------- */
+/* labels fade in and out */
+.plabelwrap{transition:opacity .22s ease}
+.plabelwrap.lbl-off{opacity:0}
+/* correct answer: a gold pulse on the country */
+@keyframes goldPulse{0%{fill-opacity:.25;stroke-width:1.4px}30%{fill-opacity:.95;stroke-width:3.2px}60%{fill-opacity:.55;stroke-width:1.8px}100%{fill-opacity:.7;stroke-width:1.4px}}
+.country.hit.goldPulse,.feat.hit.goldPulse{animation:goldPulse 1.1s ease-out 2;stroke:var(--gold)!important}
+/* wrong answer: a small shake (the shape in screen-sized steps, or the question card) */
+@keyframes shakeMap{0%,100%{transform:translateX(0)}20%{transform:translateX(calc(var(--shk,2px)*-1))}40%{transform:translateX(var(--shk,2px))}60%{transform:translateX(calc(var(--shk,2px)*-0.6))}80%{transform:translateX(calc(var(--shk,2px)*0.6))}}
+@keyframes shakeCard{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shakeMap{animation:shakeMap .4s ease-in-out}
+.shakeCard{animation:shakeCard .4s ease-in-out}
+/* Explore period switch: the old map fades out over the new one */
+#app svg.xfade{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;opacity:1;transition:opacity .5s ease}
+#app svg.xfade.xfadeOut{opacity:0}
+@media (prefers-reduced-motion: reduce){
+  .plabelwrap{transition:none}
+  .country.hit.goldPulse,.feat.hit.goldPulse,.shakeMap,.shakeCard{animation:none}
+  #app svg.xfade{display:none}
+}
