@@ -203,10 +203,36 @@ var globe = (function(){
 })();
 
 var LIGHTS = __IMAGE__("img/lights.webp");
-function isNight(){ return !!pack && (pack.isSecurity || pack.id==='coldwar'); }
+function isNight(){
+  if(!pack || pack.kind==='planet' || pack.kind==='trivia') return false;
+  var mode = (typeof CFG!=='undefined' && CFG.night) || 'auto';
+  if(mode==='off') return false;
+  if(mode==='all') return true;
+  return !!(pack.isSecurity || pack.id==='coldwar');
+}
+/* the night layers: a soft glow under the borders (the coastline on physical maps) and the city lights above the
+   countries and flags; added or removed in place, so switching the setting mid-game keeps the game as it is */
+function setNightLayers(on){
+  g.selectAll('path.glowlines, image.lights').remove();
+  if(!on) return;
+  var src = pack.kind==='political' ? pack.features : (pack.landF ? [pack.landF] : []);
+  // the glow goes right after the graticule (a direct child on every map type), so it sits under all shapes
+  var grat = g.node().querySelector(':scope > path.graticule'), next = grat ? grat.nextSibling : null;
+  g.insert('path', next ? function(){ return next; } : null).attr('class','glowlines').attr('d', src.map(function(f){ return path(f) || ''; }).join(''));
+  var after = fills && fills.node() ? fills.node().nextSibling : null;
+  g.insert('image', after ? function(){ return after; } : null).attr('class','lights').attr('href', LIGHTS).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
+    .attr('preserveAspectRatio','none').attr('clip-path','url(#sphereClip)');
+}
 /* in a night-theme game the map darkens after every question and the city lights come up */
 function duskFor(i){ var n = (st.qs && st.qs.length) || 10; return Math.max(0, Math.min(1, i/Math.max(1, n-1))); }
 function setDusk(v){ app.style.setProperty('--dusk', String(v)); }
+/* period themes: night (Settings > Night map) wins over parchment; --dusk runs from 0 (dusk) to 1 (deep night) */
+function applyTheme(){
+  var night = isNight();
+  app.classList.toggle('era-night', night);
+  app.classList.toggle('era-parchment', !night && PARCHMENT_ERAS.indexOf(pack.id)>=0);
+  setNightLayers(night);
+}
 var PAPER = __IMAGE__("img/paper.webp");
 document.documentElement.style.setProperty('--paper', 'url("'+PAPER+'")');
 var TERRITORY_FLAGS = {modern:['Greenland','Puerto Rico','New Caledonia','Falkland Is.','Fr. S. Antarctic Lands']};
@@ -446,10 +472,6 @@ function drawPack(){
   g.append('image').attr('class','relief').attr('href', pack.kind==='planet' ? PIMG[curBody] : RELIEF).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
     .attr('preserveAspectRatio','none').attr('clip-path','url(#sphereClip)');
   g.append('path').attr('class','graticule').attr('d', path(d3.geoGraticule10()));
-  if(isNight()){
-    // night theme: a soft glow under every border (the city lights go on top of the flags, below)
-    g.append('path').attr('class','glowlines').attr('d', pack.features.map(function(f){ return path(f) || ''; }).join(''));
-  }
   if(pack.kind==='political'){
     paths = g.selectAll('path.country').data(pack.features).join('path')
       .attr('class', function(d){ return 'country'+(d.properties.name ? '' : ' bg'); })
@@ -478,18 +500,11 @@ function drawPack(){
   }
   marks = g.append('g');
   fills = g.append('g');
-  if(isNight()){
-    // city lights above countries and flags (screen-blended, so they only brighten), below labels; never takes clicks
-    g.append('image').attr('class','lights').attr('href', LIGHTS).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
-      .attr('preserveAspectRatio','none').attr('clip-path','url(#sphereClip)');
-  }
   leads = g.append('g');
   labels = g.append('g');
   app.classList.toggle('physical', pack.kind!=='political');
   // period theme: ancient to medieval maps look like aged parchment; 1500 onwards and the modern map stay clean
-  app.classList.toggle('era-parchment', PARCHMENT_ERAS.indexOf(pack.id)>=0);
-  // night theme for the security tab and the Cold War map; --dusk runs from 0 (dusk) to 1 (deep night)
-  app.classList.toggle('era-night', isNight());
+  applyTheme();
   setDusk(st.phase==='play' ? duskFor(st.i) : 1);
   app.classList.toggle('space', pack.kind==='planet');
   app.classList.toggle('trivia', pack.kind==='trivia');
@@ -2025,11 +2040,12 @@ $('rvCopy').addEventListener('click', function(){
 refreshDev();
 
 /* ---------- Settings ---------- */
-var CFG = {auto:false, delay:5};
+var CFG = {auto:false, delay:5, night:'auto'};
 try{
   var savedCfg = JSON.parse(localStorage.getItem('pinpoint:cfg') || '{}');
   if(typeof savedCfg.auto==='boolean') CFG.auto = savedCfg.auto;
   if([3,5,8].indexOf(savedCfg.delay)>=0) CFG.delay = savedCfg.delay;
+  if(['auto','all','off'].indexOf(savedCfg.night)>=0) CFG.night = savedCfg.night;
 }catch(e){}
 function saveCfg(){ try{ localStorage.setItem('pinpoint:cfg', JSON.stringify(CFG)); }catch(e){} }
 function settingsOpen(){ return !$('settingsPanel').hidden; }
@@ -2037,6 +2053,7 @@ function refreshSettings(){
   $('optAuto').checked = CFG.auto;
   $('optDelayBox').disabled = !CFG.auto;
   document.querySelectorAll('#optDelay .optBtn').forEach(function(b){ b.classList.toggle('on', +b.getAttribute('data-v')===CFG.delay); });
+  document.querySelectorAll('#optNight .optBtn').forEach(function(b){ var on = b.getAttribute('data-v')===CFG.night; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
 }
 function openSettings(){
   if(st.phase==='play') devPause();
@@ -2051,6 +2068,14 @@ $('optDelay').addEventListener('click', function(e){
   var b = e.target.closest ? e.target.closest('.optBtn') : null;
   if(!b) return;
   CFG.delay = +b.getAttribute('data-v'); saveCfg(); refreshSettings();
+});
+$('optNight').addEventListener('click', function(e){
+  var b = e.target.closest ? e.target.closest('.optBtn') : null;
+  if(!b || b.getAttribute('data-v')===CFG.night) return;
+  CFG.night = b.getAttribute('data-v'); saveCfg(); refreshSettings();
+  // apply now: in a game in place (the game is kept), in Explore with a cross-fade, elsewhere straight away
+  if(st.phase==='explore') crossFade(function(){ applyTheme(); setDusk(1); });
+  else { applyTheme(); if(isNight()) setDusk(st.phase==='play' ? duskFor(st.i) : 1); }
 });
 document.addEventListener('keydown', function(e){ if(e.key==='Escape' && settingsOpen()) closeSettings(); });
 /* After a miss, a timeout or a trivia answer, count down on the button and then move to the next question. */

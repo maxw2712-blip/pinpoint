@@ -462,3 +462,10 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 .tab:hover .ti{opacity:1;transform:translateY(-1px)}
 @media (max-width:620px){ .tab .ti{width:16px;height:16px} .tab{gap:2px} }
 @media (prefers-reduced-motion: reduce){ .tab .ti{transition:none} .tab:hover .ti{transform:none} }
+
+/* night map on physical maps: glowing coastline, readable feature outlines */
+#app.era-night .land{stroke:#8fd6ff;stroke-opacity:.6}
+#app.era-night .feat.area{stroke:#9fc0dd;stroke-opacity:.35}
+#app.era-night .feat.sea{fill:#0b2240;fill-opacity:.45;stroke:#9fc0dd;stroke-opacity:.25}
+#app.era-night .feat.lake{fill:#123a5c}
+.optNote{display:block;margin-top:6px;font-size:.8rem;color:var(--muted)}
