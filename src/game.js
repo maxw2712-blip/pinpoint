@@ -216,15 +216,75 @@ function isNight(){
 /* the night layers: a soft glow under the borders (the coastline on physical maps) and the city lights above the
    countries and flags; added or removed in place, so switching the setting mid-game keeps the game as it is */
 function setNightLayers(on){
-  g.selectAll('path.glowlines, image.lights').remove();
+  g.selectAll('path.glowlines, .lights').remove();
   if(!on) return;
   var src = pack.kind==='political' ? pack.features : (pack.landF ? [pack.landF] : []);
   // the glow goes right after the graticule (a direct child on every map type), so it sits under all shapes
   var grat = g.node().querySelector(':scope > path.graticule'), next = grat ? grat.nextSibling : null;
   g.insert('path', next ? function(){ return next; } : null).attr('class','glowlines').attr('d', src.map(function(f){ return path(f) || ''; }).join(''));
   var after = fills && fills.node() ? fills.node().nextSibling : null;
-  g.insert('image', after ? function(){ return after; } : null).attr('class','lights').attr('href', LIGHTS).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
+  var before = after ? function(){ return after; } : null;
+  g.select('defs').selectAll('.nightdef').remove();
+  if(FIRE_ERAS.indexOf(pack.id)>=0){
+    // no electric light yet: a warm glow at each capital
+    var pts = [];
+    Object.keys(pack.items).forEach(function(n){ var c = pack.items[n].cap, xy = c && CAPXY[c] && proj(CAPXY[c]); if(xy) pts.push(xy); });
+    var gr = g.select('defs').append('radialGradient').attr('class','nightdef').attr('id','fireGlow');
+    [[0,'#fff6d8',1],[.15,'#ffd27a',.95],[.4,'#ff9a3a',.5],[.7,'#ff7414',.16],[1,'#ff6a00',0]].forEach(function(s){
+      gr.append('stop').attr('offset', s[0]).attr('stop-color', s[1]).attr('stop-opacity', s[2]); });
+    var fg = g.insert('g', before).attr('class','lights fire');
+    fg.selectAll('circle').data(pts).join('circle').attr('r', 7).attr('fill','url(#fireGlow)')
+      .style('animation-delay', function(d, i){ return (-(i*0.37)%3).toFixed(2)+'s'; });
+    fireScale(d3.zoomTransform(svg.node()).k);
+    return;
+  }
+  var img = g.insert('image', before).attr('class','lights').attr('href', LIGHTS).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
     .attr('preserveAspectRatio','none').attr('clip-path','url(#sphereClip)');
+  var spec = ELECTRIC[pack.id];
+  if(spec && pack.kind==='political'){
+    // electric light only as far as it had spread by then
+    var id = 'elecMask-'+pack.id;
+    var m = g.select('defs').append('mask').attr('class','nightdef').attr('id', id).attr('maskUnits','userSpaceOnUse')
+      .attr('x',0).attr('y',0).attr('width',W).attr('height',H);
+    pack.features.forEach(function(f){
+      var v = Math.round(255*elecLevel(spec, pack.items[f.properties.name]));
+      if(v>0) m.append('path').attr('d', path(f)).attr('fill','rgb('+v+','+v+','+v+')');
+    });
+    img.attr('mask','url(#'+id+')');
+  }
+}
+/* Night lights follow the period (Max's choice, 2026-11-12). Before electric light (Bronze Age to 1815) there are no
+   city lights, only a faint flickering firelight at each realm's capital (coordinates in CAPCOORDS.json). 1914, 1945
+   and 1960 show the 1994 satellite lights masked realm by realm to a rough electrification level for that year:
+   industrial Europe, North America and later Japan first, most colonies and rural empires nearly dark. The modern
+   map and Geography show the lights in full. */
+var CAPXY = __JSON__("data/CAPCOORDS.json");
+var FIRE_ERAS = ['bronze','classical','ancient','early','medieval','discovery','vienna'];
+var ELECTRIC = {
+  wwi: {base:{E:.2, S:.04, A:.03, M:.06, O:.05}, by:[
+    [/^(United Kingdom|German Empire|Belgium|Netherlands|Switzerland|France|Denmark|Sweden|Norway|Luxembourg)$/, .45],
+    [/^(Austria-Hungary|Italy)$/, .3], [/^(Russian Empire|Grand Duchy of Finland)$/, .15], [/^(United States|Canada)$/, .45],
+    [/^Empire of Japan$/, .3], [/^(Australia|New Zealand)$/, .3], [/^(Argentina|Uruguay|Chile|Cuba)$/, .18],
+    [/^(Mexico|Brazil)$/, .1], [/^Union of South Africa$/, .12], [/^(British Hong Kong|British Malta)$/, .3]]},
+  ww2: {base:{E:.35, S:.07, A:.04, M:.15, O:.1}, by:[
+    [/^(United Kingdom|Sweden|Switzerland|Netherlands|Belgium|Denmark|Norway|Luxembourg|Ireland|Iceland)$/, .55],
+    [/^France$/, .45], [/^Germany \(/, .2], [/^(Poland|Yugoslavia)$/, .15], [/^Soviet Union$/, .25],
+    [/^(United States|Canada)$/, .85], [/^Japan/, .15], [/^(Australia|New Zealand)$/, .5],
+    [/^(Argentina|Uruguay|Chile|Cuba|Mexico|Brazil|Venezuela)$/, .25], [/^South Africa$/, .2], [/ Empire$/, .04]]},
+  coldwar: {base:{E:.55, S:.12, A:.05, M:.25, O:.15}, by:[
+    [/^(United States|Canada)$/, .95], [/^(United Kingdom|West Germany|Netherlands|Belgium|Switzerland|Sweden|Denmark|Norway|Luxembourg|France)$/, .8],
+    [/^(East Germany|Czechoslovakia|Italy|Austria|Finland|Ireland|Iceland)$/, .65], [/^Soviet Union$/, .4], [/^Japan$/, .7],
+    [/^(Australia|New Zealand)$/, .7], [/^(Israel|Kuwait)$/, .4], [/^(Argentina|Uruguay|Chile|Venezuela|Mexico|Cuba)$/, .4],
+    [/^South Africa$/, .3], [/^(People's Republic of China|India)$/, .1], [/ Empire$/, .06]]}
+};
+function elecLevel(spec, it){
+  if(!it) return 0;
+  for(var i=0; i<spec.by.length; i++) if(spec.by[i][0].test(it.disp)) return spec.by[i][1];
+  return spec.base[{Europe:'E', Asia:'S', Africa:'A', Americas:'M', Oceania:'O'}[it.reg]] || 0;
+}
+/* firelight glows grow only slowly as you zoom in, so crowded capitals (1815 Germany) stay apart */
+function fireScale(k){
+  g.selectAll('g.fire circle').attr('transform', function(d){ return 'translate('+d[0]+','+d[1]+') scale('+Math.pow(k, -0.75)+')'; });
 }
 /* in a night-theme game the map darkens after every question and the city lights come up */
 function duskFor(i){ var n = (st.qs && st.qs.length) || 10; return Math.max(0, Math.min(1, i/Math.max(1, n-1))); }
@@ -278,6 +338,7 @@ var g = svg.append('g');
 var zoom = d3.zoom().scaleExtent([1,60]).translateExtent([[0,0],[W,H]]).clickDistance(6)
   .on('zoom', function(e){
     g.attr('transform', e.transform);
+    fireScale(e.transform.k);
     if(labels) labels.selectAll('g.plabel').attr('transform', function(d){ var k = e.transform.k, nom = d.nom || 1, s = d.fit ? (d.out ? Math.max(Math.min(nom/k, d.fit), (d.sp || 0.55)/k) : Math.min(nom/k, d.fit)) : 1/k; return 'translate('+d.x+','+d.y+') scale('+s+')'; });
   })
   .on('end', function(){ if(labelRecs.length) layoutLabels(); });
@@ -673,7 +734,7 @@ function crossFade(draw){
   var pairs = [['.relief',['filter']], ['.sphere',['fill']], ['.graticule',['stroke','stroke-opacity']], ['.country',['stroke','stroke-opacity','fill','fill-opacity']],
                ['.plabel text',['font-family','font-size','font-weight','fill']], ['.plabel text tspan.pcap',['font-family','font-size','font-weight','font-style','fill']],
                ['.plabel rect.pbox',['fill']], ['.ptint',['fill','fill-opacity']], ['.pfill',['filter']],
-               ['.lights',['display','opacity']], ['.glowlines',['display','stroke','stroke-opacity','stroke-width']], ['.relief',['opacity']]];
+               ['.lights',['display','opacity']], ['g.fire circle',['opacity']], ['.glowlines',['display','stroke','stroke-opacity','stroke-width']], ['.relief',['opacity']]];
   pairs.forEach(function(p){
     var a = old.querySelectorAll(p[0]), b = snap.querySelectorAll(p[0]);
     for(var i=0; i<a.length && i<b.length; i++){
