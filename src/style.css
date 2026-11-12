@@ -208,7 +208,12 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 @media (max-width:620px){ .peek{bottom:132px} }
 
 .plabel{pointer-events:none}
-.plabel rect.pbox{fill:var(--panel);fill-opacity:.92;stroke:var(--ink);stroke-opacity:.35;stroke-width:1px;vector-effect:non-scaling-stroke}
+.plabel rect.pbox{fill:var(--panel);fill-opacity:.94;stroke:var(--ink);stroke-opacity:.35;stroke-width:1px;vector-effect:non-scaling-stroke;filter:url(#lblShadow)}
+.plabel rect.pbox.flagEdge{stroke-opacity:1;stroke-width:1.8px}
+.plabel rect.pbox.edge-eu{stroke:var(--tint-eu);stroke-opacity:1;stroke-width:1.8px} .plabel rect.pbox.edge-as{stroke:var(--tint-as);stroke-opacity:1;stroke-width:1.8px}
+.plabel rect.pbox.edge-af{stroke:var(--tint-af);stroke-opacity:1;stroke-width:1.8px} .plabel rect.pbox.edge-am{stroke:var(--tint-am);stroke-opacity:1;stroke-width:1.8px}
+.plabel rect.pbox.edge-oc{stroke:var(--tint-oc);stroke-opacity:1;stroke-width:1.8px}
+.plabel text tspan.pcap{font-weight:500;font-size:9.5px;fill:var(--muted)}
 .plabel rect.pfr{fill:none;stroke:var(--ink);stroke-opacity:.45;stroke-width:.6px;vector-effect:non-scaling-stroke}
 .plabel text{font:700 11px var(--body);fill:var(--ink)}
 

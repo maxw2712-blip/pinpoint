@@ -218,7 +218,12 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 @media (max-width:620px){ .peek{bottom:132px} }
 
 .plabel{pointer-events:none}
-.plabel rect.pbox{fill:var(--panel);fill-opacity:.92;stroke:var(--ink);stroke-opacity:.35;stroke-width:1px;vector-effect:non-scaling-stroke}
+.plabel rect.pbox{fill:var(--panel);fill-opacity:.94;stroke:var(--ink);stroke-opacity:.35;stroke-width:1px;vector-effect:non-scaling-stroke;filter:url(#lblShadow)}
+.plabel rect.pbox.flagEdge{stroke-opacity:1;stroke-width:1.8px}
+.plabel rect.pbox.edge-eu{stroke:var(--tint-eu);stroke-opacity:1;stroke-width:1.8px} .plabel rect.pbox.edge-as{stroke:var(--tint-as);stroke-opacity:1;stroke-width:1.8px}
+.plabel rect.pbox.edge-af{stroke:var(--tint-af);stroke-opacity:1;stroke-width:1.8px} .plabel rect.pbox.edge-am{stroke:var(--tint-am);stroke-opacity:1;stroke-width:1.8px}
+.plabel rect.pbox.edge-oc{stroke:var(--tint-oc);stroke-opacity:1;stroke-width:1.8px}
+.plabel text tspan.pcap{font-weight:500;font-size:9.5px;fill:var(--muted)}
 .plabel rect.pfr{fill:none;stroke:var(--ink);stroke-opacity:.45;stroke-width:.6px;vector-effect:non-scaling-stroke}
 .plabel text{font:700 11px var(--body);fill:var(--ink)}
 
@@ -944,6 +949,9 @@ function drawPack(){
   g.selectAll('*').remove();
   labelRecs = [];
   var defs = g.append('defs');
+  // soft shadow under name labels, so they lift off the map
+  defs.append('filter').attr('id','lblShadow').attr('x','-30%').attr('y','-40%').attr('width','160%').attr('height','200%')
+    .append('feDropShadow').attr('dx',0).attr('dy',1.2).attr('stdDeviation',1.3).attr('flood-color','#08202d').attr('flood-opacity',0.38);
   g.append('path').attr('class','sphere').attr('d', path({type:'Sphere'}));
   defs.append('clipPath').attr('id','sphereClip').append('path').attr('d', path({type:'Sphere'}));
   g.append('image').attr('class','relief').attr('href', pack.kind==='planet' ? PIMG[curBody] : RELIEF).attr('x',0).attr('y',0).attr('width',W).attr('height',H)
@@ -1612,7 +1620,7 @@ function layoutLabels(){
     }
     rec.wrap.style('display', shown ? null : 'none');
     if(!shown){ rec.leader.style('display','none'); rec.dot.style('display','none'); return; }
-    if(rec.curTier!==tier.id){ rec.curTier = tier.id; rec.rect.attr('x', -tier.w/2).attr('width', tier.w); rec.text.text(tier.name); }
+    if(rec.curTier!==tier.id){ rec.curTier = tier.id; rec.rect.attr('x', -tier.w/2).attr('width', tier.w); setLabelText(rec.text, tier.name, rec.base); }
     placed.push({x0:shown.cx-shown.hw, x1:shown.cx+shown.hw, y0:shown.cy-shown.hh, y1:shown.cy+shown.hh});
     d3.select(rec.el).datum({x:shown.cx, y:shown.cy, fit:shown.fit, out:shown.over, nom:nom, sp:spillS}).attr('transform','translate('+shown.cx+','+shown.cy+') scale('+shown.s+')');
     rec.wrap.attr('clip-path', shown.over ? null : rec.clip);
@@ -1716,6 +1724,22 @@ function paintFlag(key, fill, feat){
     });
     if(painted && paths) paths.filter(function(d){ return d.properties.name===key; }).classed('flagged', true);
 }
+/* Label text: the name in bold, the capital lighter and smaller. Handles "Kenya (Nairobi)" and merged names such as
+   "Egypt (New Kingdom · Thebes)" (base "Egypt (New Kingdom)"). */
+function labelParts(name, base){
+  if(!base || name===base) return [{t:name}];
+  if(name.indexOf(base+' (')===0 && name.slice(-1)===')') return [{t:base}, {t:name.slice(base.length), cap:true}];
+  var stem = base.slice(-1)===')' ? base.slice(0,-1) : null;
+  if(stem && name.indexOf(stem+' \u00b7 ')===0 && name.slice(-1)===')') return [{t:stem}, {t:name.slice(stem.length,-1), cap:true}, {t:')'}];
+  return [{t:name}];
+}
+function labelTextW(name, base){
+  return labelParts(name, base).reduce(function(w, p){ return w + p.t.length*(p.cap ? 5.3 : 6.3); }, 0);
+}
+function setLabelText(sel, name, base){
+  sel.selectAll('tspan').remove(); sel.text(null);
+  labelParts(name, base).forEach(function(p){ sel.append('tspan').attr('class', p.cap ? 'pcap' : null).text(p.t); });
+}
 function placeLabel(info, key, xy, feat, opts){
   var auto = !!(opts && opts.auto);
   if(!auto) st.lastKey = key;
@@ -1725,7 +1749,7 @@ function placeLabel(info, key, xy, feat, opts){
   var k = d3.zoomTransform(svg.node()).k;
   var flags = info.flags || [], fw = flags.length>1 ? 24 : 30, fh = fw*0.75, gap = 4;
   var rowW = flags.length ? flags.length*fw+(flags.length-1)*gap : 0;
-  var boxW = Math.max(info.name.length*6.3+14, rowW+14), boxH = (flags.length ? fh+8 : 0)+20;
+  var boxW = Math.max(labelTextW(info.name, info.base)+14, rowW+14), boxH = (flags.length ? fh+8 : 0)+20;
   // inside a country the label may never outgrow it, so it can't cover its neighbours
   var fit = feat ? labelFit(feat, boxW, boxH) : null;
   var anchor = fit ? fit.xy : xy;
@@ -1752,19 +1776,29 @@ function placeLabel(info, key, xy, feat, opts){
   var s0 = fit ? Math.min(1/k, fit.s) : 1/k;
   var el = wrap.append('g').attr('class','plabel').datum({x:anchor[0], y:anchor[1], fit:fit ? fit.s : 0})
     .attr('transform','translate('+anchor[0]+','+anchor[1]+') scale('+s0+')');
-  el.append('rect').attr('class','pbox').attr('x',-boxW/2).attr('y',-boxH/2).attr('width',boxW).attr('height',boxH).attr('rx',6);
+  var box = el.append('rect').attr('class','pbox').attr('x',-boxW/2).attr('y',-boxH/2).attr('width',boxW).attr('height',boxH).attr('rx',6);
+  // thin edge in the realm's flag colours: the flag itself, stretched over the box, used as the stroke
+  if(info.fill){
+    var pid = 'pe'+(++clipN);
+    el.append('pattern').attr('id',pid).attr('patternUnits','userSpaceOnUse').attr('x',-boxW/2).attr('y',-boxH/2).attr('width',boxW).attr('height',boxH)
+      .append('image').attr('href',info.fill).attr('width',boxW).attr('height',boxH).attr('preserveAspectRatio','none');
+    box.style('stroke','url(#'+pid+')').classed('flagEdge', true);
+  } else {
+    var reg = pack.items && pack.items[key] && REGION_TINT[pack.items[key].reg];
+    if(reg) box.classed('edge-'+reg, true);
+  }
   flags.forEach(function(src,i){
     var x = -rowW/2+i*(fw+gap), y = -boxH/2+5;
     el.append('image').attr('href',src).attr('x',x).attr('y',y).attr('width',fw).attr('height',fh).attr('preserveAspectRatio','xMidYMid slice');
     el.append('rect').attr('class','pfr').attr('x',x).attr('y',y).attr('width',fw).attr('height',fh);
   });
-  el.append('text').attr('text-anchor','middle').attr('x',0).attr('y',boxH/2-6).text(info.name);
+  setLabelText(el.append('text').attr('text-anchor','middle').attr('x',0).attr('y',boxH/2-6), info.name, info.base);
   var short = null;
   if(auto && feat && info.base && info.base!==info.name){
     var w2 = Math.max(info.base.length*6.3+14, rowW+14), f2 = labelFit(feat, w2, boxH);
     if(f2) short = {w:w2, h:boxH, name:info.base, cands:f2.cands};
   }
-  labelRecs.push({key:key, short:short, rect:el.select('rect.pbox'), text:el.select('text'), fullName:info.name, auto:auto, area:fit ? fit.area : 0, w:boxW, h:boxH, elong:fit ? fit.elong : 0, cands:cands, el:el.node(), wrap:wrap, clip:clipRef, leader:leader, dot:dot, anchor:fit ? [fit.cands[0].x, fit.cands[0].y] : null});
+  labelRecs.push({key:key, short:short, rect:el.select('rect.pbox'), text:el.select('text'), fullName:info.name, base:info.base, auto:auto, area:fit ? fit.area : 0, w:boxW, h:boxH, elong:fit ? fit.elong : 0, cands:cands, el:el.node(), wrap:wrap, clip:clipRef, leader:leader, dot:dot, anchor:fit ? [fit.cands[0].x, fit.cands[0].y] : null});
   if(!(opts && opts.defer)) layoutLabels();
 }
 function labelXY(label, fallback){
