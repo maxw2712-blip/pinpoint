@@ -160,7 +160,10 @@ var PARCHMENT_ERAS = ['bronze','classical','ancient','early','medieval'];
 /* ---------- Menu header: a small globe turning slowly (paused whenever the menu is hidden; still with reduced motion) ---------- */
 var globe = (function(){
   var cv = document.getElementById('globe'); if(!cv || !cv.getContext) return null;
-  var ctx = cv.getContext('2d'), land = null, grat = d3.geoGraticule10(), proj0 = d3.geoOrthographic().clipAngle(90), gp = d3.geoPath(proj0, ctx);
+  var ctx = null;
+  try{ ctx = cv.getContext('2d'); }catch(e){}
+  if(!ctx) return null;   // no canvas support (or a test environment): the header simply has no globe
+  var land = null, grat = d3.geoGraticule10(), proj0 = d3.geoOrthographic().clipAngle(90), gp = d3.geoPath(proj0, ctx);
   var lam = -15, last = 0, running = false, colors = null, colorsAt = 0, size = 0;
   function readColors(){
     var cs = getComputedStyle(cv);
