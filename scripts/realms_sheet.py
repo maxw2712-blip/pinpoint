@@ -36,6 +36,9 @@ FIXED = {
 }
 QUESTION = {
 }
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from add_capitals import CAPS
+CAP_NOTE = 'Capital added 2026-11-12 (was blank)'
 QUESTION_MODERN = {'Indonesia': 'Watch: becomes Nusantara once the move is made official'}
 
 
@@ -131,7 +134,7 @@ def main():
                 c = ws.cell(i, j, v); c.font = A10
             note = r[ck - 1] or ''
             if note.startswith('Fixed'): ws.cell(i, ck).fill = FIXF
-            elif note.startswith(('Your call', 'Minor', 'Watch')): ws.cell(i, ck).fill = ASKF
+            elif note.startswith(('Your call', 'Minor', 'Watch', 'Capital added')): ws.cell(i, ck).fill = ASKF
             ws.cell(i, yc).fill = YEL
             ws.cell(i, ck).alignment = Alignment(wrap_text=True, vertical='top')
         for j, w in enumerate(widths): ws.column_dimensions[chr(65 + j)].width = w
@@ -142,6 +145,7 @@ def main():
     for pid, plabel in PERIODS:
         for mn, dn, cap, reg in H[pid]:
             note = FIXED.get((pid, mn)) or QUESTION.get((pid, mn)) or ''
+            if mn in CAPS.get(pid, {}): note = f'{note}; {CAP_NOTE}' if note else CAP_NOTE
             added = prev_added.get((plabel, mn))
             if not added and prev and (plabel, mn) not in prev:
                 added = f'Added {datetime.date.today().isoformat()}'
@@ -161,7 +165,7 @@ def main():
     print(f'wrote {os.path.relpath(OUT, ROOT)}: {len(rows)} realms, {len(mrows)} modern countries; '
           f'{sum(1 for r in rows if (r[6] or "").startswith("Fixed"))} fixed, '
           f'{sum(1 for r in rows if (r[6] or "").startswith(("Your call", "Minor")))} open questions, '
-          f'{sum(1 for r in rows if "Added" in (r[6] or ""))} added; corrections carried over: {sum(1 for r in rows + mrows if r[-1])}')
+           f'{sum(1 for r in rows if "Added" in (r[6] or ""))} added, {sum(1 for r in rows if "Capital added" in (r[6] or ""))} capitals added; corrections carried over: {sum(1 for r in rows + mrows if r[-1])}')
 
 
 if __name__ == '__main__':
