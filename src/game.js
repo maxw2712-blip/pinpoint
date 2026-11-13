@@ -1501,7 +1501,18 @@ function untilTomorrow(){
   var m = Math.max(1, Math.round((t - new Date())/60000));
   return m>=60 ? Math.floor(m/60)+' h '+(m%60)+' min' : m+' min';
 }
+/* On this day (2026-11-13): one well-known event for each calendar date (366, written from memory for Max to check;
+   src/data/ONTHISDAY.json, "MM-DD": [year, text]), shown under the title on the menu. Informational only, no question. */
+var OTD = __JSON__("data/ONTHISDAY.json");
+function showOtd(){
+  var d = new Date(), e = OTD[String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')];
+  $('otd').hidden = !e;
+  if(!e) return;
+  $('otdTag').textContent = 'On this day, '+e[0]+':';
+  $('otdText').textContent = e[1];
+}
 function showDaily(){
+  showOtd();
   var D = loadDaily(), key = dayKey(), n = dayNum();
   // an unfinished daily from an earlier visit (page closed mid-game) is settled now
   Object.keys(D.days).forEach(function(k){ if(!D.days[k].done && !(st.daily && st.daily.key===k)) finishDaily(D, k); });

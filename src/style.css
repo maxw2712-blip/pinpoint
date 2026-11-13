@@ -504,3 +504,14 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 @media (max-width:620px){ .daily{padding:7px 10px;gap:9px;margin-bottom:10px} .dIcon{width:22px;height:22px} .dText{font-size:.88rem} .dSub{font-size:.75rem} }
 .wsShort{display:none}
 @media (max-width:620px){ .wsLong{display:none} .wsShort{display:inline} }
+
+/* ---------- On this day, under the title on the menu ---------- */
+.otd{margin:8px 0 12px;font-size:.88rem;line-height:1.4;color:var(--muted)}
+.otdTag{color:var(--ink);font-weight:700}
+@media (max-width:620px){
+  .otd{margin:4px 0 8px;font-size:.78rem;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .otd[hidden]{display:none}
+  .sheet{height:min(546px,100%)}
+}
+/* short phones: no room for the fact, keep the card as it was */
+@media (max-width:620px) and (max-height:700px){ .otd{display:none} .sheet{height:min(492px,100%)} }
