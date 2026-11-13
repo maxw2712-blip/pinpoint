@@ -1,5 +1,5 @@
 const {JSDOM}=require('jsdom'); const fs=require('fs'); const d3=require('d3');
-let html=fs.readFileSync('../pinpoint.html','utf8');
+let html=fs.readFileSync(process.env.PINPOINT_HTML||'../pinpoint.html','utf8');
 const d3src=fs.readFileSync('node_modules/d3/dist/d3.min.js','utf8'), tjsrc=fs.readFileSync('node_modules/topojson-client/dist/topojson-client.min.js','utf8');
 html=html.replace(/<script src="[^"]*d3[^"]*"><\/script>/,()=>'<script>'+d3src.replace(/<\/script>/g,'<\\/script>')+'</script>')
          .replace(/<script src="[^"]*topojson[^"]*"><\/script>/,()=>'<script>'+tjsrc.replace(/<\/script>/g,'<\\/script>')+'</script>');
@@ -27,7 +27,8 @@ const set=(id,v)=>{ const s=$(id); s.value=v; s.dispatchEvent(new w.Event('chang
   set('exploreMode','bronze'); await sleep(10); ['Dravidians','Vedic Aryans','Egypt'].forEach(n=>{ const e=find(n); if(e) click(e); }); console.log('bronze labels  :',labels().join(' / '));
   set('exploreMode','wwi'); await sleep(10); ['German Empire','Austro-Hungarian Empire','Serbia'].forEach(n=>{ const e=find(n); if(e) click(e); }); console.log('1914 labels    :',labels().join(' / '));
   set('exploreMode','geo'); await sleep(20); mapClick([32,26]); console.log('\ngeography      :',labels().join(' / ')||'(none)','| bar still visible =',!$('exploreBar').hidden);
-  set('exploreMode','planets'); await sleep(20); console.log('planets: switch-world button visible =',!$('exploreWorld').hidden);
+  if($('exploreMode').querySelector('option[value="planets"]')){ set('exploreMode','planets'); await sleep(20); console.log('planets: switch-world button visible =',!$('exploreWorld').hidden); }
+  else console.log('planets: archived, not in the Explore picker');
   set('exploreMode','modern'); await sleep(10);
   click($('exploreHome')); await sleep(10);
   console.log('\nHome: setup visible =',!$('setup').hidden,'| explore bar hidden =',$('exploreBar').hidden,'| tab highlighted =',[...doc.querySelectorAll('[role=tab].on')].map(b=>b.querySelector('.tl').textContent).join(','));

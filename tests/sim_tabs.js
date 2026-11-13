@@ -1,5 +1,5 @@
 const {JSDOM}=require('jsdom'); const fs=require('fs');
-let html=fs.readFileSync('../pinpoint.html','utf8');
+let html=fs.readFileSync(process.env.PINPOINT_HTML||'../pinpoint.html','utf8');
 const d3src=fs.readFileSync('node_modules/d3/dist/d3.min.js','utf8'), tjsrc=fs.readFileSync('node_modules/topojson-client/dist/topojson-client.min.js','utf8');
 html=html.replace(/<script src="[^"]*d3[^"]*"><\/script>/,()=>'<script>'+d3src.replace(/<\/script>/g,'<\\/script>')+'</script>')
          .replace(/<script src="[^"]*topojson[^"]*"><\/script>/,()=>'<script>'+tjsrc.replace(/<\/script>/g,'<\\/script>')+'</script>');
@@ -13,7 +13,10 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   console.log('tabs:',[...doc.querySelectorAll('.tab')].map(b=>b.textContent).join(' | '));
   console.log('Map games modes:',[...doc.querySelectorAll('.seg[data-key="mode"] button')].map(b=>b.textContent).join(', '));
   click(doc.querySelector('.seg[data-key="mode"] button[data-v="ancient"]')); await sleep(10);
+  // Planets is archived: its tab exists only in a build made with --planets (PINPOINT_HTML=... to test that build)
+  console.log('planets tab present =', !!$('tabPlanets'));
   for(const tab of ['tabGeo','tabFlags','tabPlanets','tabHist']){
+    if(!$(tab)) continue;
     click($(tab)); await sleep(15);
     for(const lv of [0,3]){
       click(doc.querySelector(`#ticks button[data-i="${lv}"]`)); click($('start')); await sleep(15);

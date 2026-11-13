@@ -17,11 +17,13 @@ dependencies stay d3 and topojson-client from jsdelivr):
   src/flags/realms/     historical realm flags; period-specific ones are "ww2|Afghanistan.webp"
   src/img/              shaded relief and planet textures
 
-Usage:  python3 build.py [--dev] [--out FILE] [--check]
+Usage:  python3 build.py [--dev] [--planets] [--out FILE] [--check]
   (default) the PUBLIC build, pinpoint.html: everything between @dev-start and @dev-end markers is left out (dev mode:
             the Report buttons, report panels, the Settings toggle and their code), so players can't find it. The build
             fails if any dev-mode trace is left in it.
   --dev     the PRIVATE build, pinpoint-dev.html, with dev mode included. It is git-ignored: keep it local, never publish it.
+  --planets include the archived Planets mode (its textures, src/img/planets). Without them the game hides the Planets
+            tab and Explore option on its own (PLANETS_ON in game.js); all planet code and data stay in src/.
   --check   build to memory and fail if the result differs from the existing output (for CI or a pre-commit hook)
 Markers: <!-- @dev-start --> ... <!-- @dev-end --> in index.html, /* @dev-start */ ... /* @dev-end */ in style.css,
          // @dev-start ... // @dev-end (each on its own line) in game.js.
@@ -90,6 +92,9 @@ def inline_images(rel):
     return json.dumps(items, ensure_ascii=False, separators=(',', ':'))
 
 
+ARCHIVED = {'img/planets'}
+INCLUDE_ARCHIVED = '--planets' in sys.argv[1:]
+
 PLACEHOLDER = re.compile(r'__(JSON|IMAGE|IMAGES)__\("([^"]+)"\)')
 
 
@@ -97,6 +102,7 @@ def expand(m):
     kind, rel = m.groups()
     if kind == 'JSON': return inline_json(rel)
     if kind == 'IMAGE': return json.dumps(data_url(os.path.join(SRC, rel)))
+    if rel in ARCHIVED and not INCLUDE_ARCHIVED: return '{}'
     return inline_images(rel)
 
 

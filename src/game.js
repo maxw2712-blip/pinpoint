@@ -74,6 +74,10 @@ var REGION_BOX = {
 
 var RELIEF = __IMAGE__("img/relief.webp");
 var PIMG = __IMAGES__("img/planets");
+/* Planets mode is archived (Max, 2026-11-13): build.py leaves the planet textures out unless run with --planets, and
+   with no textures the Planets tab, its Explore option and its credit line are removed. All planet code and data stay. */
+var PLANETS_ON = Object.keys(PIMG).length > 0;
+if(!PLANETS_ON) document.querySelectorAll('.planetsOnly').forEach(function(e){ e.remove(); });
 var PFEATS = __JSON__("data/PFEATS.json");
 var BODIES = {mars:{R:3389.5, label:'Mars', short:'Mars'}, moon:{R:1737.4, label:'the Moon', short:'Moon'}, venus:{R:6051.8, label:'Venus', short:'Venus'}};
 var FLAGS = __IMAGES__("flags/modern");
@@ -703,7 +707,8 @@ var LEDES = {
   security: 'Answer global-security questions by clicking the country or the strait on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
   history: 'Answer history trivia questions. The fewer tries you need, the more points you score. Games run ten rounds.'
 };
-var TABS = [['map','tabMap'],['geo','tabGeo'],['flags','tabFlags'],['planets','tabPlanets'],['history','tabHist'],['security','tabSecurity'],['explore','tabExplore']];
+var TABS = [['map','tabMap'],['geo','tabGeo'],['flags','tabFlags'],['planets','tabPlanets'],['history','tabHist'],['security','tabSecurity'],['explore','tabExplore']]
+  .filter(function(t){ return PLANETS_ON || t[0]!=='planets'; });
 function selectTab(tab){
   if(tab==='explore'){ enterExplore(); return; }
   st.tab = tab;
