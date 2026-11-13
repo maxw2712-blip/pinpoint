@@ -264,7 +264,7 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 
 /* phone: smaller menu card */
 @media (max-width:620px){
-  .sheet{width:min(350px,100%);height:min(410px,100%);padding:10px 12px 8px}
+  .sheet{width:min(350px,100%);height:min(492px,100%);padding:10px 12px 8px}
   .sheet h1{font-size:1.6rem}
   .sheet h2{font-size:1.6rem}
   .final{font-size:2.4rem;margin:6px 0 2px}
@@ -489,6 +489,18 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 .masteryKey b{color:var(--ink);font-weight:700}
 .mk{display:inline-block;width:11px;height:11px;border-radius:3px}
 .mk.weak{background:#d64545}.mk.mid{background:#e8a33d}.mk.good{background:#3fa463}.mk.none{background:var(--mst-none)}
+
+/* ---------- Daily challenge strip on the menu ---------- */
+.daily{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:10px 12px;border:1.5px solid var(--line);border-radius:14px}
+.dIcon{width:26px;height:26px;flex:none;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dText{flex:1;min-width:0;line-height:1.3}
+.dText b{font-weight:700}
+.dStreak{font-weight:700;margin-left:4px;white-space:nowrap}
+.dSub{display:block;font-size:.82rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.daily .btn{flex:none;padding:7px 16px}
+@media (max-width:620px){ .daily{padding:7px 10px;gap:9px;margin-bottom:10px} .dIcon{width:22px;height:22px} .dText{font-size:.88rem} .dSub{font-size:.75rem} }
+.wsShort{display:none}
+@media (max-width:620px){ .wsLong{display:none} .wsShort{display:inline} }
 </style>
 </head>
 <body>
@@ -571,6 +583,7 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
       <div class="brand"><canvas id="globe" aria-hidden="true"></canvas><h1 id="t1">Pinpoint</h1></div>
       <button type="button" class="gear" id="settingsBtn" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       <p class="lede" id="lede">Click the right place on the map, and the fewer tries you need, the more points you score. Games run ten rounds.</p>
+      <div class="daily" id="daily"><svg class="dIcon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg><div class="dText"><b id="dailyTitle">Daily</b> <span class="dStreak" id="dailyStreak" hidden></span><span class="dSub" id="dailySub"></span></div><button type="button" class="btn primary" id="dailyBtn">Play</button></div>
       <div class="tabs" role="tablist" aria-label="Game type">
         <button type="button" role="tab" class="tab on" id="tabMap" aria-selected="true"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.7-6.5-11.2a6.5 6.5 0 1 1 13 0C18.5 15.3 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg><span class="tl">Nation States</span><span class="ts">Nations</span></button>
         <button type="button" role="tab" class="tab" id="tabGeo" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 19.5 9 8.5l4.2 6.6 2.4-3.6 5.9 8z"/><path d="m7.4 11.2 1.6 1.4 1.5-1.2"/></svg><span class="tl">Geography</span><span class="ts">Geo</span></button>
@@ -1256,6 +1269,7 @@ function getBest(){ try{ var v=localStorage.getItem(bestKey()); return v===null?
 function setBest(v){ try{ localStorage.setItem(bestKey(), String(v)); }catch(e){} }
 function showBest(){
   if(typeof showWeakBtn==='function') showWeakBtn();
+  if(typeof showDaily==='function') showDaily();
   var b=getBest();
   $('best').textContent = b===null ? '' : 'Your best for this setup: '+b+' points.';
 }
@@ -1385,7 +1399,12 @@ $('masteryBtn').addEventListener('click', function(){
   if(pack.kind==='political') autoLabelAll();
   drawMastery(); refreshMastery();
 });
-$('shareBtn').addEventListener('click', shareResult);
+$('shareBtn').addEventListener('click', function(){ shareResult(); });
+$('dailyBtn').addEventListener('click', function(){
+  var D = loadDaily(), rec = D.days[dayKey()];
+  if(rec && rec.done) shareResult(dailyShareData(rec, D), $('dailySub'));
+  else startDaily();
+});
 $('exploreHome').addEventListener('click', function(){ toSetup(); });
 $('exploreMode').addEventListener('change', function(){
   st.exploreMode = this.value;
@@ -1419,6 +1438,12 @@ function crossFade(draw){
 }
 $('exploreWorld').addEventListener('click', function(){ var order = Object.keys(BODIES); setBody(order[(order.indexOf(curBody)+1)%order.length]); });
 function toSetup(){
+  if(st.daily){ var D = loadDaily(); finishDaily(D, st.daily.key); st.daily = null; }
+  if(st.dailyPrev){
+    var pv = st.dailyPrev; st.dailyPrev = null;
+    st.lastMap = pv.lastMap; setLevel(pv.level);
+    selectTab(pv.tab==='explore' || !pv.tab ? 'map' : pv.tab);
+  }
   stopTimer(); clearTimers(); hideToast(); clearLabels(); st.devPick = false; DEV_PANELS.forEach(function(id){ var e = $(id); if(e) e.hidden = true; }); devPausedMs = null;
   $('flagImg').hidden = true; app.classList.remove('flagq');
   $('end').hidden = true; $('setup').hidden = false;
@@ -1551,9 +1576,10 @@ function timeUp(){ if(st.phase==='play' && !st.locked) reveal(null, true); }
 /* ---------- Game ---------- */
 function startGame(qsOverride){
   clearTimers();
-  var practice = Array.isArray(qsOverride);
+  st.daily = st.dailyStart || null; st.dailyStart = null;
+  var practice = Array.isArray(qsOverride) && !st.daily;
   st.practice = practice;
-  st.qs = practice ? qsOverride : buildQuestions();
+  st.qs = Array.isArray(qsOverride) ? qsOverride : buildQuestions();
   st.i=0; st.score=0; st.log=[]; st.phase='play'; st.saved=null;
   clearLabels();
   $('exploreBar').hidden = true; app.classList.remove('exploring'); app.classList.remove('mastering');
@@ -2000,6 +2026,7 @@ var MASTERY = {};
 try{ MASTERY = JSON.parse(localStorage.getItem(MKEY) || '{}') || {}; }catch(e){ MASTERY = {}; }
 function masteryPack(P){ P = P || pack; return !!P && P.kind==='political' && !P.isFlags && !P.isSecurity && MAP_MODES.indexOf(P.id)>=0; }
 function recordResult(q, pts){
+  dailyProgress(pts);
   if(!masteryPack() || !q || (q.type!=='find' && q.type!=='capital') || !pack.items[q.name]) return;
   var P = MASTERY[pack.id] || (MASTERY[pack.id] = {});
   var r = P[q.name] || (P[q.name] = [0, []]);
@@ -2065,7 +2092,101 @@ function refreshMastery(){
 function showWeakBtn(){
   var b = $('weakBtn'), n = (st.tab==='map' && masteryPack()) ? weakSpots().length : 0;
   b.hidden = !n;
-  b.textContent = 'Practice my weak spots ('+n+')';
+  b.innerHTML = '<span class="wsLong">Practice my weak spots</span><span class="wsShort">Weak spots</span> ('+n+')';
+}
+/* ---------- Daily challenge (2026-11-13) ----------
+   Everyone gets the same 10 questions on the same local calendar day: day 1 is 2026-11-13, the map rotates through the 11
+   nation maps (MAP_MODES order), Medium rules, questions picked by buildQuestions with Math.random swapped for a PRNG
+   seeded with the date. One play a day: the result is saved as you go, so leaving early (or reloading) counts the rest as
+   missed. localStorage 'pinpoint:daily' = {last, streak, best, days:{date:{n, mode, log:[pts], done}}}. The share text
+   and card are spoiler-free: squares only, no place names, no map. */
+var DKEY = 'pinpoint:daily', DAILY_START = Date.UTC(2026, 10, 13);
+function dayKey(d){ d = d || new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function dayNum(d){ d = d || new Date(); return Math.max(1, Math.round((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - DAILY_START)/864e5) + 1); }
+function dailyMode(n){ return MAP_MODES[(n-1) % MAP_MODES.length]; }
+function loadDaily(){
+  var D;
+  try{ D = JSON.parse(localStorage.getItem(DKEY) || '{}') || {}; }catch(e){ D = {}; }
+  D.days = D.days || {}; D.streak = D.streak || 0; D.best = D.best || 0;
+  return D;
+}
+function saveDaily(D){
+  var keys = Object.keys(D.days).sort();
+  while(keys.length > 60) delete D.days[keys.shift()];
+  try{ localStorage.setItem(DKEY, JSON.stringify(D)); }catch(e){}
+}
+/* a finished daily counts toward the streak: played yesterday -> +1, otherwise it starts again at 1 */
+function finishDaily(D, key){
+  var rec = D.days[key];
+  if(!rec || rec.done) return;
+  while(rec.log.length < 10) rec.log.push(0);
+  rec.done = true;
+  var y = new Date(); y.setDate(y.getDate()-1);
+  if(D.last !== key) D.streak = D.last===dayKey(y) ? D.streak+1 : 1;
+  D.last = key; D.best = Math.max(D.best, D.streak);
+  saveDaily(D);
+}
+function curStreak(D){
+  var y = new Date(); y.setDate(y.getDate()-1);
+  return (D.last===dayKey() || D.last===dayKey(y)) ? D.streak : 0;
+}
+function seededRandom(str){
+  var h = 1779033703 ^ str.length;
+  for(var i=0; i<str.length; i++){ h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+  var a = h >>> 0;
+  return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function modeLabel(id){ var o = document.querySelector('#exploreMode option[value="'+id+'"]'); return o ? o.textContent : id; }
+function dailySquares(log){ return log.map(function(p){ return p>=3 ? '\ud83d\udfe9' : p>0 ? '\ud83d\udfe7' : '\ud83d\udfe5'; }); }
+function dailyShareData(rec, D){
+  var sc = rec.log.reduce(function(a, b){ return a+b; }, 0), sq = dailySquares(rec.log), k = curStreak(D);
+  var text = 'Pinpoint Daily #'+rec.n+' \u00b7 '+modeLabel(rec.mode)+'\n'+sc+'/30'+(k ? '  \ud83d\udd25 '+k : '')+'\n'+sq.slice(0,5).join('')+'\n'+sq.slice(5).join('')+'\nhttps://maxw2712-blip.github.io/pinpoint/';
+  return {text:text, label:'Daily #'+rec.n+' \u00b7 '+modeLabel(rec.mode), score:sc, max:30, pts:rec.log, recap:false, extra:k ? k+'-day streak' : ''};
+}
+function startDaily(){
+  var D = loadDaily(), key = dayKey(), n = dayNum();
+  if(D.days[key]) return;
+  st.dailyPrev = st.dailyPrev || {tab:st.tab, mode:st.mode, lastMap:st.lastMap, level:st.level};
+  setLevel(1); setMode(dailyMode(n));
+  var saved = Math.random, qs;
+  Math.random = seededRandom('pinpoint-daily-'+key);
+  try{ qs = buildQuestions(); } finally { Math.random = saved; }
+  D.days[key] = {n:n, mode:dailyMode(n), log:[], done:false};
+  saveDaily(D);
+  st.dailyStart = {key:key, n:n};
+  startGame(qs);
+}
+/* called with every logged answer in a daily game, so progress survives leaving or reloading */
+function dailyProgress(pts){
+  if(!st.daily) return;
+  var D = loadDaily(), rec = D.days[st.daily.key];
+  if(!rec || rec.done) return;
+  rec.log.push(pts);
+  saveDaily(D);
+}
+function untilTomorrow(){
+  var t = new Date(); t.setHours(24, 0, 0, 0);
+  var m = Math.max(1, Math.round((t - new Date())/60000));
+  return m>=60 ? Math.floor(m/60)+' h '+(m%60)+' min' : m+' min';
+}
+function showDaily(){
+  var D = loadDaily(), key = dayKey(), n = dayNum();
+  // an unfinished daily from an earlier visit (page closed mid-game) is settled now
+  Object.keys(D.days).forEach(function(k){ if(!D.days[k].done && !(st.daily && st.daily.key===k)) finishDaily(D, k); });
+  D = loadDaily();
+  var rec = D.days[key], k = curStreak(D);
+  $('dailyTitle').textContent = 'Daily #'+n+' \u00b7 '+modeLabel(dailyMode(n));
+  if(rec && rec.done){
+    var sc = rec.log.reduce(function(a, b){ return a+b; }, 0);
+    $('dailySub').textContent = sc+'/30 '+dailySquares(rec.log).join('')+' \u00b7 next in '+untilTomorrow();
+    $('dailyBtn').textContent = 'Share'; $('dailyBtn').classList.remove('primary');
+  } else {
+    $('dailySub').textContent = 'Medium \u00b7 same 10 questions for all';
+    $('dailyBtn').textContent = 'Play'; $('dailyBtn').classList.add('primary');
+  }
+  $('dailyStreak').textContent = k ? '\ud83d\udd25 '+k : '';
+  $('dailyStreak').title = k ? k+'-day streak (best '+D.best+')' : '';
+  $('dailyStreak').hidden = !k;
 }
 /* Explore: a realm with no flag of its own is shaded in a muted colour for its region, so the map reads as complete. */
 var REGION_TINT = {Europe:'eu', Asia:'as', Africa:'af', Americas:'am', Oceania:'oc'};
@@ -2635,26 +2756,32 @@ function shareText(){
   return 'Pinpoint · '+setupLabel()+'\n'+st.score+'/'+max+'  '+squares+'\nhttps://maxw2712-blip.github.io/pinpoint/';
 }
 /* The summary card: 1200x630 PNG with the setup, score, one square per question and the recap map. */
-function shareImage(){
+function gameShareData(){
+  if(st.daily){ var D = loadDaily(), rec = D.days[st.daily.key]; if(rec) return dailyShareData(rec, D); }
+  return {text:shareText(), label:setupLabel(), score:st.score, max:st.qs.length*3, pts:st.log.map(function(e){ return e.pts; }), recap:true, extra:''};
+}
+function shareImage(data){
+  data = data || gameShareData();
   return new Promise(function(resolve){
     var Wc = 1200, Hc = 630, cv = document.createElement('canvas'); cv.width = Wc; cv.height = Hc;
-    var c = cv.getContext('2d'), max = st.qs.length*3;
+    var c = cv.getContext('2d'), max = data.max;
     c.fillStyle = '#0d2a3a'; c.fillRect(0, 0, Wc, Hc);
     c.fillStyle = '#f0b400'; c.fillRect(0, 0, Wc, 10);
     c.fillStyle = '#ffffff'; c.font = '800 64px "Bricolage Grotesque", system-ui, sans-serif'; c.fillText('Pinpoint', 56, 112);
-    c.fillStyle = '#9bb6c2'; c.font = '600 28px Figtree, system-ui, sans-serif'; c.fillText(setupLabel(), 56, 160);
-    c.fillStyle = '#ffffff'; c.font = '800 120px "Bricolage Grotesque", system-ui, sans-serif'; c.fillText(String(st.score), 56, 300);
-    var sw = c.measureText(String(st.score)).width;
+    c.fillStyle = '#9bb6c2'; c.font = '600 28px Figtree, system-ui, sans-serif'; c.fillText(data.label, 56, 160);
+    c.fillStyle = '#ffffff'; c.font = '800 120px "Bricolage Grotesque", system-ui, sans-serif'; c.fillText(String(data.score), 56, 300);
+    var sw = c.measureText(String(data.score)).width;
     c.fillStyle = '#9bb6c2'; c.font = '700 44px "Bricolage Grotesque", system-ui, sans-serif'; c.fillText('/ '+max, 56+sw+18, 300);
-    st.log.forEach(function(e, i){
-      c.fillStyle = e.pts>=3 ? '#3fc27a' : e.pts>0 ? '#ffa33a' : '#ff6a4d';
+    if(data.extra){ c.fillStyle = '#f0b400'; c.font = '700 30px Figtree, system-ui, sans-serif'; c.fillText(data.extra, 56, 200); }
+    data.pts.forEach(function(p, i){
+      c.fillStyle = p>=3 ? '#3fc27a' : p>0 ? '#ffa33a' : '#ff6a4d';
       var x = 56+(i%5)*58, y = 350+Math.floor(i/5)*58;
       c.beginPath(); if(c.roundRect) c.roundRect(x, y, 46, 46, 8); else c.rect(x, y, 46, 46); c.fill();
     });
     c.fillStyle = '#9bb6c2'; c.font = '500 22px Figtree, system-ui, sans-serif'; c.fillText('maxw2712-blip.github.io/pinpoint', 56, Hc-44);
     var done = function(){ cv.toBlob(function(b){ resolve(b); }, 'image/png'); };
     var rm = $('recapMap');
-    if($('recapWrap').hidden || !rm.getAttribute('viewBox')){ done(); return; }
+    if(!data.recap || $('recapWrap').hidden || !rm.getAttribute('viewBox')){ done(); return; }
     var xml = new XMLSerializer().serializeToString(rm);
     if(!/xmlns=/.test(xml)) xml = xml.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
     var img = new Image();
@@ -2667,9 +2794,11 @@ function shareImage(){
     img.src = 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml.replace(/<svg([^>]*)>/, '<svg$1 width="1440" height="720">'));
   });
 }
-function shareResult(){
-  var text = shareText(), note = $('shareNote');
-  shareImage().then(function(blob){
+function shareResult(data, note){
+  data = (data && data.text) ? data : gameShareData();
+  note = note || $('shareNote');
+  var text = data.text;
+  shareImage(data).then(function(blob){
     var file = blob ? new File([blob], 'pinpoint-result.png', {type:'image/png'}) : null;
     if(file && navigator.canShare && navigator.canShare({files:[file]})){
       navigator.share({files:[file], text:text, title:'Pinpoint'}).catch(function(){});
@@ -2701,8 +2830,15 @@ function endGame(){
     pct>=0.7 ? 'Strong run. A few tricky spots, nothing you can\u2019t fix.' :
     pct>=0.4 ? 'Solid start. Try the same setup again to lock it in.' :
                'Good practice. Narrow it to one region or feature type and replay to build the map in your head.';
+  if(st.daily && pct<0.7) $('verdict').textContent = pct>=0.4 ? 'Solid start. A new daily opens at midnight.' : 'A tough one. A new daily opens at midnight; practise your misses meanwhile.';
   var prev = getBest(), msg;
-  if(st.practice){ msg = 'Practice round, so this score isn\u2019t saved.'; }
+  $('again').hidden = !!st.daily;
+  if(st.daily){
+    var D = loadDaily(); finishDaily(D, st.daily.key); D = loadDaily();
+    var ks = curStreak(D);
+    msg = 'Daily #'+st.daily.n+' saved. Streak: '+ks+(ks===1 ? ' day' : ' days')+' (best '+D.best+'). Next daily in '+untilTomorrow()+'.';
+  }
+  else if(st.practice){ msg = 'Practice round, so this score isn\u2019t saved.'; }
   else if(prev===null || st.score>prev){ setBest(st.score); msg = prev===null ? 'First score saved for this setup.' : 'New best for this setup. Previous: '+prev+'.'; }
   else { msg = 'Your best for this setup: '+prev+' points.'; }
   $('best2').textContent = msg;
