@@ -595,6 +595,7 @@ function bestKey(){ return 'pinpoint:best:'+st.mode+':'+LEVELS[st.level].id+':'+
 function getBest(){ try{ var v=localStorage.getItem(bestKey()); return v===null?null:parseInt(v,10); }catch(e){ return null; } }
 function setBest(v){ try{ localStorage.setItem(bestKey(), String(v)); }catch(e){} }
 function showBest(){
+  if(typeof showWeakBtn==='function') showWeakBtn();
   var b=getBest();
   $('best').textContent = b===null ? '' : 'Your best for this setup: '+b+' points.';
 }
@@ -716,6 +717,14 @@ function selectTab(tab){
 TABS.forEach(function(p){ $(p[1]).addEventListener('click', function(){ selectTab(p[0]); }); });
 $('again').addEventListener('click', startGame);
 $('practice').addEventListener('click', startPractice);
+$('weakBtn').addEventListener('click', startWeakPractice);
+$('exploreWeak').addEventListener('click', startWeakPractice);
+$('masteryBtn').addEventListener('click', function(){
+  st.mastery = !st.mastery;
+  clearLabels();
+  if(pack.kind==='political') autoLabelAll();
+  drawMastery(); refreshMastery();
+});
 $('shareBtn').addEventListener('click', shareResult);
 $('exploreHome').addEventListener('click', function(){ toSetup(); });
 $('exploreMode').addEventListener('change', function(){
@@ -753,7 +762,7 @@ function toSetup(){
   stopTimer(); clearTimers(); hideToast(); clearLabels(); st.devPick = false; DEV_PANELS.forEach(function(id){ var e = $(id); if(e) e.hidden = true; }); devPausedMs = null;
   $('flagImg').hidden = true; app.classList.remove('flagq');
   $('end').hidden = true; $('setup').hidden = false;
-  app.classList.remove('playing'); app.classList.remove('tint'); app.classList.remove('noterrain'); app.classList.remove('exploring'); st.phase='setup';
+  app.classList.remove('playing'); app.classList.remove('tint'); app.classList.remove('noterrain'); app.classList.remove('exploring'); app.classList.remove('mastering'); st.phase='setup';
   $('exploreBar').hidden = true;
   $('hudTop').hidden = true; $('hudBottom').hidden = true; $('zoomBtns').hidden = true;
   paths.classed('hit miss reveal', false);
@@ -887,7 +896,7 @@ function startGame(qsOverride){
   st.qs = practice ? qsOverride : buildQuestions();
   st.i=0; st.score=0; st.log=[]; st.phase='play'; st.saved=null;
   clearLabels();
-  $('exploreBar').hidden = true; app.classList.remove('exploring');
+  $('exploreBar').hidden = true; app.classList.remove('exploring'); app.classList.remove('mastering');
   paths.classed('hit miss reveal', false);
   marks.selectAll('*').remove();
   applyRegion();
@@ -926,6 +935,7 @@ function startExplore(){
   $('zoomBtns').hidden = false; $('exploreBar').hidden = false;
   $('exploreWorld').hidden = pack.kind!=='planet';
   if(pack.kind==='political') autoLabelAll();
+  drawMastery(); refreshMastery();
 }
 /* Explore: every nation shows its flag, name and capital from the start; labels too small to read appear as you zoom in. */
 function autoLabelAll(){
@@ -1320,6 +1330,83 @@ function layoutLabels(){
   });
   flushFadeIns();
 }
+/* ---------- Mastery (2026-11-12) ----------
+   Every answered map question on a nation map (Modern and the 10 historical periods; find and capital questions, practice
+   rounds included) is saved per period and realm in localStorage 'pinpoint:mastery' as [times asked, last 5 scores (0-3)].
+   Accuracy = mean of the last 5 scores / 3, so improvement shows. Weak < 50%, learning 50-79%, mastered 80%+.
+   Explore > Mastery shades each realm by it; "Practice weak spots" builds a practice round from the weakest realms. */
+var MKEY = 'pinpoint:mastery';
+var MASTERY = {};
+try{ MASTERY = JSON.parse(localStorage.getItem(MKEY) || '{}') || {}; }catch(e){ MASTERY = {}; }
+function masteryPack(P){ P = P || pack; return !!P && P.kind==='political' && !P.isFlags && !P.isSecurity && MAP_MODES.indexOf(P.id)>=0; }
+function recordResult(q, pts){
+  if(!masteryPack() || !q || (q.type!=='find' && q.type!=='capital') || !pack.items[q.name]) return;
+  var P = MASTERY[pack.id] || (MASTERY[pack.id] = {});
+  var r = P[q.name] || (P[q.name] = [0, []]);
+  r[0]++; r[1].push(pts);
+  if(r[1].length > 5) r[1].shift();
+  try{ localStorage.setItem(MKEY, JSON.stringify(MASTERY)); }catch(e){}
+}
+function masteryOf(name){
+  var r = (MASTERY[pack.id] || {})[name];
+  if(!r || !r[1].length) return null;
+  var sum = r[1].reduce(function(a, b){ return a + b; }, 0);
+  return {n:r[0], acc:sum/(3*r[1].length)};
+}
+function masteryBand(m){ return !m ? 'none' : m.acc>=0.8 ? 'good' : m.acc>=0.5 ? 'mid' : 'weak'; }
+var mColor = d3.interpolateRgbBasis(['#d64545','#e8a33d','#3fa463']);
+function masteryCounts(){
+  var c = {weak:0, mid:0, good:0, none:0};
+  Object.keys(pack.items).forEach(function(n){ if(isOff(n)) return; c[masteryBand(masteryOf(n))]++; });
+  return c;
+}
+/* the weakest realms first (lowest accuracy, then the most often asked), only those below 80%, at most ten */
+function weakSpots(){
+  if(!masteryPack()) return [];
+  return Object.keys(pack.items).filter(function(n){ var m = masteryOf(n); return m && m.acc<0.8 && !isOff(n); })
+    .sort(function(a, b){ var x = masteryOf(a), y = masteryOf(b); return (x.acc - y.acc) || (y.n - x.n); })
+    .slice(0, ROUNDS);
+}
+function startWeakPractice(){
+  var list = weakSpots();
+  if(!list.length) return;
+  startGame(shuffle(list).map(function(n){ return {name:n, type:'find'}; }));
+}
+function drawMastery(){
+  if(!fills) return;
+  fills.selectAll('g.mastery').remove();
+  var on = st.mastery && st.phase==='explore' && masteryPack();
+  app.classList.toggle('mastering', !!on);
+  if(!on) return;
+  var mg = fills.append('g').attr('class','mastery');
+  pack.features.forEach(function(f){
+    var nm = f.properties && f.properties.name;
+    // overseas territories (Greenland...) are not answers: grey them too, so their own flags don't stand out
+    if(!nm || (!pack.items[nm] && (TERRITORY_FLAGS[pack.id] || []).indexOf(nm)<0)) return;
+    var m = pack.items[nm] ? masteryOf(nm) : null;
+    mg.append('path').attr('d', path(f)).attr('class', m ? 'mst' : 'mst none').attr('fill', m ? mColor(m.acc) : null);
+  });
+}
+function refreshMastery(){
+  var ok = st.phase==='explore' && masteryPack();
+  $('masteryBtn').hidden = !ok;
+  $('masteryBtn').setAttribute('aria-pressed', st.mastery ? 'true' : 'false');
+  $('masteryBtn').classList.toggle('on', !!st.mastery);
+  var show = ok && st.mastery;
+  $('masteryKey').hidden = !show;
+  var weak = show ? weakSpots().length : 0;
+  $('exploreWeak').hidden = !weak;
+  $('exploreWeak').textContent = 'Practice '+weak+' weak spot'+(weak===1 ? '' : 's');
+  if(show){
+    var c = masteryCounts();
+    $('mkWeak').textContent = c.weak; $('mkMid').textContent = c.mid; $('mkGood').textContent = c.good; $('mkNone').textContent = c.none;
+  }
+}
+function showWeakBtn(){
+  var b = $('weakBtn'), n = (st.tab==='map' && masteryPack()) ? weakSpots().length : 0;
+  b.hidden = !n;
+  b.textContent = 'Practice my weak spots ('+n+')';
+}
 /* Explore: a realm with no flag of its own is shaded in a muted colour for its region, so the map reads as complete. */
 var REGION_TINT = {Europe:'eu', Asia:'as', Africa:'af', Americas:'am', Oceania:'oc'};
 function tintRealm(key){
@@ -1356,6 +1443,8 @@ function paintFlag(key, fill, feat){
       fills.append('path').attr('class','pfillEdge').attr('data-key',key).attr('d', path(f));
     });
     if(painted && paths) paths.filter(function(d){ return d.properties.name===key; }).classed('flagged', true);
+    var mg = fills.select('g.mastery');
+    if(!mg.empty()) mg.raise();
 }
 /* Label text: the name in bold, the capital lighter and smaller. Handles "Kenya (Nairobi)" and merged names such as
    "Egypt (New Kingdom · Thebes)" (base "Egypt (New Kingdom)"). */
@@ -1487,25 +1576,31 @@ function countriesFor(f, key){
 }
 function modernName(n){ var it = getPack('modern').items[n]; return it ? it.disp : n; }
 /* While exploring, a nation's capital is shown in parentheses after its name (merged into existing parentheses). */
-function withCap(dn, it){
-  if(st.phase!=='explore' || !it || !it.cap) return dn;
-  return /\)$/.test(dn) ? dn.slice(0,-1)+' \u00b7 '+it.cap+')' : dn+' ('+it.cap+')';
+function withCap(dn, it, name){
+  if(st.phase!=='explore' || !it) return dn;
+  var extra = it.cap;
+  if(st.mastery && masteryPack()){
+    var m = name ? masteryOf(name) : null;
+    extra = m ? Math.round(m.acc*100)+'%' : null;
+  }
+  if(!extra) return dn;
+  return /\)$/.test(dn) ? dn.slice(0,-1)+' \u00b7 '+extra+')' : dn+' ('+extra+')';
 }
 function peekFor(name){
   if(!name) return {name:'Unclaimed land'};
   var it = pack.items[name];
   if(pack.id==='modern' || pack.isFlags || pack.isSecurity){
-    return {base:disp(name), name:withCap(disp(name), it), flags:[], fill:FLAGS[name] || null, sub:(it && it.cap) ? 'Capital: '+it.cap : ''};
+    return {base:disp(name), name:withCap(disp(name), it, name), flags:[], fill:FLAGS[name] || null, sub:(it && it.cap) ? 'Capital: '+it.cap : ''};
   }
   var dn = it ? it.disp : name;
   if(rflag(dn)){
     // this realm flew a flag of its own, so paint it in
-    return {base:dn, name:withCap(dn, it), flags:[], fill:rflag(dn), sub:(it && it.cap) ? 'Capital: '+it.cap : ''};
+    return {base:dn, name:withCap(dn, it, name), flags:[], fill:rflag(dn), sub:(it && it.cap) ? 'Capital: '+it.cap : ''};
   }
   // realms with no flag of their own: show the countries that cover their land today
   var f = pack.byName[name], cs = f ? countriesFor(f, pack.id+':'+name) : [];
   var sub = ((it && it.cap) ? 'Capital: '+it.cap+'. ' : '') + (cs.length ? 'Today: '+cs.map(modernName).join(', ') : '');
-  return {base:dn, name:withCap(dn, it), flags:cs.map(function(n){ return FLAGS[n]; }).filter(Boolean), sub:sub};
+  return {base:dn, name:withCap(dn, it, name), flags:cs.map(function(n){ return FLAGS[n]; }).filter(Boolean), sub:sub};
 }
 function peekPhys(label){
   var it = pack.items[label];
@@ -1663,6 +1758,7 @@ function correct(){
   stopTimer();
   st.locked = true; st.score += pts;
   st.log.push({q:q, pts:pts});
+  recordResult(q, pts);
   var hitSel = lift(targetPaths()).classed('hit', true);
   $('score').textContent = st.score;
   $('act').disabled = true;
@@ -1767,6 +1863,7 @@ function reveal(clicked, timedOut){
   stopTimer();
   st.locked = true; st.revealed = true; st.tries = LEVELS[st.level].tries; setPips();
   st.log.push({q:q, pts:0});
+  recordResult(q, 0);
   lift(targetPaths()).classed('reveal', true);
   st.saved = d3.zoomTransform(svg.node());
   moveTo(((it.answers && it.answers.length>3) || ((pack.id==='ww2' || pack.id==='coldwar') && SCATTERED[q.name])) ? d3.zoomIdentity : viewForFeature(it.answers ? it.answers[0] : q.name));

@@ -478,3 +478,17 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 #app.era-night{--ink:#e6f1ff; --panel:#0f1d2e; --muted:#a3bad0; --line:#2a4763; --on-gold:#0d2a3a;
   --water:#2a6a8a; --river:#5aa9e6; color:var(--ink); color-scheme:dark}
 #app.era-night .card{box-shadow:0 8px 28px rgba(0,0,0,.45)}
+
+/* ---------- Mastery: Explore shading by how often you get each realm right ---------- */
+:root{--mst-none:#c6ccd4}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--mst-none:#3a4452} }
+:root[data-theme="dark"]{--mst-none:#3a4452}
+#app.era-night{--mst-none:#22344a}
+.mst{fill-opacity:.93;stroke:none;pointer-events:none}
+.mst.none{fill:var(--mst-none);fill-opacity:.85}
+#masteryBtn.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.masteryKey{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.78rem;color:var(--muted)}
+.masteryKey span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.masteryKey b{color:var(--ink);font-weight:700}
+.mk{display:inline-block;width:11px;height:11px;border-radius:3px}
+.mk.weak{background:#d64545}.mk.mid{background:#e8a33d}.mk.good{background:#3fa463}.mk.none{background:var(--mst-none)}
