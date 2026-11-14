@@ -523,6 +523,25 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 }
 /* short phones: no room for the fact, keep the card as it was */
 @media (max-width:620px) and (max-height:700px){ .otd{display:none} .sheet{height:min(492px,100%)} }
+
+/* ---------- Date this map: the year slider in the bottom bar ---------- */
+#app.dating #pips,#app.dating #hint{display:none}
+.dateCtl{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;pointer-events:auto}
+.dateCtl[hidden]{display:none}
+.dateTop{display:flex;align-items:baseline;gap:10px;min-width:0}
+.dateYear{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:1.35rem;line-height:1.1;white-space:nowrap}
+.dateRes{font-size:.82rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dateRow{display:flex;align-items:center;gap:8px}
+.dateStep{width:34px;height:34px;padding:0;font-size:1.1rem;line-height:1;flex:none}
+.dateTrack{position:relative;flex:1;min-width:0}
+.dateTrack input{width:100%;margin:0;accent-color:#f0b400;height:28px}
+.dateMark{position:absolute;top:2px;width:4px;height:24px;margin-left:-2px;border-radius:2px;background:#3fa463;box-shadow:0 0 0 2px var(--panel);pointer-events:none}
+.dateTicks{position:relative;height:14px;margin:0 42px;font-size:.66rem;color:var(--muted)}
+.dateTicks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+@media (max-width:620px){
+  .dateYear{font-size:1.15rem}
+  .dateTicks span:nth-child(2),.dateTicks span:nth-child(4),.dateTicks span:nth-child(5),.dateTicks span:nth-child(7),.dateTicks span:nth-child(8){display:none}
+}
 </style>
 </head>
 <body>
@@ -587,6 +606,15 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
     <div class="card">
       <div class="pips" id="pips" role="img" aria-label="3 tries left"><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
       <div class="hint" id="hint">Click the answer on the map. Scroll or pinch to zoom.</div>
+      <div class="dateCtl" id="dateCtl" hidden>
+        <div class="dateTop"><b class="dateYear" id="dateYear" aria-live="polite">1500</b><span class="dateRes" id="dateRes"></span></div>
+        <div class="dateRow">
+          <button type="button" class="homeBtn dateStep" id="dateMinus" aria-label="Earlier">&minus;</button>
+          <div class="dateTrack"><input type="range" id="dateRange" min="0" max="1000" step="1" value="500" aria-label="Year"><i class="dateMark" id="dateMark" hidden></i></div>
+          <button type="button" class="homeBtn dateStep" id="datePlus" aria-label="Later">+</button>
+        </div>
+        <div class="dateTicks" id="dateTicks" aria-hidden="true"></div>
+      </div>
       <button class="btn" id="act">Skip</button>
     </div>
   </div>
@@ -612,6 +640,7 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
         <button type="button" role="tab" class="tab" id="tabGeo" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 19.5 9 8.5l4.2 6.6 2.4-3.6 5.9 8z"/><path d="m7.4 11.2 1.6 1.4 1.5-1.2"/></svg><span class="tl">Geography</span><span class="ts">Geo</span></button>
         <button type="button" role="tab" class="tab" id="tabFlags" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3.5"/><path d="M5 4.5h12.5l-2.6 4.2 2.6 4.3H5"/></svg><span class="tl">Flags</span><span class="ts">Flags</span></button>
         <button type="button" role="tab" class="tab planetsOnly" id="tabPlanets" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.2"/><ellipse cx="12" cy="12" rx="10.2" ry="3.4" transform="rotate(-22 12 12)"/></svg><span class="tl">Planets</span><span class="ts">Planets</span></button>
+        <button type="button" role="tab" class="tab" id="tabDate" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4.2l2.8 1.8"/><path d="M9.5 2.5h5"/></svg><span class="tl">Date this map</span><span class="ts">Date it</span></button>
         <button type="button" role="tab" class="tab" id="tabHist" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M4.5 8h15L12 3.5z"/><path d="M7 8v12.5M12 8v12.5M17 8v12.5"/></svg><span class="tl">History</span><span class="ts">History</span></button>
         <button type="button" role="tab" class="tab" id="tabSecurity" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19.5 6v5.8c0 4.4-3.2 8.1-7.5 9.2-4.3-1.1-7.5-4.8-7.5-9.2V6z"/><path d="m9 12 2.2 2.2L15.2 10"/></svg><span class="tl">Security</span><span class="ts">Security</span></button>
         <button type="button" role="tab" class="tab" id="tabExplore" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2 5.2-5.2 2 2-5.2z"/></svg><span class="tl">Explore</span><span class="ts">Explore</span></button>
@@ -991,9 +1020,9 @@ function duskFor(i){ var n = (st.qs && st.qs.length) || 10; return Math.max(0, M
 function setDusk(v){ app.style.setProperty('--dusk', String(v)); }
 /* period themes: night (Settings > Night map) wins over parchment; --dusk runs from 0 (dusk) to 1 (deep night) */
 function applyTheme(){
-  var night = isNight();
+  var night = isNight() && !st.dating;
   app.classList.toggle('era-night', night);
-  app.classList.toggle('era-parchment', !night && PARCHMENT_ERAS.indexOf(pack.id)>=0);
+  app.classList.toggle('era-parchment', !night && !st.dating && PARCHMENT_ERAS.indexOf(pack.id)>=0);
   setNightLayers(night);
 }
 var PAPER = "data:image/webp;base64,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";
@@ -1291,7 +1320,7 @@ function effLevel(){
   return {id:L.id, label:L.label, tries:L.tries, pts:L.pts, hints:L.hints, type:type, band:L.band, time:L.time, tricky:tricky};
 }
 function scopeKey(){ return pack.kind==='physical' ? st.cat : pack.kind==='planet' ? 'all' : st.region; }
-function bestKey(){ return 'pinpoint:best:'+st.mode+':'+LEVELS[st.level].id+':'+scopeKey()+':'+ROUNDS; }
+function bestKey(){ if(st.tab==='dating') return 'pinpoint:best:dating:'+LEVELS[st.level].id+':'+ROUNDS; return 'pinpoint:best:'+st.mode+':'+LEVELS[st.level].id+':'+scopeKey()+':'+ROUNDS; }
 function getBest(){ try{ var v=localStorage.getItem(bestKey()); return v===null?null:parseInt(v,10); }catch(e){ return null; } }
 function setBest(v){ try{ localStorage.setItem(bestKey(), String(v)); }catch(e){} }
 function showBest(){
@@ -1313,6 +1342,14 @@ function applyRegion(dur){
 
 /* ---------- Setup UI ---------- */
 function levelDesc(i){
+  if(st.tab==='dating'){
+    return [
+      'Names and flags shown, generous scoring.',
+      'Borders only, with terrain.',
+      'Borders only, no terrain, stricter scoring.',
+      'A random zoomed-in region, no terrain, stricter scoring and 20 seconds.'
+    ][i];
+  }
   if(pack.isSecurity){
     return [
       'The best-known alliances, bases and flashpoints, with hints and three tries.',
@@ -1392,10 +1429,11 @@ document.querySelectorAll('.seg').forEach(function(seg){
     applyRegion(); showBest();
   });
 });
-$('start').addEventListener('click', startGame);
+$('start').addEventListener('click', function(){ if(st.tab==='dating') startDating(); else startGame(); });
 var LEDE_MAP = $('lede').textContent;
 var MAP_MODES = ['modern','bronze','classical','ancient','early','medieval','discovery','vienna','wwi','ww2','coldwar'];
 var LEDES = {
+  dating: 'A historical map with no names: drag the timeline to the year you think it shows. The closer you are, the more points. Games run ten rounds.',
   map: LEDE_MAP,
   geo: 'Find rivers, mountains, deserts, seas and more on a map with no borders. The fewer tries you need, the more points you score. Games run ten rounds.',
   flags: 'A flag appears and you click its country on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
@@ -1403,7 +1441,7 @@ var LEDES = {
   security: 'Answer global-security questions by clicking the country or the strait on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
   history: 'Answer history trivia questions. The fewer tries you need, the more points you score. Games run ten rounds.'
 };
-var TABS = [['map','tabMap'],['geo','tabGeo'],['flags','tabFlags'],['planets','tabPlanets'],['history','tabHist'],['security','tabSecurity'],['explore','tabExplore']]
+var TABS = [['map','tabMap'],['geo','tabGeo'],['flags','tabFlags'],['planets','tabPlanets'],['dating','tabDate'],['history','tabHist'],['security','tabSecurity'],['explore','tabExplore']]
   .filter(function(t){ return PLANETS_ON || t[0]!=='planets'; });
 function selectTab(tab){
   if(tab==='explore'){ enterExplore(); return; }
@@ -1414,10 +1452,10 @@ function selectTab(tab){
   });
   $('modeSet').hidden = tab!=='map';
   $('lede').textContent = LEDES[tab];
-  setMode(tab==='map' ? st.lastMap : tab);
+  setMode(tab==='map' || tab==='dating' ? st.lastMap : tab);
 }
 TABS.forEach(function(p){ $(p[1]).addEventListener('click', function(){ selectTab(p[0]); }); });
-$('again').addEventListener('click', startGame);
+$('again').addEventListener('click', function(){ if(st.tab==='dating') startDating(); else startGame(); });
 $('practice').addEventListener('click', startPractice);
 $('weakBtn').addEventListener('click', startWeakPractice);
 $('exploreWeak').addEventListener('click', startWeakPractice);
@@ -1466,6 +1504,7 @@ function crossFade(draw){
 }
 $('exploreWorld').addEventListener('click', function(){ var order = Object.keys(BODIES); setBody(order[(order.indexOf(curBody)+1)%order.length]); });
 function toSetup(){
+  if(st.dating){ st.dating = false; app.classList.remove('dating'); $('dateCtl').hidden = true; app.classList.remove('noterrain'); setMode(st.lastMap); }
   if(st.daily){ var D = loadDaily(); finishDaily(D, st.daily.key); st.daily = null; }
   if(st.dailyPrev){
     var pv = st.dailyPrev; st.dailyPrev = null;
@@ -1604,6 +1643,7 @@ function timeUp(){ if(st.phase==='play' && !st.locked) reveal(null, true); }
 /* ---------- Game ---------- */
 function startGame(qsOverride){
   clearTimers();
+  st.dating = false; app.classList.remove('dating'); $('dateCtl').hidden = true;
   st.daily = st.dailyStart || null; st.dailyStart = null;
   var practice = Array.isArray(qsOverride) && !st.daily;
   st.practice = practice;
@@ -1766,6 +1806,7 @@ function triviaReveal(timedOut){
   triviaNext();
 }
 function showQuestion(){
+  if(st.dating){ showDateQ(); return; }
   var q = st.qs[st.i], it = pack.items[q.name], lvl = effLevel();
   if(pack.kind==='trivia'){ if(isNight()) setDusk(duskFor(st.i)); showTrivia(); return; }
   if(pack.kind==='planet') setBody(it.body);
@@ -2044,6 +2085,95 @@ function layoutLabels(){
   });
   flushFadeIns();
 }
+/* ---------- Date this map (2026-11-14) ----------
+   Max's design: a historical map with no names (names and flags on Easy) and a year slider; the closer the guess, the more points.
+   Each game shows 10 of the 11 nation maps in random order. The timeline is logarithmic in years before now, so the
+   crowded 19th-20th centuries get room. Points: within tol -> 3, 2.5x tol -> 2, 5x tol -> 1, where tol = 8% of the
+   years before now (at least 10 years), x1.5 on Easy and x0.75 on Hard/Impossible. Period themes are off while dating
+   (parchment or night would give the era away); terrain is hidden on Hard/Impossible; Impossible zooms to a random
+   region with a 20 s timer. */
+var THIS_YEAR = new Date().getFullYear();
+var PERIOD_YEAR = {bronze:-1500, classical:-500, ancient:100, early:800, medieval:1200, discovery:1500, vienna:1815, wwi:1914, ww2:1945, coldwar:1960, modern:THIS_YEAR};
+var Y_HI = THIS_YEAR + 100, U_MIN = Math.log(100), U_MAX = Math.log(Y_HI + 1500);
+function posToYear(p){ var y = Math.round(Y_HI - Math.exp(U_MAX - p*(U_MAX - U_MIN))); return y===0 ? 1 : y; }
+function yearToPos(y){ return (U_MAX - Math.log(Y_HI - y))/(U_MAX - U_MIN); }
+function fmtYear(y){ return y<0 ? (-y)+' BCE' : y<1000 ? y+' CE' : String(y); }
+function dateStep(y){ return y<0 ? 25 : y<1000 ? 10 : y<1800 ? 5 : 1; }
+function dateTol(ans){ return Math.max(10, 0.08*(THIS_YEAR - ans)) * [1.5, 1, 0.75, 0.75][st.level]; }
+function setGuess(y, fromSlider){
+  y = Math.max(-1500, Math.min(THIS_YEAR, y));
+  if(y===0) y = 1;
+  st.dateYear = y;
+  if(!fromSlider) $('dateRange').value = Math.round(yearToPos(y)*1000);
+  $('dateYear').textContent = fmtYear(y);
+}
+(function(){
+  var t = $('dateTicks');
+  [-1500, 1, 1000, 1500, 1800, 1900, 1950, 2000].forEach(function(y){
+    var s = document.createElement('span');
+    s.textContent = y<0 ? '1500 BCE' : y===1 ? '1 CE' : String(y);
+    s.style.left = (yearToPos(y)*100)+'%';
+    t.appendChild(s);
+  });
+})();
+$('dateRange').addEventListener('input', function(){
+  if(st.revealed) return;
+  st.dateMoved = true;
+  setGuess(posToYear(this.value/1000), true);
+});
+$('dateMinus').addEventListener('click', function(){ if(st.revealed) return; st.dateMoved = true; var y = st.dateYear; setGuess(y - dateStep(y-1)); });
+$('datePlus').addEventListener('click', function(){ if(st.revealed) return; st.dateMoved = true; var y = st.dateYear; setGuess(y + dateStep(y)); });
+function startDating(){
+  clearTimers(); stopTimer(); hideToast();
+  st.dating = true; st.daily = null; st.practice = false;
+  st.qs = shuffle(MAP_MODES.slice()).slice(0, ROUNDS).map(function(p){ return {type:'date', period:p, name:p}; });
+  st.i = 0; st.score = 0; st.log = []; st.phase = 'play'; st.saved = null;
+  $('setup').hidden = true; $('end').hidden = true; $('exploreBar').hidden = true;
+  app.classList.remove('exploring'); app.classList.remove('mastering'); app.classList.remove('tint');
+  app.classList.add('playing'); app.classList.add('dating');
+  $('hudTop').hidden = false; $('hudBottom').hidden = false; $('zoomBtns').hidden = false; $('dateCtl').hidden = false;
+  $('score').textContent = '0';
+  showDateQ();
+}
+function showDateQ(){
+  var q = st.qs[st.i], L = LEVELS[st.level];
+  st.tries = 0; st.locked = false; st.revealed = false; st.dateMoved = false;
+  pack = getPack(q.period); drawPack(); clearLabels();
+  st.region = 'World'; applyRegion(0);
+  app.classList.toggle('noterrain', !L.hints);
+  // Easy: names and flags, since the maps before 1500 have no flags
+  if(st.level===0) autoLabelAll();
+  if(L.time){
+    var regs = Object.keys(REGION_BOX).filter(function(r){ return r!=='World' && REGION_BOX[r]; });
+    moveTo(viewFor(REGION_BOX[regs[Math.floor(Math.random()*regs.length)]]), 0);
+  } else moveTo(d3.zoomIdentity, 0);
+  $('kind').textContent = 'Date this map';
+  $('qname').textContent = 'Which year does it show?';
+  $('round').textContent = (st.i+1)+' of '+st.qs.length;
+  $('dateMark').hidden = true; $('dateRes').textContent = '';
+  setGuess(1500);
+  $('act').textContent = 'Lock in'; $('act').disabled = false;
+  startTimer(L.time);
+}
+function dateReveal(timedOut){
+  if(st.revealed || st.phase!=='play') return;
+  stopTimer(); st.revealed = true; st.locked = true;
+  var q = st.qs[st.i], ans = PERIOD_YEAR[q.period], tol = dateTol(ans);
+  var guess = (timedOut && !st.dateMoved) ? null : st.dateYear;
+  var err = guess===null ? Infinity : Math.abs(guess - ans);
+  var pts = err<=tol ? 3 : err<=2.5*tol ? 2 : err<=5*tol ? 1 : 0;
+  st.score += pts; $('score').textContent = st.score;
+  st.log.push({q:q, pts:pts, guess:guess});
+  var m = $('dateMark'); m.style.left = (yearToPos(ans)*100)+'%'; m.hidden = false;
+  $('dateYear').textContent = fmtYear(ans);
+  $('dateRes').textContent = guess===null ? 'Time\u2019s up' : 'You said '+fmtYear(guess)+(err ? ', '+err+' year'+(err===1 ? '' : 's')+' off' : ', spot on');
+  toast(modeLabel(q.period)+(pts ? ': +'+pts : ''), pts>0);
+  // show what the map was: flags and names
+  autoLabelAll();
+  $('act').textContent = st.i+1>=st.qs.length ? 'See results' : 'Next';
+  autoNext();
+}
+
 /* ---------- Mastery (2026-11-12) ----------
    Every answered map question on a nation map (Modern and the 10 historical periods; find and capital questions, practice
    rounds included) is saved per period and realm in localStorage 'pinpoint:mastery' as [times asked, last 5 scores (0-3)].
@@ -2435,6 +2565,7 @@ function peekPhys(label){
 function onPick(el, name){
   if((st.phase!=='play' && st.phase!=='explore') || pack.kind!=='political') return;
   if(!name) return;   // unclaimed land is not a place you can answer with or inspect
+  if(st.dating && !st.revealed) return;
   if(st.devPick){ devPointed(name); return; }
   var cxy = path.centroid(bigPart(d3.select(el).datum()));
   placeLabel(peekFor(name), name || ('bg:'+cxy.join(',')), cxy, bigFeature(name, d3.select(el).datum()));
@@ -2677,6 +2808,7 @@ function viewForFeature(name){
 }
 
 function reveal(clicked, timedOut){
+  if(st.dating){ dateReveal(timedOut); return; }
   if(pack.kind==='trivia'){ triviaReveal(timedOut); return; }
   if(st.revealed) return;
   var q = st.qs[st.i], it = pack.items[q.name];
@@ -2714,7 +2846,7 @@ function advance(){
 
 $('act').addEventListener('click', function(){
   if(st.phase!=='play') return;
-  if(st.revealed) advance(); else if(!st.locked) reveal();
+  if(st.revealed) advance(); else if(!st.locked) reveal(null, false);
 });
 
 /* ---------- End screen: score count-up, recap map, shareable summary ---------- */
@@ -2746,7 +2878,7 @@ var RECAP = {hit:'#2e9e5b', part:'#e8890c', miss:'#d9482b', base:'#c7d3d8', edge
 function drawRecap(){
   var wrap = $('recapWrap'), svgEl = d3.select('#recapMap');
   svgEl.selectAll('*').remove();
-  if(pack.kind==='trivia' || pack.kind==='planet' || !st.log.length){ wrap.hidden = true; return; }
+  if(pack.kind==='trivia' || pack.kind==='planet' || st.dating || !st.log.length){ wrap.hidden = true; return; }
   wrap.hidden = false;
   var dark = app.classList.contains('era-night') || document.documentElement.getAttribute('data-theme')==='dark' ||
              (document.documentElement.getAttribute('data-theme')!=='light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2882,10 +3014,17 @@ function endGame(){
   else { msg = 'Your best for this setup: '+prev+' points.'; }
   $('best2').textContent = msg;
   var missedN = st.log.filter(function(e){ return e.pts===0; }).length;
-  $('practice').hidden = missedN===0;
+  $('practice').hidden = missedN===0 || !!st.dating;
   $('practice').textContent = 'Practice '+missedN+(missedN===1 ? ' miss' : ' misses');
   var ul = $('log'); ul.innerHTML='';
   st.log.forEach(function(e){
+    if(e.q.type==='date'){
+      var dl = document.createElement('li'), a = document.createElement('span'), b = document.createElement('span');
+      a.textContent = modeLabel(e.q.period)+' \u2014 you said '+(e.guess===null ? 'nothing' : fmtYear(e.guess));
+      b.className = 'pts' + (e.pts===0 ? ' zero' : ''); b.textContent = e.pts===0 ? 'Missed' : '+'+e.pts;
+      dl.appendChild(a); dl.appendChild(b); ul.appendChild(dl);
+      return;
+    }
     var it = pack.items[e.q.name];
     var li = document.createElement('li');
     var left = document.createElement('span');

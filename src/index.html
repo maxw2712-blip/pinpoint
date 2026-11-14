@@ -87,6 +87,15 @@
     <div class="card">
       <div class="pips" id="pips" role="img" aria-label="3 tries left"><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
       <div class="hint" id="hint">Click the answer on the map. Scroll or pinch to zoom.</div>
+      <div class="dateCtl" id="dateCtl" hidden>
+        <div class="dateTop"><b class="dateYear" id="dateYear" aria-live="polite">1500</b><span class="dateRes" id="dateRes"></span></div>
+        <div class="dateRow">
+          <button type="button" class="homeBtn dateStep" id="dateMinus" aria-label="Earlier">&minus;</button>
+          <div class="dateTrack"><input type="range" id="dateRange" min="0" max="1000" step="1" value="500" aria-label="Year"><i class="dateMark" id="dateMark" hidden></i></div>
+          <button type="button" class="homeBtn dateStep" id="datePlus" aria-label="Later">+</button>
+        </div>
+        <div class="dateTicks" id="dateTicks" aria-hidden="true"></div>
+      </div>
       <!-- @dev-start -->
       <button class="btn" id="reportBtn" hidden>Report</button>
       <!-- @dev-end -->
@@ -115,6 +124,7 @@
         <button type="button" role="tab" class="tab" id="tabGeo" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 19.5 9 8.5l4.2 6.6 2.4-3.6 5.9 8z"/><path d="m7.4 11.2 1.6 1.4 1.5-1.2"/></svg><span class="tl">Geography</span><span class="ts">Geo</span></button>
         <button type="button" role="tab" class="tab" id="tabFlags" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3.5"/><path d="M5 4.5h12.5l-2.6 4.2 2.6 4.3H5"/></svg><span class="tl">Flags</span><span class="ts">Flags</span></button>
         <button type="button" role="tab" class="tab planetsOnly" id="tabPlanets" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.2"/><ellipse cx="12" cy="12" rx="10.2" ry="3.4" transform="rotate(-22 12 12)"/></svg><span class="tl">Planets</span><span class="ts">Planets</span></button>
+        <button type="button" role="tab" class="tab" id="tabDate" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4.2l2.8 1.8"/><path d="M9.5 2.5h5"/></svg><span class="tl">Date this map</span><span class="ts">Date it</span></button>
         <button type="button" role="tab" class="tab" id="tabHist" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M4.5 8h15L12 3.5z"/><path d="M7 8v12.5M12 8v12.5M17 8v12.5"/></svg><span class="tl">History</span><span class="ts">History</span></button>
         <button type="button" role="tab" class="tab" id="tabSecurity" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19.5 6v5.8c0 4.4-3.2 8.1-7.5 9.2-4.3-1.1-7.5-4.8-7.5-9.2V6z"/><path d="m9 12 2.2 2.2L15.2 10"/></svg><span class="tl">Security</span><span class="ts">Security</span></button>
         <button type="button" role="tab" class="tab" id="tabExplore" aria-selected="false"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2 5.2-5.2 2 2-5.2z"/></svg><span class="tl">Explore</span><span class="ts">Explore</span></button>

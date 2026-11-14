@@ -295,9 +295,9 @@ function duskFor(i){ var n = (st.qs && st.qs.length) || 10; return Math.max(0, M
 function setDusk(v){ app.style.setProperty('--dusk', String(v)); }
 /* period themes: night (Settings > Night map) wins over parchment; --dusk runs from 0 (dusk) to 1 (deep night) */
 function applyTheme(){
-  var night = isNight();
+  var night = isNight() && !st.dating;
   app.classList.toggle('era-night', night);
-  app.classList.toggle('era-parchment', !night && PARCHMENT_ERAS.indexOf(pack.id)>=0);
+  app.classList.toggle('era-parchment', !night && !st.dating && PARCHMENT_ERAS.indexOf(pack.id)>=0);
   setNightLayers(night);
 }
 var PAPER = __IMAGE__("img/paper.webp");
@@ -595,7 +595,7 @@ function effLevel(){
   return {id:L.id, label:L.label, tries:L.tries, pts:L.pts, hints:L.hints, type:type, band:L.band, time:L.time, tricky:tricky};
 }
 function scopeKey(){ return pack.kind==='physical' ? st.cat : pack.kind==='planet' ? 'all' : st.region; }
-function bestKey(){ return 'pinpoint:best:'+st.mode+':'+LEVELS[st.level].id+':'+scopeKey()+':'+ROUNDS; }
+function bestKey(){ if(st.tab==='dating') return 'pinpoint:best:dating:'+LEVELS[st.level].id+':'+ROUNDS; return 'pinpoint:best:'+st.mode+':'+LEVELS[st.level].id+':'+scopeKey()+':'+ROUNDS; }
 function getBest(){ try{ var v=localStorage.getItem(bestKey()); return v===null?null:parseInt(v,10); }catch(e){ return null; } }
 function setBest(v){ try{ localStorage.setItem(bestKey(), String(v)); }catch(e){} }
 function showBest(){
@@ -617,6 +617,14 @@ function applyRegion(dur){
 
 /* ---------- Setup UI ---------- */
 function levelDesc(i){
+  if(st.tab==='dating'){
+    return [
+      'Names and flags shown, generous scoring.',
+      'Borders only, with terrain.',
+      'Borders only, no terrain, stricter scoring.',
+      'A random zoomed-in region, no terrain, stricter scoring and 20 seconds.'
+    ][i];
+  }
   if(pack.isSecurity){
     return [
       'The best-known alliances, bases and flashpoints, with hints and three tries.',
@@ -696,10 +704,11 @@ document.querySelectorAll('.seg').forEach(function(seg){
     applyRegion(); showBest();
   });
 });
-$('start').addEventListener('click', startGame);
+$('start').addEventListener('click', function(){ if(st.tab==='dating') startDating(); else startGame(); });
 var LEDE_MAP = $('lede').textContent;
 var MAP_MODES = ['modern','bronze','classical','ancient','early','medieval','discovery','vienna','wwi','ww2','coldwar'];
 var LEDES = {
+  dating: 'A historical map with no names: drag the timeline to the year you think it shows. The closer you are, the more points. Games run ten rounds.',
   map: LEDE_MAP,
   geo: 'Find rivers, mountains, deserts, seas and more on a map with no borders. The fewer tries you need, the more points you score. Games run ten rounds.',
   flags: 'A flag appears and you click its country on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
@@ -707,7 +716,7 @@ var LEDES = {
   security: 'Answer global-security questions by clicking the country or the strait on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
   history: 'Answer history trivia questions. The fewer tries you need, the more points you score. Games run ten rounds.'
 };
-var TABS = [['map','tabMap'],['geo','tabGeo'],['flags','tabFlags'],['planets','tabPlanets'],['history','tabHist'],['security','tabSecurity'],['explore','tabExplore']]
+var TABS = [['map','tabMap'],['geo','tabGeo'],['flags','tabFlags'],['planets','tabPlanets'],['dating','tabDate'],['history','tabHist'],['security','tabSecurity'],['explore','tabExplore']]
   .filter(function(t){ return PLANETS_ON || t[0]!=='planets'; });
 function selectTab(tab){
   if(tab==='explore'){ enterExplore(); return; }
@@ -718,10 +727,10 @@ function selectTab(tab){
   });
   $('modeSet').hidden = tab!=='map';
   $('lede').textContent = LEDES[tab];
-  setMode(tab==='map' ? st.lastMap : tab);
+  setMode(tab==='map' || tab==='dating' ? st.lastMap : tab);
 }
 TABS.forEach(function(p){ $(p[1]).addEventListener('click', function(){ selectTab(p[0]); }); });
-$('again').addEventListener('click', startGame);
+$('again').addEventListener('click', function(){ if(st.tab==='dating') startDating(); else startGame(); });
 $('practice').addEventListener('click', startPractice);
 $('weakBtn').addEventListener('click', startWeakPractice);
 $('exploreWeak').addEventListener('click', startWeakPractice);
@@ -770,6 +779,7 @@ function crossFade(draw){
 }
 $('exploreWorld').addEventListener('click', function(){ var order = Object.keys(BODIES); setBody(order[(order.indexOf(curBody)+1)%order.length]); });
 function toSetup(){
+  if(st.dating){ st.dating = false; app.classList.remove('dating'); $('dateCtl').hidden = true; app.classList.remove('noterrain'); setMode(st.lastMap); }
   if(st.daily){ var D = loadDaily(); finishDaily(D, st.daily.key); st.daily = null; }
   if(st.dailyPrev){
     var pv = st.dailyPrev; st.dailyPrev = null;
@@ -908,6 +918,7 @@ function timeUp(){ if(st.phase==='play' && !st.locked) reveal(null, true); }
 /* ---------- Game ---------- */
 function startGame(qsOverride){
   clearTimers();
+  st.dating = false; app.classList.remove('dating'); $('dateCtl').hidden = true;
   st.daily = st.dailyStart || null; st.dailyStart = null;
   var practice = Array.isArray(qsOverride) && !st.daily;
   st.practice = practice;
@@ -1070,6 +1081,7 @@ function triviaReveal(timedOut){
   triviaNext();
 }
 function showQuestion(){
+  if(st.dating){ showDateQ(); return; }
   var q = st.qs[st.i], it = pack.items[q.name], lvl = effLevel();
   if(pack.kind==='trivia'){ if(isNight()) setDusk(duskFor(st.i)); showTrivia(); return; }
   if(pack.kind==='planet') setBody(it.body);
@@ -1348,6 +1360,95 @@ function layoutLabels(){
   });
   flushFadeIns();
 }
+/* ---------- Date this map (2026-11-14) ----------
+   Max's design: a historical map with no names (names and flags on Easy) and a year slider; the closer the guess, the more points.
+   Each game shows 10 of the 11 nation maps in random order. The timeline is logarithmic in years before now, so the
+   crowded 19th-20th centuries get room. Points: within tol -> 3, 2.5x tol -> 2, 5x tol -> 1, where tol = 8% of the
+   years before now (at least 10 years), x1.5 on Easy and x0.75 on Hard/Impossible. Period themes are off while dating
+   (parchment or night would give the era away); terrain is hidden on Hard/Impossible; Impossible zooms to a random
+   region with a 20 s timer. */
+var THIS_YEAR = new Date().getFullYear();
+var PERIOD_YEAR = {bronze:-1500, classical:-500, ancient:100, early:800, medieval:1200, discovery:1500, vienna:1815, wwi:1914, ww2:1945, coldwar:1960, modern:THIS_YEAR};
+var Y_HI = THIS_YEAR + 100, U_MIN = Math.log(100), U_MAX = Math.log(Y_HI + 1500);
+function posToYear(p){ var y = Math.round(Y_HI - Math.exp(U_MAX - p*(U_MAX - U_MIN))); return y===0 ? 1 : y; }
+function yearToPos(y){ return (U_MAX - Math.log(Y_HI - y))/(U_MAX - U_MIN); }
+function fmtYear(y){ return y<0 ? (-y)+' BCE' : y<1000 ? y+' CE' : String(y); }
+function dateStep(y){ return y<0 ? 25 : y<1000 ? 10 : y<1800 ? 5 : 1; }
+function dateTol(ans){ return Math.max(10, 0.08*(THIS_YEAR - ans)) * [1.5, 1, 0.75, 0.75][st.level]; }
+function setGuess(y, fromSlider){
+  y = Math.max(-1500, Math.min(THIS_YEAR, y));
+  if(y===0) y = 1;
+  st.dateYear = y;
+  if(!fromSlider) $('dateRange').value = Math.round(yearToPos(y)*1000);
+  $('dateYear').textContent = fmtYear(y);
+}
+(function(){
+  var t = $('dateTicks');
+  [-1500, 1, 1000, 1500, 1800, 1900, 1950, 2000].forEach(function(y){
+    var s = document.createElement('span');
+    s.textContent = y<0 ? '1500 BCE' : y===1 ? '1 CE' : String(y);
+    s.style.left = (yearToPos(y)*100)+'%';
+    t.appendChild(s);
+  });
+})();
+$('dateRange').addEventListener('input', function(){
+  if(st.revealed) return;
+  st.dateMoved = true;
+  setGuess(posToYear(this.value/1000), true);
+});
+$('dateMinus').addEventListener('click', function(){ if(st.revealed) return; st.dateMoved = true; var y = st.dateYear; setGuess(y - dateStep(y-1)); });
+$('datePlus').addEventListener('click', function(){ if(st.revealed) return; st.dateMoved = true; var y = st.dateYear; setGuess(y + dateStep(y)); });
+function startDating(){
+  clearTimers(); stopTimer(); hideToast();
+  st.dating = true; st.daily = null; st.practice = false;
+  st.qs = shuffle(MAP_MODES.slice()).slice(0, ROUNDS).map(function(p){ return {type:'date', period:p, name:p}; });
+  st.i = 0; st.score = 0; st.log = []; st.phase = 'play'; st.saved = null;
+  $('setup').hidden = true; $('end').hidden = true; $('exploreBar').hidden = true;
+  app.classList.remove('exploring'); app.classList.remove('mastering'); app.classList.remove('tint');
+  app.classList.add('playing'); app.classList.add('dating');
+  $('hudTop').hidden = false; $('hudBottom').hidden = false; $('zoomBtns').hidden = false; $('dateCtl').hidden = false;
+  $('score').textContent = '0';
+  showDateQ();
+}
+function showDateQ(){
+  var q = st.qs[st.i], L = LEVELS[st.level];
+  st.tries = 0; st.locked = false; st.revealed = false; st.dateMoved = false;
+  pack = getPack(q.period); drawPack(); clearLabels();
+  st.region = 'World'; applyRegion(0);
+  app.classList.toggle('noterrain', !L.hints);
+  // Easy: names and flags, since the maps before 1500 have no flags
+  if(st.level===0) autoLabelAll();
+  if(L.time){
+    var regs = Object.keys(REGION_BOX).filter(function(r){ return r!=='World' && REGION_BOX[r]; });
+    moveTo(viewFor(REGION_BOX[regs[Math.floor(Math.random()*regs.length)]]), 0);
+  } else moveTo(d3.zoomIdentity, 0);
+  $('kind').textContent = 'Date this map';
+  $('qname').textContent = 'Which year does it show?';
+  $('round').textContent = (st.i+1)+' of '+st.qs.length;
+  $('dateMark').hidden = true; $('dateRes').textContent = '';
+  setGuess(1500);
+  $('act').textContent = 'Lock in'; $('act').disabled = false;
+  startTimer(L.time);
+}
+function dateReveal(timedOut){
+  if(st.revealed || st.phase!=='play') return;
+  stopTimer(); st.revealed = true; st.locked = true;
+  var q = st.qs[st.i], ans = PERIOD_YEAR[q.period], tol = dateTol(ans);
+  var guess = (timedOut && !st.dateMoved) ? null : st.dateYear;
+  var err = guess===null ? Infinity : Math.abs(guess - ans);
+  var pts = err<=tol ? 3 : err<=2.5*tol ? 2 : err<=5*tol ? 1 : 0;
+  st.score += pts; $('score').textContent = st.score;
+  st.log.push({q:q, pts:pts, guess:guess});
+  var m = $('dateMark'); m.style.left = (yearToPos(ans)*100)+'%'; m.hidden = false;
+  $('dateYear').textContent = fmtYear(ans);
+  $('dateRes').textContent = guess===null ? 'Time\u2019s up' : 'You said '+fmtYear(guess)+(err ? ', '+err+' year'+(err===1 ? '' : 's')+' off' : ', spot on');
+  toast(modeLabel(q.period)+(pts ? ': +'+pts : ''), pts>0);
+  // show what the map was: flags and names
+  autoLabelAll();
+  $('act').textContent = st.i+1>=st.qs.length ? 'See results' : 'Next';
+  autoNext();
+}
+
 /* ---------- Mastery (2026-11-12) ----------
    Every answered map question on a nation map (Modern and the 10 historical periods; find and capital questions, practice
    rounds included) is saved per period and realm in localStorage 'pinpoint:mastery' as [times asked, last 5 scores (0-3)].
@@ -1739,6 +1840,7 @@ function peekPhys(label){
 function onPick(el, name){
   if((st.phase!=='play' && st.phase!=='explore') || pack.kind!=='political') return;
   if(!name) return;   // unclaimed land is not a place you can answer with or inspect
+  if(st.dating && !st.revealed) return;
   if(st.devPick){ devPointed(name); return; }
   var cxy = path.centroid(bigPart(d3.select(el).datum()));
   placeLabel(peekFor(name), name || ('bg:'+cxy.join(',')), cxy, bigFeature(name, d3.select(el).datum()));
@@ -1981,6 +2083,7 @@ function viewForFeature(name){
 }
 
 function reveal(clicked, timedOut){
+  if(st.dating){ dateReveal(timedOut); return; }
   if(pack.kind==='trivia'){ triviaReveal(timedOut); return; }
   if(st.revealed) return;
   var q = st.qs[st.i], it = pack.items[q.name];
@@ -2018,7 +2121,7 @@ function advance(){
 
 $('act').addEventListener('click', function(){
   if(st.phase!=='play') return;
-  if(st.revealed) advance(); else if(!st.locked) reveal();
+  if(st.revealed) advance(); else if(!st.locked) reveal(null, false);
 });
 
 /* ---------- End screen: score count-up, recap map, shareable summary ---------- */
@@ -2050,7 +2153,7 @@ var RECAP = {hit:'#2e9e5b', part:'#e8890c', miss:'#d9482b', base:'#c7d3d8', edge
 function drawRecap(){
   var wrap = $('recapWrap'), svgEl = d3.select('#recapMap');
   svgEl.selectAll('*').remove();
-  if(pack.kind==='trivia' || pack.kind==='planet' || !st.log.length){ wrap.hidden = true; return; }
+  if(pack.kind==='trivia' || pack.kind==='planet' || st.dating || !st.log.length){ wrap.hidden = true; return; }
   wrap.hidden = false;
   var dark = app.classList.contains('era-night') || document.documentElement.getAttribute('data-theme')==='dark' ||
              (document.documentElement.getAttribute('data-theme')!=='light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
@@ -2186,10 +2289,17 @@ function endGame(){
   else { msg = 'Your best for this setup: '+prev+' points.'; }
   $('best2').textContent = msg;
   var missedN = st.log.filter(function(e){ return e.pts===0; }).length;
-  $('practice').hidden = missedN===0;
+  $('practice').hidden = missedN===0 || !!st.dating;
   $('practice').textContent = 'Practice '+missedN+(missedN===1 ? ' miss' : ' misses');
   var ul = $('log'); ul.innerHTML='';
   st.log.forEach(function(e){
+    if(e.q.type==='date'){
+      var dl = document.createElement('li'), a = document.createElement('span'), b = document.createElement('span');
+      a.textContent = modeLabel(e.q.period)+' \u2014 you said '+(e.guess===null ? 'nothing' : fmtYear(e.guess));
+      b.className = 'pts' + (e.pts===0 ? ' zero' : ''); b.textContent = e.pts===0 ? 'Missed' : '+'+e.pts;
+      dl.appendChild(a); dl.appendChild(b); ul.appendChild(dl);
+      return;
+    }
     var it = pack.items[e.q.name];
     var li = document.createElement('li');
     var left = document.createElement('span');
@@ -2247,7 +2357,7 @@ function refreshDev(){
   $('reportBtn').hidden = !DEV; $('exploreReport').hidden = !DEV; $('devReports').hidden = !DEV;
   $('devReports').textContent = 'Reports ('+devLoad().length+')';
 }
-var TAB_NAMES = {map:'Nation States', geo:'Geography', flags:'Flags', planets:'Planets', history:'History', security:'Security'};
+var TAB_NAMES = {dating:'Date this map', map:'Nation States', geo:'Geography', flags:'Flags', planets:'Planets', history:'History', security:'Security'};
 function devTargetInfo(key){
   if(!key) return null;
   var it = pack.items[key] || {}, d = {key:key, name:it.disp || key};

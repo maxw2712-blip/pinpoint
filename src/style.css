@@ -515,3 +515,22 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
 }
 /* short phones: no room for the fact, keep the card as it was */
 @media (max-width:620px) and (max-height:700px){ .otd{display:none} .sheet{height:min(492px,100%)} }
+
+/* ---------- Date this map: the year slider in the bottom bar ---------- */
+#app.dating #pips,#app.dating #hint{display:none}
+.dateCtl{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;pointer-events:auto}
+.dateCtl[hidden]{display:none}
+.dateTop{display:flex;align-items:baseline;gap:10px;min-width:0}
+.dateYear{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:1.35rem;line-height:1.1;white-space:nowrap}
+.dateRes{font-size:.82rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dateRow{display:flex;align-items:center;gap:8px}
+.dateStep{width:34px;height:34px;padding:0;font-size:1.1rem;line-height:1;flex:none}
+.dateTrack{position:relative;flex:1;min-width:0}
+.dateTrack input{width:100%;margin:0;accent-color:#f0b400;height:28px}
+.dateMark{position:absolute;top:2px;width:4px;height:24px;margin-left:-2px;border-radius:2px;background:#3fa463;box-shadow:0 0 0 2px var(--panel);pointer-events:none}
+.dateTicks{position:relative;height:14px;margin:0 42px;font-size:.66rem;color:var(--muted)}
+.dateTicks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+@media (max-width:620px){
+  .dateYear{font-size:1.15rem}
+  .dateTicks span:nth-child(2),.dateTicks span:nth-child(4),.dateTicks span:nth-child(5),.dateTicks span:nth-child(7),.dateTicks span:nth-child(8){display:none}
+}

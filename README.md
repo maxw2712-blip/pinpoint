@@ -1,7 +1,7 @@
 # Pinpoint
 
 A geography and history game in a single web page: find modern countries and the realms of ten historical periods
-(1500 BCE to 1960), physical features and flags, and answer history and global-security
+(1500 BCE to 1960), physical features and flags, date historical maps by year, and answer history and global-security
 questions. It includes a daily challenge, a mastery map and an Explore mode.
 
 **Play:** https://maxw2712-blip.github.io/pinpoint/
