@@ -534,3 +534,11 @@ legend{padding:0;margin-bottom:6px;font-weight:600;font-size:.95rem}
   .dateYear{font-size:1.15rem}
   .dateTicks span:nth-child(2),.dateTicks span:nth-child(4),.dateTicks span:nth-child(5),.dateTicks span:nth-child(7),.dateTicks span:nth-child(8){display:none}
 }
+
+/* ---------- Treaties and borders: the highlighted line and the four choices ---------- */
+.tlineHalo{fill:none;stroke:#0d2a3a;stroke-opacity:.55;stroke-width:8px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}
+.tline{fill:none;stroke:#f0b400;stroke-width:4px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}
+.secOpts{margin-top:10px;pointer-events:auto}
+.secOpts[hidden]{display:none}
+.secOpts .topt{font-size:.9rem;padding:9px 12px}
+@media (max-width:620px){ .secOpts{gap:6px} .secOpts .topt{font-size:.8rem;padding:8px 10px} }

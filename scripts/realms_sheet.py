@@ -103,6 +103,7 @@ def main():
         ('Pinpoint: realms and capitals', Font(name='Arial', size=12, bold=True)), None,
         (f'Sheet "Realms by period" lists every historical realm in the game: {n_realms} rows across 10 periods.', A10),
         (f'Sheet "Modern countries" lists the {len(raw)} modern countries and the capitals the game uses.', A10),
+        ('Sheet "Diplomacy & Security" lists every question in that tab with its answers and fact (tier 1 = Easy ... 4 = Impossible).', A10),
         ('Sheet "On this day" lists the event shown on the menu for each of the 366 calendar dates (check the date and year).', A10),
         (f'Generated from the game source (src/) by scripts/realms_sheet.py; regenerate it after data changes.', A10), None,
         ('How to use it', B10),
@@ -171,6 +172,18 @@ def main():
         orows.append([date, otd[k][0], otd[k][1], '', old.get(('On this day', date, otd[k][0]), '')])
     sheet('On this day', ['Date', 'Year', 'Event shown on the menu', f'Check ({CHECK_DATE})', 'Your correction'],
           orows, [14, 10, 90, 16, 40])
+    # Diplomacy & Security questions (organizations, HQ cities and treaties added 2026-11-14)
+    sec = json.load(open(os.path.join(SRC, 'data', 'SEC.json'), encoding='utf-8'))
+    topic = {'sec': 'Security', 'org': 'Organizations', 'treaty': 'Treaties'}
+    kind = {'c': 'Click a country', 'p': 'Click a place', 't': 'Pick the treaty'}
+    srows = []
+    for i, q in enumerate(sec):
+        ans = ', '.join(q['a']) + (('  (wrong options: ' + ', '.join(q['o']) + ')') if q.get('o') else '')
+        note = 'Added 2026-11-14' if i >= 70 else ''
+        t = topic.get(q.get('g'), '')
+        srows.append([q['q'], t, q['t'], kind.get(q['k'], q['k']), ans, q['f'], note, old.get(('Diplomacy & Security', q['q'], t), '')])
+    sheet('Diplomacy & Security', ['Question', 'Topic', 'Tier', 'Type', 'Correct answer(s)', 'Fact shown',
+                                   f'Check ({CHECK_DATE})', 'Your correction'], srows, [60, 14, 6, 16, 60, 70, 16, 40])
     wb.save(OUT)
     print(f'wrote {os.path.relpath(OUT, ROOT)}: {len(rows)} realms, {len(mrows)} modern countries; '
           f'{sum(1 for r in rows if (r[6] or "").startswith("Fixed"))} fixed, '

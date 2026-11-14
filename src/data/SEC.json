@@ -37,113 +37,136 @@
       "United States of America"
     ],
     "f": "NATO was founded in 1949. Finland joined in 2023 and Sweden in 2024, bringing it to 32 members.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 1,
     "q": "Click any of the five permanent members of the UN Security Council.",
     "a": ["United States of America", "Russia", "China", "United Kingdom", "France"],
     "f": "The five are the United States, United Kingdom, France, Russia and China, and each holds a veto.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Click any of the five nuclear-weapon states recognized by the Non-Proliferation Treaty.",
     "a": ["United States of America", "Russia", "China", "United Kingdom", "France"],
     "f": "They are the same five countries that hold permanent Security Council seats.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Click the country that hosts the United Nations headquarters.",
     "a": ["United States of America"],
     "f": "The UN headquarters in New York City opened in 1952.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 1,
     "q": "Click the only country that has used nuclear weapons in war.",
     "a": ["United States of America"],
     "f": "The United States bombed Hiroshima and Nagasaki in August 1945.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
-  {"t": 1, "q": "Click the country that hosts NATO's headquarters.", "a": ["Belgium"], "f": "NATO's headquarters are in Brussels.", "k": "c"},
+  {
+    "t": 1,
+    "q": "Click the country that hosts NATO's headquarters.",
+    "a": ["Belgium"],
+    "f": "NATO's headquarters are in Brussels.",
+    "k": "c",
+    "g": "org"
+  },
   {
     "t": 1,
     "q": "Click the country that Russia invaded in February 2022.",
     "a": ["Ukraine"],
     "f": "The full-scale invasion began on February 24, 2022.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Click either of the two countries formed from the divided Korean Peninsula.",
     "a": ["South Korea", "North Korea"],
     "f": "The peninsula was divided at the 38th parallel in 1945, and the Korean War (1950-53) ended in an armistice, not a peace treaty.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Click the country that left the European Union in 2020.",
     "a": ["United Kingdom"],
     "f": "The UK left on January 31, 2020, after a 2016 referendum.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 1,
     "q": "Click any member of the G7.",
     "a": ["United States of America", "Canada", "United Kingdom", "France", "Germany", "Italy", "Japan"],
     "f": "The G7 countries are the U.S., U.K., France, Germany, Italy, Japan and Canada, and the EU also takes part.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 1,
     "q": "Click the country where the Taliban returned to power in 2021.",
     "a": ["Afghanistan"],
     "f": "They took Kabul in August 2021 as U.S. forces withdrew.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Click the island nation at the center of the 1962 missile crisis.",
     "a": ["Cuba"],
     "f": "Soviet missiles in Cuba triggered a 13-day standoff between the U.S. and the USSR.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Click the country with the world's largest military budget.",
     "a": ["United States of America"],
     "f": "U.S. defense spending exceeds that of the next several countries combined.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Click the world's most populous country, as of 2023.",
     "a": ["India"],
     "f": "India passed China in 2023, according to the United Nations.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Find the Suez Canal, which links the Mediterranean and the Red Sea.",
     "a": ["Suez Canal"],
     "f": "Roughly 12 percent of global trade passes through it.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Find the Panama Canal, which links the Atlantic and Pacific oceans.",
     "a": ["Panama Canal"],
     "f": "It opened in 1914, and the U.S. handed control to Panama at the end of 1999.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 1,
     "q": "Find the Strait of Gibraltar, the gateway into the Mediterranean.",
     "a": ["Strait of Gibraltar"],
     "f": "It is only about 14 km wide at its narrowest point.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 2,
@@ -177,364 +200,975 @@
       "Sweden"
     ],
     "f": "The EU has 27 members. Malta is a member too, but it's too small to appear on this map.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 2,
     "q": "Click any member of the Five Eyes intelligence alliance.",
     "a": ["United States of America", "United Kingdom", "Canada", "Australia", "New Zealand"],
     "f": "The alliance traces back to the 1946 UKUSA Agreement.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 2,
     "q": "Click any of the three countries outside the five recognized nuclear powers that have tested nuclear weapons.",
     "a": ["India", "Pakistan", "North Korea"],
     "f": "India tested in 1974 and 1998, Pakistan in 1998 and North Korea starting in 2006.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the country that joined NATO in 2023.",
     "a": ["Finland"],
     "f": "It ended decades of military non-alignment after Russia's 2022 invasion of Ukraine.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 2,
     "q": "Click the newest NATO member, which joined in March 2024.",
     "a": ["Sweden"],
     "f": "Sweden's accession followed Finland's, after Turkey and Hungary ratified.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 2,
     "q": "Click the country that hosts the International Court of Justice and the International Criminal Court.",
     "a": ["Netherlands"],
     "f": "Both are in The Hague.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 2,
     "q": "Click the country that hosts the International Atomic Energy Agency.",
     "a": ["Austria"],
     "f": "The IAEA is headquartered in Vienna.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 2,
     "q": "Click the country that Iraq invaded in 1990.",
     "a": ["Kuwait"],
     "f": "A U.S.-led coalition liberated Kuwait in early 1991.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the country whose 1979 revolution created an Islamic republic.",
     "a": ["Iran"],
     "f": "The Shah fled in January 1979 and Ayatollah Khomeini returned from exile.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the Mediterranean island divided since 1974.",
     "a": ["Cyprus"],
     "f": "A UN buffer zone, the Green Line, separates the Greek-Cypriot south from the Turkish-controlled north.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the country that fought a 1982 war with Britain over the Falkland Islands.",
     "a": ["Argentina"],
     "f": "The war lasted 74 days and ended in Argentine defeat.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the country created in 1947 as a Muslim-majority state when British India was partitioned.",
     "a": ["Pakistan"],
     "f": "Bangladesh split from Pakistan in 1971.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the Central African country where a 1994 genocide killed an estimated 800,000 people.",
     "a": ["Rwanda"],
     "f": "It lasted about 100 days.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the country that claimed to annex Crimea in 2014, a move most countries reject.",
     "a": ["Russia"],
     "f": "The UN General Assembly voted to affirm Ukraine's territorial integrity.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Click the NATO member that controls the Bosporus and Dardanelles straits.",
     "a": ["Turkey"],
     "f": "The 1936 Montreux Convention gives Turkey control over warship passage.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Find the Strait of Hormuz, through which a large share of the world's oil exports pass.",
     "a": ["Strait of Hormuz"],
     "f": "It is only about 33 km wide at its narrowest.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Find the Bosporus, the strait that splits Istanbul and links the Black Sea to the Sea of Marmara.",
     "a": ["Bosporus"],
     "f": "Turkey controls it under the 1936 Montreux Convention.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Find the Strait of Malacca, which links the Indian and Pacific oceans.",
     "a": ["Strait of Malacca"],
     "f": "Roughly a quarter of world trade sails through it.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 2,
     "q": "Find the English Channel, one of the world's busiest shipping lanes.",
     "a": ["English Channel"],
     "f": "It separates England from France and is about 33 km wide at the Strait of Dover.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the host of Camp Lemonnier, the only permanent U.S. military base in Africa.",
     "a": ["Djibouti"],
     "f": "It sits at the mouth of the Red Sea near Bab-el-Mandeb.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the NATO member that borders Iran, Iraq and Syria.",
     "a": ["Turkey"],
     "f": "Turkey also borders Georgia, Armenia, Azerbaijan, Greece and Bulgaria.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the NATO member that borders Russia's Kaliningrad exclave to the south.",
     "a": ["Poland"],
     "f": "Lithuania borders it to the north and east.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the country that left NATO's integrated military command in 1966 and rejoined in 2009.",
     "a": ["France"],
     "f": "President de Gaulle took France out but kept it in the alliance itself.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the newest member of the European Union, which joined in 2013.",
     "a": ["Croatia"],
     "f": "Croatia also joined the euro and the Schengen area in 2023.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 3,
     "q": "Click either country divided by the Kashmir Line of Control.",
     "a": ["India", "Pakistan"],
     "f": "Both claim all of Kashmir, and China holds part of the region too.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the country that hosts Europe's largest nuclear power plant, at Zaporizhzhia.",
     "a": ["Ukraine"],
     "f": "Russian forces seized the plant in March 2022.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click any of the three former Soviet republics that gave up inherited nuclear weapons in the 1990s.",
     "a": ["Ukraine", "Belarus", "Kazakhstan"],
     "f": "They transferred their Soviet-era warheads to Russia.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the country whose war ended with the 1995 Dayton Accords.",
     "a": ["Bosnia and Herz."],
     "f": "The accords were negotiated at Wright-Patterson Air Force Base in Dayton, Ohio.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the country where the 1986 Chernobyl nuclear disaster occurred.",
     "a": ["Ukraine"],
     "f": "It was then part of the Soviet Union.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the country that hosts Ramstein Air Base, a hub of U.S. military power in Europe.",
     "a": ["Germany"],
     "f": "Ramstein is home to U.S. Air Forces in Europe and Air Forces Africa.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the country that leases the Baikonur Cosmodrome to Russia.",
     "a": ["Kazakhstan"],
     "f": "Baikonur launched Sputnik and Yuri Gagarin's Vostok 1.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Click the world's largest producer of uranium.",
     "a": ["Kazakhstan"],
     "f": "It produces more than a third of the world's mined uranium.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Find Bab-el-Mandeb, the strait linking the Red Sea to the Gulf of Aden.",
     "a": ["Bab-el-Mandeb"],
     "f": "Attacks on ships since late 2023 have pushed many vessels to sail around Africa.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
-  {"t": 3, "q": "Find the Taiwan Strait.", "a": ["Taiwan Strait"], "f": "It is about 180 km wide at its narrowest.", "k": "p"},
+  {"t": 3, "q": "Find the Taiwan Strait.", "a": ["Taiwan Strait"], "f": "It is about 180 km wide at its narrowest.", "k": "p", "g": "sec"},
   {
     "t": 3,
     "q": "Find the Danish Straits, which guard the entrance to the Baltic Sea.",
     "a": ["Danish Straits"],
     "f": "Denmark controls them, and ships pass through the Oresund and the Great Belt.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Find the Cape of Good Hope, the route around Africa.",
     "a": ["Cape of Good Hope"],
     "f": "Ships use it when the Suez Canal or Red Sea is closed or unsafe.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 3,
     "q": "Find the Korea Strait, between South Korea and Japan.",
     "a": ["Korea Strait"],
     "f": "The Tsushima Islands divide it into two channels.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country that formally left the Warsaw Pact in 1968.",
     "a": ["Albania"],
     "f": "It had broken with the Soviet Union in 1961 and sided with China.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the only country to have voluntarily dismantled its home-built nuclear weapons.",
     "a": ["South Africa"],
     "f": "It destroyed six devices and joined the NPT in 1991.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country whose 1956 uprising was crushed by Soviet tanks.",
     "a": ["Hungary"],
     "f": "Thousands died and about 200,000 people fled.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click either country that was once Czechoslovakia, where the 1968 Prague Spring was crushed.",
     "a": ["Czechia", "Slovakia"],
     "f": "The two split peacefully in 1993.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the Nordic country that hosted the 1975 conference that produced the Helsinki Final Act.",
     "a": ["Finland"],
     "f": "Finland's neutrality made it a natural host.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country that hosts the Organisation for the Prohibition of Chemical Weapons.",
     "a": ["Netherlands"],
     "f": "The OPCW sits in The Hague and won the 2013 Nobel Peace Prize.",
-    "k": "c"
+    "k": "c",
+    "g": "org"
   },
   {
     "t": 4,
     "q": "Click the country whose Arctic territory hosts Thule Air Base, the northernmost U.S. military base.",
     "a": ["Denmark", "Greenland"],
     "f": "The base, now called Pituffik Space Base, is in Greenland, a self-governing part of the Kingdom of Denmark.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country that hosts the Aviano and Sigonella air bases.",
     "a": ["Italy"],
     "f": "Both are important to U.S. and NATO air operations in the Mediterranean.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country divided along the 17th parallel in 1954.",
     "a": ["Vietnam"],
     "f": "The Geneva Accords split it into North and South.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country that hosts Pine Gap, a joint U.S.-Australian satellite ground station.",
     "a": ["Australia"],
     "f": "Pine Gap is near Alice Springs in the Northern Territory.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the Nordic country that hosted the 1986 Reagan-Gorbachev summit.",
     "a": ["Iceland"],
     "f": "They met in Reykjavik and nearly agreed to abolish nuclear weapons.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country that governs Svalbard under a 1920 treaty.",
     "a": ["Norway"],
     "f": "The treaty lets signatory countries mine and do business there, but forbids military bases.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country that hosted the 1943 Tehran Conference of Churchill, Roosevelt and Stalin.",
     "a": ["Iran"],
     "f": "It was the first meeting of the three together.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Click the country that hosted the 1945 Potsdam Conference.",
     "a": ["Germany"],
     "f": "Truman, Stalin and Churchill (later Attlee) met near Berlin.",
-    "k": "c"
+    "k": "c",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Find the Lombok Strait, a deep-water alternative to the Strait of Malacca.",
     "a": ["Lombok Strait"],
     "f": "Large tankers can pass through it, and it runs between Bali and Lombok.",
-    "k": "p"
+    "k": "p",
+    "g": "sec"
   },
   {
     "t": 4,
     "q": "Find the Kerch Strait, between the Black Sea and the Sea of Azov.",
     "a": ["Kerch Strait"],
     "f": "A bridge across it, built after Russia's 2014 annexation of Crimea, is a contested symbol.",
+    "k": "p",
+    "g": "sec"
+  },
+  {
+    "t": 1,
+    "g": "org",
+    "q": "Click one of the 12 founding members of NATO (1949).",
+    "a": [
+      "Belgium",
+      "Canada",
+      "Denmark",
+      "France",
+      "Iceland",
+      "Italy",
+      "Luxembourg",
+      "Netherlands",
+      "Norway",
+      "Portugal",
+      "United Kingdom",
+      "United States of America"
+    ],
+    "f": "NATO was founded in Washington on 4 April 1949 by 12 countries in Europe and North America.",
+    "k": "c"
+  },
+  {
+    "t": 1,
+    "g": "org",
+    "q": "Click one of the six founding members of the European Communities (1957 Treaty of Rome).",
+    "a": ["Belgium", "France", "Germany", "Italy", "Luxembourg", "Netherlands"],
+    "f": "The \"Inner Six\" signed the Treaty of Rome in 1957; West Germany is today's Germany.",
+    "k": "c"
+  },
+  {
+    "t": 1,
+    "g": "org",
+    "q": "Click one of the four original BRIC countries.",
+    "a": ["Brazil", "Russia", "India", "China"],
+    "f": "BRIC held its first summit in 2009; South Africa joined in 2010, making it BRICS.",
+    "k": "c"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Click a country that joined NATO in 1999, the first enlargement after the Cold War.",
+    "a": ["Czechia", "Hungary", "Poland"],
+    "f": "The Czech Republic, Hungary and Poland joined on 12 March 1999.",
+    "k": "c"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Click a country that joined NATO in the big 2004 enlargement.",
+    "a": ["Bulgaria", "Estonia", "Latvia", "Lithuania", "Romania", "Slovakia", "Slovenia"],
+    "f": "Seven countries joined in March 2004, including the three Baltic states.",
+    "k": "c"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Click a country that joined the EU in the 2004 enlargement.",
+    "a": ["Cyprus", "Czechia", "Estonia", "Hungary", "Latvia", "Lithuania", "Poland", "Slovakia", "Slovenia"],
+    "f": "Ten countries joined on 1 May 2004; the tenth, Malta, is too small for this map.",
+    "k": "c"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Click a country that joined BRICS at the start of 2024.",
+    "a": ["Egypt", "Ethiopia", "Iran", "United Arab Emirates"],
+    "f": "Egypt, Ethiopia, Iran and the UAE joined in January 2024; Saudi Arabia was invited and Indonesia joined in 2025.",
+    "k": "c"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Click a founding member of ASEAN (1967).",
+    "a": ["Indonesia", "Malaysia", "Philippines", "Thailand"],
+    "f": "ASEAN was founded in Bangkok in 1967; the fifth founder, Singapore, is too small for this map.",
+    "k": "c"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Click the country that joined BRICS in 2010.",
+    "a": ["South Africa"],
+    "f": "South Africa joined in December 2010, turning BRIC into BRICS.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a country that joined the European Communities in 1973, the first enlargement.",
+    "a": ["Denmark", "Ireland", "United Kingdom"],
+    "f": "Denmark, Ireland and the UK joined on 1 January 1973; Norway's voters said no.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a country that joined the EU in 1995.",
+    "a": ["Austria", "Finland", "Sweden"],
+    "f": "Austria, Finland and Sweden joined on 1 January 1995.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a country that joined the EU in 2007.",
+    "a": ["Bulgaria", "Romania"],
+    "f": "Bulgaria and Romania joined on 1 January 2007.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a country that joined NATO in 1952, its first enlargement.",
+    "a": ["Greece", "Turkey"],
+    "f": "Greece and Turkey joined in February 1952.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a country that joined NATO in 2009.",
+    "a": ["Albania", "Croatia"],
+    "f": "Albania and Croatia joined on 1 April 2009.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a member of the Gulf Cooperation Council.",
+    "a": ["Kuwait", "Oman", "Qatar", "Saudi Arabia", "United Arab Emirates"],
+    "f": "The GCC was founded in 1981; its sixth member, Bahrain, is too small for this map.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a founding member of Mercosur (1991).",
+    "a": ["Argentina", "Brazil", "Paraguay", "Uruguay"],
+    "f": "The Treaty of Asunción created Mercosur in 1991; Bolivia became a full member in 2024.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a founding member of the Shanghai Cooperation Organisation (2001).",
+    "a": ["China", "Russia", "Kazakhstan", "Kyrgyzstan", "Tajikistan", "Uzbekistan"],
+    "f": "The SCO grew out of the \"Shanghai Five\" plus Uzbekistan; India and Pakistan joined in 2017.",
+    "k": "c"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Click a founding member of OPEC (1960).",
+    "a": ["Iran", "Iraq", "Kuwait", "Saudi Arabia", "Venezuela"],
+    "f": "OPEC was founded in Baghdad in September 1960 by five oil producers.",
+    "k": "c"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Click the country that joined NATO in 1955 (then as West Germany).",
+    "a": ["Germany"],
+    "f": "West Germany joined in May 1955; days later the Soviet bloc founded the Warsaw Pact.",
+    "k": "c"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Click the country that joined NATO in 1982.",
+    "a": ["Spain"],
+    "f": "Spain joined in 1982, seven years after Franco's death, and confirmed it in a 1986 referendum.",
+    "k": "c"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Click a country that joined the European Communities in 1981 or 1986.",
+    "a": ["Greece", "Spain", "Portugal"],
+    "f": "Greece joined in 1981, Spain and Portugal in 1986, after each had left dictatorship behind.",
+    "k": "c"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Click a country that joined NATO in 2017 or 2020.",
+    "a": ["Montenegro", "Macedonia"],
+    "f": "Montenegro joined in 2017 and North Macedonia in 2020, after settling its name dispute with Greece.",
+    "k": "c"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Click one of the four African founding members of the United Nations (1945).",
+    "a": ["Egypt", "Ethiopia", "Liberia", "South Africa"],
+    "f": "Only four of the 51 founding members were in Africa; most of the continent was still colonised.",
+    "k": "c"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Click the home country of a leader who launched the Non-Aligned Movement in 1961.",
+    "a": ["Serbia", "India", "Egypt", "Ghana", "Indonesia"],
+    "f": "Tito (Yugoslavia, from Belgrade), Nehru, Nasser, Nkrumah and Sukarno led the 1961 Belgrade summit.",
+    "k": "c"
+  },
+  {
+    "t": 1,
+    "g": "org",
+    "q": "Find the city that hosts NATO's headquarters.",
+    "a": ["Brussels"],
+    "f": "NATO has been based in Brussels since 1967, after France left its integrated command.",
     "k": "p"
+  },
+  {
+    "t": 1,
+    "g": "org",
+    "q": "Find the city that hosts the headquarters of the United Nations.",
+    "a": ["New York"],
+    "f": "The UN headquarters on Manhattan's East River opened in 1952.",
+    "k": "p"
+  },
+  {
+    "t": 1,
+    "g": "org",
+    "q": "Find the city where the International Court of Justice sits.",
+    "a": ["The Hague"],
+    "f": "The ICJ sits in the Peace Palace; the International Criminal Court is also in The Hague.",
+    "k": "p"
+  },
+  {
+    "t": 1,
+    "g": "org",
+    "q": "Find the city that hosts the UN's European headquarters and the Red Cross.",
+    "a": ["Geneva"],
+    "f": "Geneva hosts the UN Office, the WHO, the WTO and the International Committee of the Red Cross.",
+    "k": "p"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Find the city that hosts the International Atomic Energy Agency and OPEC.",
+    "a": ["Vienna"],
+    "f": "Vienna also hosts the OSCE and one of the UN's four main offices.",
+    "k": "p"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Find the city that hosts the African Union's headquarters.",
+    "a": ["Addis Ababa"],
+    "f": "The AU, and the OAU before it since 1963, is based in Addis Ababa.",
+    "k": "p"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Find the city that hosts the Council of Europe and the European Court of Human Rights.",
+    "a": ["Strasbourg"],
+    "f": "Strasbourg is also the official seat of the European Parliament.",
+    "k": "p"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Find the city that hosts the OECD and UNESCO.",
+    "a": ["Paris"],
+    "f": "The OECD grew out of the body that ran the Marshall Plan.",
+    "k": "p"
+  },
+  {
+    "t": 2,
+    "g": "org",
+    "q": "Find the city that hosts the IMF and the World Bank.",
+    "a": ["Washington, D.C."],
+    "f": "Both were created at the 1944 Bretton Woods conference.",
+    "k": "p"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Find the city that hosts ASEAN's secretariat.",
+    "a": ["Jakarta"],
+    "f": "The ASEAN Secretariat has been in Jakarta since 1976.",
+    "k": "p"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Find the city that hosts the Arab League's headquarters.",
+    "a": ["Cairo"],
+    "f": "The Arab League was founded in Cairo in 1945 (it moved to Tunis from 1979 to 1990).",
+    "k": "p"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Find the city that hosts the European Central Bank.",
+    "a": ["Frankfurt"],
+    "f": "The ECB has set monetary policy for the euro from Frankfurt since 1998.",
+    "k": "p"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Find the city that hosts the UN Food and Agriculture Organization.",
+    "a": ["Rome"],
+    "f": "Rome also hosts the World Food Programme.",
+    "k": "p"
+  },
+  {
+    "t": 3,
+    "g": "org",
+    "q": "Find the city that hosts the UN Environment Programme.",
+    "a": ["Nairobi"],
+    "f": "UNEP, founded in 1972, was the first UN agency based in the Global South.",
+    "k": "p"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Find the city that hosts the Bank for International Settlements.",
+    "a": ["Basel"],
+    "f": "The BIS, founded in 1930, is the central bank for central banks.",
+    "k": "p"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Find the city that hosts the International Civil Aviation Organization.",
+    "a": ["Montreal"],
+    "f": "ICAO was set up by the 1944 Chicago Convention.",
+    "k": "p"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Find the city that hosts the Gulf Cooperation Council's secretariat.",
+    "a": ["Riyadh"],
+    "f": "The GCC was founded in 1981, during the Iran-Iraq War.",
+    "k": "p"
+  },
+  {
+    "t": 4,
+    "g": "org",
+    "q": "Find the city that hosts Mercosur's secretariat.",
+    "a": ["Montevideo"],
+    "f": "Uruguay's capital hosts the Mercosur secretariat and parliament.",
+    "k": "p"
+  },
+  {
+    "t": 1,
+    "g": "treaty",
+    "q": "Which treaty drew this line through South America?",
+    "a": ["Treaty of Tordesillas (1494)"],
+    "o": ["Treaty of Utrecht (1713)", "Treaty of Paris (1763)", "Congress of Vienna (1815)"],
+    "line": {"coords": [[-46.6, 8], [-46.6, -35]]},
+    "f": "Spain and Portugal split the newly found lands along this meridian, which is why Brazil speaks Portuguese.",
+    "k": "t"
+  },
+  {
+    "t": 1,
+    "g": "treaty",
+    "q": "Which secret agreement drew this line across the Middle East?",
+    "a": ["Sykes-Picot Agreement (1916)"],
+    "o": ["Treaty of Sèvres (1920)", "Balfour Declaration (1917)", "Treaty of Lausanne (1923)"],
+    "line": {"coords": [[35.07, 32.93], [44.39, 35.47]]},
+    "f": "Britain and France divided the Ottoman Arab lands into zones \"from the e in Acre to the last k in Kirkuk\".",
+    "k": "t"
+  },
+  {
+    "t": 1,
+    "g": "treaty",
+    "q": "Which agreement set this line dividing Korea?",
+    "a": ["Korean Armistice Agreement (1953)"],
+    "o": ["Treaty of San Francisco (1951)", "Yalta Conference (1945)", "Geneva Accords (1954)"],
+    "line": {"mesh": [["North Korea", "South Korea"]]},
+    "f": "The armistice stopped the fighting along the front line; no peace treaty has ever been signed.",
+    "k": "t"
+  },
+  {
+    "t": 1,
+    "g": "treaty",
+    "q": "Which treaty set most of the border between the United States and Mexico?",
+    "a": ["Treaty of Guadalupe Hidalgo (1848)"],
+    "o": ["Adams-Onís Treaty (1819)", "Louisiana Purchase (1803)", "Treaty of Ghent (1814)"],
+    "line": {"mesh": [["United States of America", "Mexico"]]},
+    "f": "Mexico gave up about half its territory; the 1853 Gadsden Purchase added the southern strip of Arizona and New Mexico.",
+    "k": "t"
+  },
+  {
+    "t": 1,
+    "g": "treaty",
+    "q": "Which conference agreed on this eastern border of Poland, close to the Curzon Line?",
+    "a": ["Yalta Conference (1945)"],
+    "o": ["Treaty of Riga (1921)", "Treaty of Versailles (1919)", "Treaty of Brest-Litovsk (1918)"],
+    "line": {"mesh": [["Poland", "Belarus"], ["Poland", "Ukraine"]]},
+    "f": "Roosevelt, Churchill and Stalin agreed at Yalta to move Poland's eastern border west, roughly to the 1919 Curzon Line.",
+    "k": "t"
+  },
+  {
+    "t": 2,
+    "g": "treaty",
+    "q": "Which agreement moved this border west to the Oder and Neisse rivers?",
+    "a": ["Potsdam Agreement (1945)"],
+    "o": ["Treaty of Versailles (1919)", "Munich Agreement (1938)", "Treaty of Frankfurt (1871)"],
+    "line": {"mesh": [["Germany", "Poland"]]},
+    "f": "Potsdam placed German lands east of the Oder-Neisse line under Polish administration; Germany finally confirmed the border in 1990.",
+    "k": "t"
+  },
+  {
+    "t": 2,
+    "g": "treaty",
+    "q": "Which line, drawn in five weeks, partitioned British India?",
+    "a": ["Radcliffe Line (1947)"],
+    "o": ["Durand Line (1893)", "McMahon Line (1914)", "Simla Agreement (1972)"],
+    "line": {"mesh": [["India", "Pakistan"], ["India", "Bangladesh"]]},
+    "f": "Cyril Radcliffe, who had never been to India, drew the borders of Punjab and Bengal; they were published two days after independence.",
+    "k": "t"
+  },
+  {
+    "t": 2,
+    "g": "treaty",
+    "q": "Which agreement drew this border between Afghanistan and Pakistan?",
+    "a": ["Durand Line Agreement (1893)"],
+    "o": ["Radcliffe Line (1947)", "Treaty of Gandamak (1879)", "Anglo-Russian Convention (1907)"],
+    "line": {"mesh": [["Afghanistan", "Pakistan"]]},
+    "f": "British India and the Emir of Afghanistan agreed the line in 1893; Afghanistan has never formally recognised it.",
+    "k": "t"
+  },
+  {
+    "t": 2,
+    "g": "treaty",
+    "q": "Which treaty extended the 49th parallel border to the Pacific?",
+    "a": ["Oregon Treaty (1846)"],
+    "o": ["Treaty of 1818", "Webster-Ashburton Treaty (1842)", "Alaska Purchase (1867)"],
+    "line": {"coords": [[-123.3, 49.0], [-114.06, 49.0]]},
+    "f": "Britain and the United States split the Oregon Country, ending the \"Fifty-four forty or fight!\" dispute.",
+    "k": "t"
+  },
+  {
+    "t": 2,
+    "g": "treaty",
+    "q": "Which treaty fixed Hungary's borders, leaving it about a third of its former size?",
+    "a": ["Treaty of Trianon (1920)"],
+    "o": ["Treaty of Saint-Germain (1919)", "Treaty of Neuilly (1919)", "Treaty of Sèvres (1920)"],
+    "line": {"around": "Hungary"},
+    "f": "Trianon left millions of ethnic Hungarians in neighbouring countries, a grievance that shaped interwar politics.",
+    "k": "t"
+  },
+  {
+    "t": 2,
+    "g": "treaty",
+    "q": "Which treaty arranged the 1920 vote that moved this border south?",
+    "a": ["Treaty of Versailles (1919)"],
+    "o": ["Treaty of Vienna (1864)", "Treaty of Prague (1866)", "Potsdam Agreement (1945)"],
+    "line": {"mesh": [["Denmark", "Germany"]]},
+    "f": "Under Versailles, North Schleswig voted in 1920 to return to Denmark, setting today's border.",
+    "k": "t"
+  },
+  {
+    "t": 3,
+    "g": "treaty",
+    "q": "Which treaty set the 49th parallel as the border from Lake of the Woods to the Rockies?",
+    "a": ["Treaty of 1818"],
+    "o": ["Oregon Treaty (1846)", "Jay Treaty (1794)", "Treaty of Paris (1783)"],
+    "line": {"coords": [[-95.15, 49.0], [-114.06, 49.0]]},
+    "f": "The Anglo-American Convention of 1818 also left the Oregon Country under joint occupation.",
+    "k": "t"
+  },
+  {
+    "t": 3,
+    "g": "treaty",
+    "q": "Which treaty set this border between Turkey and Greece?",
+    "a": ["Treaty of Lausanne (1923)"],
+    "o": ["Treaty of Sèvres (1920)", "Treaty of Berlin (1878)", "Treaty of London (1913)"],
+    "line": {"mesh": [["Turkey", "Greece"]]},
+    "f": "Lausanne replaced the harsher Treaty of Sèvres and set the Maritsa (Evros) river as the border in Thrace.",
+    "k": "t"
+  },
+  {
+    "t": 3,
+    "g": "treaty",
+    "q": "Which treaty set the borders of the new Republic of Austria?",
+    "a": ["Treaty of Saint-Germain (1919)"],
+    "o": ["Treaty of Trianon (1920)", "Treaty of Versailles (1919)", "Austrian State Treaty (1955)"],
+    "line": {"around": "Austria"},
+    "f": "Saint-Germain broke up the Austrian half of the Habsburg empire and forbade union with Germany.",
+    "k": "t"
+  },
+  {
+    "t": 3,
+    "g": "treaty",
+    "q": "Which agreement set the 22nd parallel as this border?",
+    "a": ["Anglo-Egyptian Condominium Agreement (1899)"],
+    "o": ["Sykes-Picot Agreement (1916)", "Berlin Conference (1884-85)", "Treaty of London (1915)"],
+    "line": {"mesh": [["Egypt", "Sudan"]]},
+    "f": "Britain and Egypt agreed to rule Sudan jointly, with the 22nd parallel as its northern limit.",
+    "k": "t"
+  },
+  {
+    "t": 4,
+    "g": "treaty",
+    "q": "Which treaties moved this border to the Amur and Ussuri rivers?",
+    "a": ["Treaties of Aigun (1858) and Peking (1860)"],
+    "o": ["Treaty of Nerchinsk (1689)", "Treaty of Kyakhta (1727)", "Treaty of Shimonoseki (1895)"],
+    "line": {"mesh": [["Russia", "China"]]},
+    "f": "Qing China ceded the lands north of the Amur and east of the Ussuri, where Vladivostok was founded in 1860.",
+    "k": "t"
+  },
+  {
+    "t": 4,
+    "g": "treaty",
+    "q": "Which agreement drew this border along the Panj river and the Wakhan Corridor?",
+    "a": ["Anglo-Russian Pamir agreement (1895)"],
+    "o": ["Durand Line Agreement (1893)", "Treaty of Gandamak (1879)", "Anglo-Russian Convention (1907)"],
+    "line": {"mesh": [["Afghanistan", "Tajikistan"]]},
+    "f": "Britain and Russia left the thin Wakhan Corridor to Afghanistan as a buffer between their empires.",
+    "k": "t"
+  },
+  {
+    "t": 4,
+    "g": "treaty",
+    "q": "Which treaty finally settled this border, returning Tacna to Peru?",
+    "a": ["Treaty of Lima (1929)"],
+    "o": ["Treaty of Ancón (1883)", "Treaty of Petrópolis (1903)", "Boundary Treaty of 1881"],
+    "line": {"mesh": [["Peru", "Chile"]]},
+    "f": "Ending the dispute left by the War of the Pacific, Tacna went back to Peru and Arica stayed Chilean.",
+    "k": "t"
+  },
+  {
+    "t": 4,
+    "g": "treaty",
+    "q": "Which treaty cut Bulgaria off from the Aegean Sea along this border?",
+    "a": ["Treaty of Neuilly (1919)"],
+    "o": ["Treaty of Bucharest (1913)", "Treaty of San Stefano (1878)", "Treaty of Trianon (1920)"],
+    "line": {"mesh": [["Bulgaria", "Greece"]]},
+    "f": "Bulgaria lost Western Thrace to Greece after siding with the Central Powers.",
+    "k": "t"
+  },
+  {
+    "t": 4,
+    "g": "treaty",
+    "q": "Which treaty set this border of Turkey with Armenia and Georgia?",
+    "a": ["Treaty of Kars (1921)"],
+    "o": ["Treaty of Sèvres (1920)", "Treaty of Lausanne (1923)", "Treaty of Batum (1918)"],
+    "line": {"mesh": [["Turkey", "Armenia"], ["Turkey", "Georgia"]]},
+    "f": "Signed by Turkey and the three Soviet Transcaucasian republics, it left Kars and Ardahan in Turkey.",
+    "k": "t"
+  },
+  {
+    "t": 4,
+    "g": "treaty",
+    "q": "Which treaty returned Southern Dobruja to Bulgaria, setting this border?",
+    "a": ["Treaty of Craiova (1940)"],
+    "o": ["Treaty of Bucharest (1913)", "Treaty of Neuilly (1919)", "Congress of Berlin (1878)"],
+    "line": {"mesh": [["Bulgaria", "Romania"]]},
+    "f": "Romania had taken Southern Dobruja in 1913; Germany pressed it to hand the region back in 1940.",
+    "k": "t"
   }
 ]

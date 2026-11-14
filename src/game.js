@@ -98,6 +98,8 @@ var FAME_H4 = __JSON__("data/FAME_H4.json");
 Object.keys(FAME_H4).forEach(function(k){ FAME.H[k] = FAME_H4[k]; });
 var SEC = __JSON__("data/SEC.json");
 var CHOKES = __JSON__("data/CHOKES.json");
+/* headquarters cities of international organizations, answered by location like the straits (2026-11-14) */
+var HQS = __JSON__("data/HQS.json");
 var FAMOUS_GEO = {}, FAMOUS_PL = {}, ICONIC_GEO = {}, ICONIC_PL = {}, TOP_GEO = {}, TOP_PL = {};
 // how much of each pack counts as Easy (the very best-known slice)
 var EASY_FRAC = {modern:0.18, flags:0.18, bronze:0.15, classical:0.15, ancient:0.16, early:0.15, medieval:0.17, discovery:0.16, wwi:0.17, vienna:0.16, ww2:0.17, coldwar:0.17, geo:0.14, planets:0.13};
@@ -318,7 +320,7 @@ var MODE_NOTE = {
   vienna:'The world in 1815: Europe after Napoleon, the Qing and Ottoman empires, and a Latin America on the brink of independence.',
   ww2:'The world at the end of World War II in 1945, with Germany split into four occupation zones.',
   coldwar:'The world in 1960: the superpowers, the Iron Curtain and a wave of African independence.',
-  security:'Alliances, nuclear powers, bases, flashpoints and the straits the world trades through. Click the answer on the map.',
+  security:'Alliances and international organizations, their headquarters, treaties that drew today\u2019s borders, nuclear powers, flashpoints and the straits the world trades through.',
   bronze:'The Late Bronze Age, around 1500 BCE: New Kingdom Egypt, the Hittites, Babylonia, Mycenaean Greece and Shang China.',
   classical:'The world around 500 BCE: Persia, the Greek city-states, Carthage, Zhou China and early India.',
   early:'The world around 800 CE: Charlemagne, the Abbasids, Tang China and the Vikings.',
@@ -398,13 +400,18 @@ function getPack(id){
     Object.keys(M2.items).forEach(function(k){ S2.items[k] = M2.items[k]; });
     Object.keys(M2.byName).forEach(function(k){ S2.byName[k] = M2.byName[k]; });
     S2.chokeFeatures = [];
-    Object.keys(CHOKES).forEach(function(n){
-      var c = CHOKES[n], radDeg = c[2]/6371*180/Math.PI;
+    [CHOKES, HQS].forEach(function(src){ Object.keys(src).forEach(function(n){
+      var c = src[n], radDeg = c[2]/6371*180/Math.PI;
       var f = {type:'Feature', properties:{name:n}, geometry:d3.geoCircle().center([c[1], c[0]]).radius(radDeg).precision(3)()};
       S2.items[n] = {disp:n, choke:true, lat:c[0], lon:c[1], rad:c[2], reg:c[3]};
       S2.byName[n] = f; S2.chokeFeatures.push(f);
-    });
+    }); });
     SEC.forEach(function(sq,i){
+      if(sq.k==='t'){
+        // "which treaty drew this border?": a highlighted line and four treaty names to choose from
+        S2.items['sq'+i] = {disp:sq.q, answers:[], treaty:true, line:sq.line, opts:sq.a.concat(sq.o), fact:sq.f, tier:sq.t, reg:'', ansText:sq.a[0], choke:false};
+        return;
+      }
       var first = sq.a[0];
       var ansText = sq.a.slice(0,3).map(function(n){ return S2.items[n] ? S2.items[n].disp : n; }).join(', ') + (sq.a.length>3 ? ' and others' : '');
       S2.items['sq'+i] = {disp:sq.q, answers:sq.a, fact:sq.f, tier:sq.t, choke:sq.k==='p', ch:sq.k==='p' ? S2.items[first] : null, reg:(S2.items[first] ? S2.items[first].reg : ''), ansText:ansText};
@@ -595,7 +602,7 @@ function effLevel(){
   return {id:L.id, label:L.label, tries:L.tries, pts:L.pts, hints:L.hints, type:type, band:L.band, time:L.time, tricky:tricky};
 }
 function scopeKey(){ return pack.kind==='physical' ? st.cat : pack.kind==='planet' ? 'all' : st.region; }
-function bestKey(){ if(st.tab==='dating') return 'pinpoint:best:dating:'+LEVELS[st.level].id+':'+ROUNDS; return 'pinpoint:best:'+st.mode+':'+LEVELS[st.level].id+':'+scopeKey()+':'+ROUNDS; }
+function bestKey(){ if(pack && pack.isSecurity && st.secTopic && st.secTopic!=='all') return 'pinpoint:best:security:'+st.secTopic+':'+LEVELS[st.level].id+':'+ROUNDS; if(st.tab==='dating') return 'pinpoint:best:dating:'+LEVELS[st.level].id+':'+ROUNDS; return 'pinpoint:best:'+st.mode+':'+LEVELS[st.level].id+':'+scopeKey()+':'+ROUNDS; }
 function getBest(){ try{ var v=localStorage.getItem(bestKey()); return v===null?null:parseInt(v,10); }catch(e){ return null; } }
 function setBest(v){ try{ localStorage.setItem(bestKey(), String(v)); }catch(e){} }
 function showBest(){
@@ -713,7 +720,7 @@ var LEDES = {
   geo: 'Find rivers, mountains, deserts, seas and more on a map with no borders. The fewer tries you need, the more points you score. Games run ten rounds.',
   flags: 'A flag appears and you click its country on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
   planets: 'Find volcanoes, craters, plains and canyons on Mars, the Moon and Venus. The fewer tries you need, the more points you score. Games run ten rounds.',
-  security: 'Answer global-security questions by clicking the country or the strait on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
+  security: 'Alliances, international organizations and their headquarters, treaties that drew borders, flashpoints and the straits the world trades through. Pick a topic, then click the answer on the map. The fewer tries you need, the more points you score. Games run ten rounds.',
   history: 'Answer history trivia questions. The fewer tries you need, the more points you score. Games run ten rounds.'
 };
 var TABS = [['map','tabMap'],['geo','tabGeo'],['flags','tabFlags'],['planets','tabPlanets'],['dating','tabDate'],['history','tabHist'],['security','tabSecurity'],['explore','tabExplore']]
@@ -726,6 +733,7 @@ function selectTab(tab){
     $(p[1]).setAttribute('aria-selected', p[0]===tab ? 'true' : 'false');
   });
   $('modeSet').hidden = tab!=='map';
+  $('secTopicSet').hidden = tab!=='security';
   $('lede').textContent = LEDES[tab];
   setMode(tab==='map' || tab==='dating' ? st.lastMap : tab);
 }
@@ -840,9 +848,15 @@ function buildFlagQuestions(){
   return shuffle(m.concat(hp)).map(function(n){ return {name:n, type:'flag'}; });
 }
 function buildSecurity(){
-  var tier = st.level+1, idxs = [];
-  SEC.forEach(function(sq,i){ if(sq.t===tier) idxs.push(i); });
-  return shuffle(idxs).slice(0, ROUNDS).map(function(i){ return {name:'sq'+i, type:'sec', idx:i}; });
+  var tier = st.level+1, topic = st.secTopic || 'all', idxs = [];
+  var inTopic = function(sq){ return topic==='all' || (sq.g || 'sec')===topic; };
+  // a topic with fewer than ten questions at this tier borrows from the nearest tiers
+  for(var d=0; d<=3 && idxs.length<ROUNDS; d++){
+    var more = [];
+    SEC.forEach(function(sq,i){ if(inTopic(sq) && Math.abs(sq.t-tier)===d) more.push(i); });
+    idxs = idxs.concat(shuffle(more).slice(0, ROUNDS-idxs.length));
+  }
+  return shuffle(idxs).map(function(i){ return {name:'sq'+i, type:'sec', idx:i}; });
 }
 function buildTrivia(){
   var tier = st.level+1, idxs = [];
@@ -1092,8 +1106,9 @@ function showQuestion(){
   $('qname').classList.toggle('long', q.type==='sec');
   flagImg.hidden = q.type!=='flag';
   if(q.type==='flag') flagImg.src = FLAGS[q.name];
+  $('secOpts').hidden = true;
   if(q.type==='sec'){
-    $('kind').textContent = 'Global security';
+    $('kind').textContent = it.treaty ? 'Treaties and borders' : 'Diplomacy and security';
     $('qname').textContent = it.disp;
   } else if(q.type==='flag'){
     $('kind').textContent = 'Which country\u2019s flag is this?';
@@ -1115,7 +1130,8 @@ function showQuestion(){
   var act = $('act'); act.textContent='Skip'; act.disabled=false; act.classList.remove('primary');
   setPips(); hideToast();
   startTimer(lvl.time);
-  if(lvl.tricky) scatterView(q);
+  if(it && it.treaty) showTreaty(it);
+  else if(lvl.tricky) scatterView(q);
 }
 
 /* political click */
@@ -1360,6 +1376,73 @@ function layoutLabels(){
   });
   flushFadeIns();
 }
+/* ---------- Treaties and borders (2026-11-14) ----------
+   SEC entries with k:'t' highlight a border and offer four treaties. line = {coords:[[lon,lat],...]} for a drawn line,
+   {mesh:[[A,B],...]} for today's border between countries A and B, or {around:A} for all of A's land borders. */
+var treatyCache = {};
+function treatyGeom(line){
+  var key = JSON.stringify(line);
+  if(treatyCache[key]) return treatyCache[key];
+  var g;
+  if(line.coords) g = {type:'LineString', coordinates:line.coords};
+  else {
+    var t = PACKS.modern, nm = function(o){ return o.properties && o.properties.name; };
+    g = topojson.mesh(t, t.objects.countries, function(a, b){
+      if(a===b) return false;
+      if(line.around) return nm(a)===line.around || nm(b)===line.around;
+      return line.mesh.some(function(pr){ return (nm(a)===pr[0] && nm(b)===pr[1]) || (nm(a)===pr[1] && nm(b)===pr[0]); });
+    });
+  }
+  return (treatyCache[key] = g);
+}
+function showTreaty(it){
+  var g = treatyGeom(it.line);
+  marks.append('path').attr('class','tlineHalo').attr('d', path(g));
+  marks.append('path').attr('class','tline').attr('d', path(g));
+  var b = path.bounds(g), dx = Math.max(b[1][0]-b[0][0], 1), dy = Math.max(b[1][1]-b[0][1], 1);
+  var k = Math.max(1, Math.min(30, 0.55/Math.max(dx/W, dy/H)));
+  var cx = (b[0][0]+b[1][0])/2, cy = (b[0][1]+b[1][1])/2;
+  moveTo(d3.zoomIdentity.translate(W/2-k*cx, H/2-k*cy).scale(k), reduce ? 0 : 500);
+  $('hint').textContent = 'Pick the treaty above. Tap a country to see its name.';
+  var box = $('secOpts'); box.innerHTML = ''; box.hidden = false;
+  shuffle(it.opts.slice()).forEach(function(o){
+    var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'topt'; bt.textContent = o;
+    bt.addEventListener('click', function(){ treatyPick(bt, o); });
+    box.appendChild(bt);
+  });
+}
+function treatyPick(bt, o){
+  if(st.phase!=='play' || st.locked) return;
+  var q = st.qs[st.i], it = pack.items[q.name], lvl = effLevel();
+  if(o===it.ansText){
+    var pts = LEVELS[st.level].pts[st.tries];
+    stopTimer(); st.locked = true; st.revealed = true; st.score += pts;
+    st.log.push({q:q, pts:pts});
+    bt.classList.add('good');
+    $('secOpts').querySelectorAll('button').forEach(function(b){ b.disabled = true; });
+    $('score').textContent = st.score; $('hint').textContent = it.fact;
+    toast('Correct, +'+pts, true);
+    triviaNext();
+  } else {
+    st.tries++; setPips();
+    bt.classList.add('bad'); bt.disabled = true;
+    shake($('secOpts'));
+    if(st.tries >= lvl.tries){ treatyReveal(false); return; }
+    var left = lvl.tries - st.tries;
+    toast('Not quite. '+left+(left===1 ? ' try' : ' tries')+' left.');
+  }
+}
+function treatyReveal(timedOut){
+  if(st.revealed) return;
+  var q = st.qs[st.i], it = pack.items[q.name];
+  stopTimer(); st.locked = true; st.revealed = true; st.tries = LEVELS[st.level].tries; setPips();
+  st.log.push({q:q, pts:0});
+  $('secOpts').querySelectorAll('button').forEach(function(b){ b.disabled = true; if(b.textContent===it.ansText) b.classList.add('good'); });
+  $('hint').textContent = it.fact;
+  toast((timedOut ? 'Time\u2019s up. ' : '')+'It was the '+it.ansText+'.');
+  triviaNext();
+}
+
 /* ---------- Date this map (2026-11-14) ----------
    Max's design: a historical map with no names (names and flags on Easy) and a year slider; the closer the guess, the more points.
    Each game shows 10 of the 11 nation maps in random order. The timeline is logarithmic in years before now, so the
@@ -1850,6 +1933,7 @@ function onPick(el, name){
   var q = st.qs[st.i];
   var qi = pack.items[q.name];
   if(qi && qi.choke) return;   // strait questions are answered by location (see secPick)
+  if(qi && qi.treaty) return;
   if(name===q.name || (name && qi.answers && qi.answers.indexOf(name)>=0)) correct(); else wrong(name ? disp(name) : 'unclaimed land', el);
 }
 
@@ -2084,6 +2168,8 @@ function viewForFeature(name){
 
 function reveal(clicked, timedOut){
   if(st.dating){ dateReveal(timedOut); return; }
+  var tq = st.qs[st.i], ti = tq && pack.items[tq.name];
+  if(ti && ti.treaty){ treatyReveal(timedOut); return; }
   if(pack.kind==='trivia'){ triviaReveal(timedOut); return; }
   if(st.revealed) return;
   var q = st.qs[st.i], it = pack.items[q.name];
@@ -2357,7 +2443,7 @@ function refreshDev(){
   $('reportBtn').hidden = !DEV; $('exploreReport').hidden = !DEV; $('devReports').hidden = !DEV;
   $('devReports').textContent = 'Reports ('+devLoad().length+')';
 }
-var TAB_NAMES = {dating:'Date this map', map:'Nation States', geo:'Geography', flags:'Flags', planets:'Planets', history:'History', security:'Security'};
+var TAB_NAMES = {dating:'Date this map', map:'Nation States', security:'Diplomacy & Security', geo:'Geography', flags:'Flags', planets:'Planets', history:'History'};
 function devTargetInfo(key){
   if(!key) return null;
   var it = pack.items[key] || {}, d = {key:key, name:it.disp || key};
